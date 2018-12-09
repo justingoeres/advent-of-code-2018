@@ -11,38 +11,41 @@ public class Main {
         // Day 01A
         // Starting with a frequency of zero, what is the resulting frequency
         // after all of the changes in frequency have been applied?
-
+        System.out.println("=== DAY 1A ===");
 
         String pathToInputs = "day01/input.txt";
         FrequencyChangeService frequencyChangeService = new FrequencyChangeService(pathToInputs);
 
-        Integer totalFrequencyChange = frequencyChangeService.calculateTotalFrequencyChange(0);
+        Integer totalFrequencyChange = null;
+        try {
+            totalFrequencyChange = frequencyChangeService.calculateTotalFrequencyChange(0);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
 
         System.out.println("Day 1A: Total Frequency Change = " + totalFrequencyChange);
         // Answer: 437
 
-        System.out.println("Min: " + frequencyChangeService.getMinFrequency());
-        System.out.println("Max: " + frequencyChangeService.getMaxFrequency());
-        System.out.println("Width: " +
-                (frequencyChangeService.getMaxFrequency() - frequencyChangeService.getMinFrequency()));
-
-        // Day 02
+        // Day 01B
         // You notice that the device repeats the same frequency change list over and over.
         // To calibrate the device, you need to find the first frequency it reaches twice.
+        System.out.println("=== DAY 1B ===");
 
-        // If the total frequency change for each pass through the list is +totalFrequencyChange,
-        // then each successive pass is +totalFrequency *above* the previous one.
+        System.out.println("Scanning for duplicates...");
+        System.out.print("Pass: ");
+        int pass = 1;
+        while (true) {
+//            System.out.println("Pass at totalFrequencyChange = " + totalFrequencyChange);
+            System.out.print(pass);
+            try {
+                totalFrequencyChange = frequencyChangeService.calculateTotalFrequencyChange(totalFrequencyChange);
+            } catch (Exception e) {
+                System.out.println("\nException: " + e.getMessage());
 
-        // The first frequency match has to match against the FIRST set of frequencies,
-        // so we can just iteratively add +totalFrequencyChange to the frequencyHistory
-        // and check point-by-point to see if each frequency exists in the original frequencyHistory
-
-
-        boolean keepGoing = true;
-        while (keepGoing) {
-            System.out.println("Pass at totalFrequencyChange = " + totalFrequencyChange);
-            totalFrequencyChange = frequencyChangeService.calculateTotalFrequencyChange(totalFrequencyChange);
-            keepGoing = (totalFrequencyChange != null);
+                break;
+            }
+            System.out.print(", ");
+            pass = pass + 1;
         }
     }
 }

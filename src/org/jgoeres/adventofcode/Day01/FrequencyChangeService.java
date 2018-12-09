@@ -7,9 +7,6 @@ import java.util.HashMap;
 
 public class FrequencyChangeService {
 
-    public int minFrequency = 0;
-    public int maxFrequency = 0;
-
     public ArrayList<Integer> frequencyHistory = new ArrayList<>();
     public HashMap<Integer, Integer> frequencyHistogram = new HashMap<>();
 
@@ -17,17 +14,16 @@ public class FrequencyChangeService {
         loadFrequencyList(pathToFile);
     }
 
-    public Integer calculateTotalFrequencyChange(int baseFrequency) {
+    public Integer calculateTotalFrequencyChange(int baseFrequency) throws Exception {
         int totalFrequencyChange = baseFrequency;
 
         for (Integer thisFrequency : frequencyHistory) {
             totalFrequencyChange = totalFrequencyChange + thisFrequency;
             if (frequencyHistogram.containsKey(totalFrequencyChange)) {
                 // Found a duplicate frequency!
-                System.out.println("Duplicate frequency found: " + totalFrequencyChange);
-                return null;
+                throw new Exception("Duplicate frequency found at " + String.valueOf(totalFrequencyChange));
             } else {
-                frequencyHistogram.put(totalFrequencyChange,1);
+                frequencyHistogram.put(totalFrequencyChange, 1);
             }
         }
         return totalFrequencyChange;
@@ -35,7 +31,6 @@ public class FrequencyChangeService {
 
     private void loadFrequencyList(String pathToFile) {
         frequencyHistory.clear();
-//        frequencyHistory.add(0);
         try (BufferedReader br = new BufferedReader(new FileReader(pathToFile))) {
             String line;
             Integer nextFrequency = 0;
@@ -45,30 +40,9 @@ public class FrequencyChangeService {
 
                 frequencyHistory.add(nextFrequency);
             }
-        } catch (
-                Exception e)
-
-        {
+        } catch (Exception e) {
             System.out.println("Exception occurred: " + e.getMessage());
         }
-    }
-
-    public Integer findDuplicate(int frequencyIncrement) {
-        for (int nextHistoryFrequency : getFrequencyHistory()) {
-            int frequencyToCheck = nextHistoryFrequency + frequencyIncrement;
-            if (getFrequencyHistory().contains(frequencyToCheck)) {
-                return frequencyToCheck; // Found a duplicate!
-            }
-        }
-        return null; // No duplicate found, return null.
-    }
-
-    public int getMinFrequency() {
-        return minFrequency;
-    }
-
-    public int getMaxFrequency() {
-        return maxFrequency;
     }
 
     private ArrayList<Integer> getFrequencyHistory() {
