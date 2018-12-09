@@ -7,8 +7,8 @@ import java.util.HashMap;
 
 public class FrequencyChangeService {
 
-    public ArrayList<Integer> frequencyHistory = new ArrayList<>();
-    public HashMap<Integer, Integer> frequencyHistogram = new HashMap<>();
+    private ArrayList<Integer> frequencyHistory = new ArrayList<>();
+    private HashMap<Integer, Integer> frequencyHistogram = new HashMap<>();
 
     public FrequencyChangeService(String pathToFile) {
         loadFrequencyList(pathToFile);
@@ -44,9 +44,4 @@ public class FrequencyChangeService {
             System.out.println("Exception occurred: " + e.getMessage());
         }
     }
-
-    private ArrayList<Integer> getFrequencyHistory() {
-        return frequencyHistory;
-    }
-
 }
