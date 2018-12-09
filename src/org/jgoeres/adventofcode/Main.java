@@ -13,14 +13,14 @@ public class Main {
         //https://adventofcode.com/2018/
 
         if (RUN_DAY_1 || RUN_ALL) {
-            // Day 01A
-            // Starting with a frequency of zero, what is the resulting frequency
-            // after all of the changes in frequency have been applied?
+//             Day 01A
+//             Starting with a frequency of zero, what is the resulting frequency
+//             after all of the changes in frequency have been applied?
             RunDay1.problem1A();
 
-            // Day 01B
-            // You notice that the device repeats the same frequency change list over and over.
-            // To calibrate the device, you need to find the first frequency it reaches twice.
+//             Day 01B
+//             You notice that the device repeats the same frequency change list over and over.
+//             To calibrate the device, you need to find the first frequency it reaches twice.
             RunDay1.problem1B();
         }
 
