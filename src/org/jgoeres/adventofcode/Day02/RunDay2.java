@@ -30,5 +30,29 @@ public abstract class RunDay2 {
         //      Does it contain the value 2?
         //      Does it contain the value 3?
 
+        Integer numContainsTwo = 0;
+        Integer numContainsThree = 0;
+
+        System.out.println("Number of boxes to process: " + boxChecksumService.getBoxesList().size());
+
+        for (String boxID : boxChecksumService.getBoxesList()) {
+            BoxChecksum thisBoxCheckSum = boxChecksumService.calculateBoxChecksum(boxID);
+
+            if (thisBoxCheckSum.containsTwo()) {
+                numContainsTwo += 1;
+            }
+            if (thisBoxCheckSum.containsThree()) {
+                numContainsThree += 1;
+            }
+        }
+        System.out.println("Boxes containing 2: " + numContainsTwo);
+        System.out.println("Boxes containing 3: " + numContainsThree);
+        System.out.println("Result: " + numContainsTwo + " * " + numContainsThree + " = " + (numContainsTwo * numContainsThree));
+
+//        Answer:
+//        Number of boxes to process: 250
+//        Boxes containing 2: 246
+//        Boxes containing 3: 23
+//        Result: 246 * 23 = 5658
     }
 }
