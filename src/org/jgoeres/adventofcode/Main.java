@@ -3,14 +3,16 @@ package org.jgoeres.adventofcode;
 import org.jgoeres.adventofcode.Day01.RunDay1;
 import org.jgoeres.adventofcode.Day02.RunDay2;
 import org.jgoeres.adventofcode.Day03.RunDay3;
+import org.jgoeres.adventofcode.Day04.RunDay4;
 
 public class Main {
 
-    static final boolean RUN_ALL = true;
+    static final boolean RUN_ALL = false;
 
     static final boolean RUN_DAY_1 = false;
     static final boolean RUN_DAY_2 = false;
-    static final boolean RUN_DAY_3 = true;
+    static final boolean RUN_DAY_3 = false;
+    static final boolean RUN_DAY_4 = true;
 
 
     public static void main(String[] args) {
@@ -69,10 +71,14 @@ public class Main {
 
         blankLine();
 
+        if (RUN_DAY_4 || RUN_ALL) {
+            RunDay4.problem4A();
 
+            RunDay4.problem4B();
+        }
     }
 
     private static void blankLine(){
-        System.out.println("");
+        System.out.println();
     }
 }
