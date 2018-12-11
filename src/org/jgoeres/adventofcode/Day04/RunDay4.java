@@ -24,6 +24,7 @@ public class RunDay4 {
 //        (In the above example, the answer would be 10 * 24 = 240.)
 
         guardService.buildGuardSchedules();
+
     }
 
     public static void problem4B(){

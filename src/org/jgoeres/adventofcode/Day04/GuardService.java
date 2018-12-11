@@ -8,10 +8,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class GuardService {
-    private TreeMap<Date, String> guardSchedule = new TreeMap<>();
+    private TreeMap<Date, String> rawSchedule = new TreeMap<>();
+    private HashMap<String, ArrayList<GuardDutyInterval>> schedulesByGuard = new HashMap<>();
 
     public GuardService(String pathToFile) {
         loadGuardSchedule(pathToFile);
+        buildGuardSchedules();
     }
 
     private void loadGuardSchedule(String pathToFile) {
@@ -32,9 +34,6 @@ public class GuardService {
                 Matcher m = p.matcher(line);
                 m.matches();
 
-//                    System.out.println(m.group(0));
-//                    System.out.println(m.group(1));
-//                    System.out.println(m.group(2));
                 String dateTimeString = m.group(1);
                 String eventString = m.group(2);
 
@@ -42,23 +41,21 @@ public class GuardService {
                 System.out.println(dateTime);
 
                 // Put this event in the schedule.
-                guardSchedule.put(dateTime, eventString);
-
+                rawSchedule.put(dateTime, eventString);
             }
         } catch (Exception e) {
             System.out.println("Exception occurred: " + e.getMessage());
         }
 
 //        HOW TO NAVIGATE THE SCHEDULE ENTRIES BY DATE
-//        for(Map.Entry<Date,String> entry : guardSchedule.entrySet()) {
+//        for(Map.Entry<Date,String> entry : rawSchedule.entrySet()) {
 //            Date key = entry.getKey();
 //            String value = entry.getValue();
 //            System.out.println(key + " => " + value);
 //        }
     }
 
-    public HashMap<String,ArrayList<GuardDutyInterval>> buildGuardSchedules(){
-        GuardDutyInterval currentInterval = null;
+    public HashMap<String, ArrayList<GuardDutyInterval>> buildGuardSchedules() {
         String currentGuardID = null;
         Pattern patternGuardId = Pattern.compile("Guard #(\\d+).*");
         Pattern patternFallsAsleep = Pattern.compile("falls asleep");
@@ -67,54 +64,48 @@ public class GuardService {
         ArrayList<GuardDutyInterval> currentIntervals = null;
         GuardDutyInterval currentGuardInterval = null;
 
-        HashMap<String,ArrayList<GuardDutyInterval>> schedulesByGuard = new HashMap<>();
+        // Clear the existing schedule, if for some reason one would already exist.
+        schedulesByGuard.clear();
 
-        for (Map.Entry<Date, String> entry : guardSchedule.entrySet()) {
+        for (Map.Entry<Date, String> entry : rawSchedule.entrySet()) {
             String entryValue = entry.getValue();
 
             Matcher matchGuardId = patternGuardId.matcher(entryValue);
             Matcher matchFallsAsleep = patternFallsAsleep.matcher(entryValue);
             Matcher matchWakesUp = patternWakesUp.matcher(entryValue);
 
-            if (matchGuardId.matches()){
-                // If we have any outstanding intervals, add them
-                // to the overall map of guard schedules before processing
-                // the new guard.
-//                if (currentIntervals != null) {
-//                    schedulesByGuard.put(currentGuardID,
-//                            (schedulesByGuard.get(currentGuardID).addAll(currentIntervals))
-//                    );
-//                }
-
+            if (matchGuardId.matches()) {
                 currentGuardID = matchGuardId.group(1);
-                System.out.println("Found Guard #" + matchGuardId.group(1));
+//                System.out.println("Found Guard #" + matchGuardId.group(1));
 
                 // Either get the existing list of intervals for this guard,
                 // or start a new list of intervals for this guard's shift.
-                if (schedulesByGuard.containsKey(currentGuardID)){
+                if (schedulesByGuard.containsKey(currentGuardID)) {
                     currentIntervals = schedulesByGuard.get(currentGuardID);
                 } else {
                     currentIntervals = new ArrayList<>();
-                    schedulesByGuard.put(currentGuardID,currentIntervals);
+                    schedulesByGuard.put(currentGuardID, currentIntervals);
                 }
-//                currentIntervals = new ArrayList<>();
-            } else if (matchFallsAsleep.matches()){
+            } else if (matchFallsAsleep.matches()) {
                 // Start a new sleep/wake interval for this guard.
                 currentGuardInterval = new GuardDutyInterval();
                 currentGuardInterval.setAsleep(entry.getKey()); // set the current time as the asleep time for this interval
-            } else if (matchWakesUp.matches()){
+            } else if (matchWakesUp.matches()) {
                 currentGuardInterval.setAwaken(entry.getKey()); // set the current time as the time the guard wakes up again.
 
                 // Add the completed interval to the list for this guard.
- //               schedulesByGuard.get(currentGuardID).add(currentGuardInterval);
+                //               schedulesByGuard.get(currentGuardID).add(currentGuardInterval);
                 currentIntervals.add(currentGuardInterval);
             }
-
         }
         return null;
     }
 
-    public TreeMap<Date, String> getGuardSchedule() {
-        return guardSchedule;
+    public TreeMap<Date, String> getRawSchedule() {
+        return rawSchedule;
+    }
+
+    public HashMap<String, ArrayList<GuardDutyInterval>> getSchedulesByGuard() {
+        return schedulesByGuard;
     }
 }
