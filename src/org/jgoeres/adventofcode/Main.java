@@ -58,6 +58,9 @@ public class Main {
 
         if (RUN_DAY_3 || RUN_ALL) {
             RunDay3.problem3A();
+
+            RunDay3.problem3B();
+
         }
 
     }

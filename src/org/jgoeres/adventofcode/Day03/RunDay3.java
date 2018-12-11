@@ -6,6 +6,9 @@ public abstract class RunDay3 {
     static String pathToInputs = "day03/input.txt";
     static FabricService fabricService = new FabricService(pathToInputs);
 
+    static HashSet<String> mayOverlap = new HashSet<>();
+    static HashSet<String> overlapSet = new HashSet<>();
+
     public static void problem3A() {
 //    DAY 3A
 //A claim like #123 @ 3,2: 5x4 means that claim ID 123 specifies
@@ -40,31 +43,22 @@ public abstract class RunDay3 {
         //          (i.e. this is the second-or-more time we've seen it).
         // When we've processed all the inches, count the size of Set #2!
 
-        HashSet<String> firstTime = new HashSet<>();
-        HashSet<String> secondTime = new HashSet<>();
 
         // Process each square.
         for (FabricSquare fabricSquare : fabricService.getFabricSquares()) {
             // Process each inch of each square.
-            for (Integer i = 0; i < fabricSquare.getW(); i++) {
-                // Iterate over the width
-                for (Integer j = 0; j < fabricSquare.getH(); j++) {
-                    // Iterate over the height
+            for (Integer i = 0; i < fabricSquare.getW(); i++) { // Iterate over the width
+                for (Integer j = 0; j < fabricSquare.getH(); j++) { // Iterate over the height
 
                     // Construct the key (name) for this square inch.
-                    Integer xLoc = fabricSquare.getX() + i;
-                    Integer yLoc = fabricSquare.getY() + j;
-                    String xKey = xLoc.toString();
-                    String yKey = yLoc.toString();
+                    String key = keyFromFabricSquare(fabricSquare, i, j);
 
-                    String locKey = xKey + "," + yKey;
-
-                    if (firstTime.add(locKey)) {
+                    if (mayOverlap.add(key)) {
                         // First time we've seen this inch, just continue.
                     } else {
                         // Second or more time we've seen this inch, add it to the
                         // second HashSet
-                        secondTime.add(locKey);
+                        overlapSet.add(key);
                     }
 
                 } // iterate over height
@@ -72,9 +66,75 @@ public abstract class RunDay3 {
 //            System.out.println("Done with claim #" + fabricSquare.getClaim());
         } // process all squares
 
-        System.out.println("Total inches covered by two or more claims: " + secondTime.size());
+        System.out.println("Total inches covered by two or more claims: " + overlapSet.size());
 
-//         Answer:
+//        Answer:
 //        Total inches covered by two or more claims: 101196
+    }
+
+    public static void problem3B() {
+//          Amidst the chaos, you notice that exactly one claim doesn't overlap
+//          by even a single square inch of fabric with any other claim. If you
+//          can somehow draw attention to it, maybe the Elves will be able to make
+//          Santa's suit after all!
+//
+//          What is the ID of the only claim that doesn't overlap?
+        System.out.println("=== DAY 3B ===");
+
+        // Approach:
+        // The "easy" (kind of brute force-y) way to do this is to
+        // iterate over all the inch-squares again, comparing them
+        // to the overlapSet HashSet.
+        //
+        // When we fine a claim with *no* inch-squares in the overlapSet
+        // set, we know it doesn't overlap anything!
+
+        // Process each square.
+        for (FabricSquare fabricSquare : fabricService.getFabricSquares()) {
+            boolean overlap = false;
+            // Process each inch of each square.
+            for (Integer i = 0; i < fabricSquare.getW(); i++) { // Iterate over the width
+                for (Integer j = 0; j < fabricSquare.getH(); j++) { // Iterate over the height
+
+                    // Construct the key (name) for this square inch.
+                    String key = keyFromFabricSquare(fabricSquare, i, j);
+
+                    // This inch-square overlaps something else if it's in overlapSet
+                    overlap = overlapSet.contains(key);
+
+                    if (overlap) {
+                        // This inch is in at least two squares (i.e. it overlaps something)
+                        // so bail out and check the next inch-square.
+                        break;
+                    }
+                } // iterate over height
+
+                if (overlap) {
+                    // Break out of BOTH for loops and go to the next whole square.
+                    break;
+                }
+            } // iterate over width
+
+            // If we get all the way through an entire fabricSquare
+            // without breaking, that's our solution! We can stop checking.
+            if (!overlap) {
+                System.out.println("Non-overlapping fabric square is claim #" + fabricSquare.getClaim());
+            }
+        } // process all squares
+
+        // Answer:
+        // Non-overlapping fabric square is claim #243
+    }
+
+    private static String keyFromFabricSquare(FabricSquare fabricSquare, Integer i, Integer j) {
+        // Construct the key (name) for this square inch.
+        Integer xLoc = fabricSquare.getX() + i;
+        Integer yLoc = fabricSquare.getY() + j;
+        String xKey = xLoc.toString();
+        String yKey = yLoc.toString();
+
+        String key = xKey + "," + yKey;
+
+        return key;
     }
 }
