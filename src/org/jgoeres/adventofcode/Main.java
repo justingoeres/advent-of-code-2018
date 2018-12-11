@@ -28,9 +28,8 @@ public class Main {
 //             You notice that the device repeats the same frequency change list over and over.
 //             To calibrate the device, you need to find the first frequency it reaches twice.
             RunDay1.problem1B();
+            blankLine();
         }
-
-        blankLine();
 
         if (RUN_DAY_2 || RUN_ALL) {
 //            --- Day 2: Inventory Management System ---
@@ -58,23 +57,21 @@ public class Main {
 //
 //            What letters are common between the two correct box IDs?
             RunDay2.problem2B();
+            blankLine();
         }
-
-        blankLine();
 
         if (RUN_DAY_3 || RUN_ALL) {
             RunDay3.problem3A();
 
             RunDay3.problem3B();
-
+            blankLine();
         }
-
-        blankLine();
 
         if (RUN_DAY_4 || RUN_ALL) {
             RunDay4.problem4A();
 
             RunDay4.problem4B();
+            blankLine();
         }
     }
 
