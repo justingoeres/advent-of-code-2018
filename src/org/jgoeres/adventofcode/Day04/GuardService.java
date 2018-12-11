@@ -38,7 +38,7 @@ public class GuardService {
                 String eventString = m.group(2);
 
                 Date dateTime = dateTimeFormat.parse(dateTimeString);
-                System.out.println(dateTime);
+//                System.out.println(dateTime);
 
                 // Put this event in the schedule.
                 rawSchedule.put(dateTime, eventString);
