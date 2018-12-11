@@ -3,11 +3,21 @@ package org.jgoeres.adventofcode.Day03;
 public class FabricSquare {
     // Defines one fabric square.
 
+    Integer claim;
+
     Integer x;
     Integer y;
 
     Integer w;
     Integer h;
+
+    public Integer getClaim() {
+        return claim;
+    }
+
+    public void setClaim(Integer claim) {
+        this.claim = claim;
+    }
 
     public Integer getX() {
         return x;
