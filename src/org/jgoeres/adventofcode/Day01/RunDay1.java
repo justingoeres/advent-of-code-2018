@@ -31,19 +31,19 @@ public abstract class RunDay1 {
         // This MUST run after problem1A() above, or the frequencyHistogram in
         // frequencyChangeService won't be initialized.
         System.out.println("Scanning for duplicates...");
-        System.out.print("Pass: ");
+//        System.out.print("Pass: ");
         int pass = 1;
         while (true) {
 //            System.out.println("Pass at totalFrequencyChange = " + totalFrequencyChange);
-            System.out.print(pass);
+//            System.out.print(pass);
             try {
                 totalFrequencyChange = frequencyChangeService.calculateTotalFrequencyChange(totalFrequencyChange);
             } catch (Exception e) {
-                System.out.println("\nException: " + e.getMessage());
+                System.out.println("Exception: " + e.getMessage() + " on pass #" + pass);
 
                 break;
             }
-            System.out.print(", ");
+//            System.out.print(", ");
             pass = pass + 1;
         }
         // Answer: 655 after 138 passes

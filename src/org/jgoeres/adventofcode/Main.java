@@ -6,7 +6,7 @@ import org.jgoeres.adventofcode.Day03.RunDay3;
 
 public class Main {
 
-    static final boolean RUN_ALL = false;
+    static final boolean RUN_ALL = true;
 
     static final boolean RUN_DAY_1 = false;
     static final boolean RUN_DAY_2 = false;
@@ -27,6 +27,8 @@ public class Main {
 //             To calibrate the device, you need to find the first frequency it reaches twice.
             RunDay1.problem1B();
         }
+
+        blankLine();
 
         if (RUN_DAY_2 || RUN_ALL) {
 //            --- Day 2: Inventory Management System ---
@@ -56,6 +58,8 @@ public class Main {
             RunDay2.problem2B();
         }
 
+        blankLine();
+
         if (RUN_DAY_3 || RUN_ALL) {
             RunDay3.problem3A();
 
@@ -63,5 +67,12 @@ public class Main {
 
         }
 
+        blankLine();
+
+
+    }
+
+    private static void blankLine(){
+        System.out.println("");
     }
 }
