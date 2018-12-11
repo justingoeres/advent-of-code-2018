@@ -101,6 +101,24 @@ public class GuardService {
         return null;
     }
 
+    public HashMap<Integer,Integer> calculateMinutesHistogram(String guardId) {
+        ArrayList<GuardDutyInterval> guardSchedule = getSchedulesByGuard().get(guardId);
+        HashMap<Integer, Integer> minutesOfHour = new HashMap<>();
+        for (GuardDutyInterval interval : guardSchedule) {
+            // Figure out all the individual minutes the guard is sleeping,
+            // and count them up.
+            Integer startMinute = interval.getAsleep().getMinutes();
+            Integer endMinute = startMinute + interval.getDuration();
+
+            for (Integer minute = startMinute; minute < endMinute; minute++) {
+                Integer count = minutesOfHour.getOrDefault(minute, 0);
+                // Increment the count for this minute.
+                minutesOfHour.put(minute, count + 1);
+            }
+        }
+        return minutesOfHour;
+    }
+
     public TreeMap<Date, String> getRawSchedule() {
         return rawSchedule;
     }

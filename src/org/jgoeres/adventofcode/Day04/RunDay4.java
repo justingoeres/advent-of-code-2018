@@ -1,13 +1,12 @@
 package org.jgoeres.adventofcode.Day04;
 
-import org.jgoeres.adventofcode.Day03.FabricService;
-
-import java.lang.reflect.Array;
 import java.util.*;
 
 public class RunDay4 {
     static String pathToInputs = "day04/input.txt";
     static GuardService guardService = new GuardService(pathToInputs);
+
+    static Integer maxMinute = null;
 
     public static void problem4A() {
         System.out.println("=== DAY 4A ===");
@@ -40,24 +39,9 @@ public class RunDay4 {
         }
 
         // Find how long the guard spent asleep at each minute of the hour.
-        ArrayList<GuardDutyInterval> guardSchedule = guardService.getSchedulesByGuard().get(maxGuardId);
-        HashMap<Integer, Integer> minutesOfHour = new HashMap<>();
-        for (GuardDutyInterval interval : guardSchedule) {
-            // Figure out all the individual minutes the guard is sleeping,
-            // and count them up.
-            Integer startMinute = interval.getAsleep().getMinutes();
-            Integer endMinute = startMinute + interval.getDuration();
-
-            for (Integer minute = startMinute; minute < endMinute; minute++) {
-                Integer count = minutesOfHour.getOrDefault(minute, 0);
-                // Increment the count for this minute.
-                minutesOfHour.put(minute, count + 1);
-            }
-
-        }
+        HashMap<Integer, Integer> minutesOfHour = guardService.calculateMinutesHistogram(maxGuardId);
 
         // Now find out *which minute* that guard was most often asleep.
-        Integer maxMinute = null;
         Integer maxCount = 0;
         for (Map.Entry<Integer, Integer> minute : minutesOfHour.entrySet()) {
 //            System.out.println(min.getKey() + ": " + min.getValue());
@@ -79,6 +63,39 @@ public class RunDay4 {
 
     public static void problem4B() {
         System.out.println("=== DAY 4B ===");
-        System.out.println("TODO");
+//        Of all guards, which guard is most frequently asleep on the same minute?
+//
+//        In the example above, Guard #99 spent minute 45 asleep more than
+//        any other guard or minute - three times in total.
+//        (In all other cases, any guard spent any minute asleep at most twice.)
+//
+//        What is the ID of the guard you chose multiplied by the minute you chose?
+//        (In the above example, the answer would be 99 * 45 = 4455.)
+
+        Integer maxSleep = 0;
+        maxMinute = 0;
+        String maxGuardId = null;
+        for (String guardId : guardService.getSchedulesByGuard().keySet()) {
+            // For each guard, find how many times they were asleep on maxMinute.
+
+            for (Map.Entry<Integer,Integer> minute : guardService.calculateMinutesHistogram(guardId).entrySet()) {
+                // For each minute of the hour
+                // minute will be null for any guards who never slept.
+                if (minute != null && minute.getValue() > maxSleep) {
+                    // Check if this is the most minutes anyone has slept on any minute.
+                    maxMinute = minute.getKey();
+                    maxSleep = minute.getValue();
+                    maxGuardId = guardId;
+                }
+            }
+        }
+        System.out.println("Guard #" + maxGuardId + " slept " + maxSleep + " times on minute " + maxMinute);
+        System.out.println("Answer: " + maxGuardId + " * " + maxMinute + " = " + (Integer.parseInt(maxGuardId) * maxMinute));
+
+        // Answer:
+//        Looking for sleepiest guard on minute 33
+//        Guard #983 slept 18 times on minute 37
+//        Answer: 983 * 37 = 36371
+
     }
 }
