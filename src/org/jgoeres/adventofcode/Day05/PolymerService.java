@@ -1,8 +1,5 @@
 package org.jgoeres.adventofcode.Day05;
 
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public abstract class PolymerService {
@@ -20,6 +17,22 @@ public abstract class PolymerService {
 
                 // And back up the pointer, but not so far that i++ will leave us with a negative index.
                 i = Math.max(i - 2, -1);
+            }
+        }
+    }
+
+    public static void removeOneBase(ArrayList<Character> polymers, Character toRemove) {
+        for (int i = 0; i < polymers.size() - 1; i++) {
+            Character current = polymers.get(i);  // get the current polymer
+
+            if (current.equals(Character.toLowerCase(toRemove)) ||
+                    current.equals(Character.toUpperCase(toRemove)))
+            {
+                // If this polymer is one we want to remove, remove it!
+                polymers.remove(i);
+
+                // And back up the pointer, but not so far that i++ will leave us with a negative index.
+                i = Math.max(i - 1, -1);
             }
         }
     }

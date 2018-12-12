@@ -1,7 +1,5 @@
 package org.jgoeres.adventofcode.Day05;
 
-import java.util.ArrayList;
-
 public class RunDay5 {
     static String pathToInputs = "day05/input.txt";
     static PolymerList polymers = new PolymerList(pathToInputs);
@@ -69,6 +67,44 @@ public class RunDay5 {
     }
 
     public static void problem5B() {
+        /*
+        One of the unit types is causing problems; it's preventing
+        the polymer from collapsing as much as it should. Your goal
+        is to figure out which unit type is causing the most problems,
+        remove all instances of it (regardless of polarity), fully
+        react the remaining polymer, and measure its length.
+
+        What is the length of the shortest polymer you can produce by
+        removing all units of exactly one type and fully reacting
+        the result?
+        */
         System.out.println("=== DAY 5B ===");
+
+        // We can start with the original result of 5A.
+        // That way we don't have to reduce it over and over.
+
+        Integer minLength = Integer.MAX_VALUE; // Really big.
+        Character minChar = null;
+        // Iterate through all of a-z (and A-Z)
+        for (Character c = 'a'; c <= 'z'; c++) {
+            PolymerList toReduce = (PolymerList) polymers.clone();
+
+            // Remove the target base
+            PolymerService.removeOneBase(toReduce, c);
+            // Reduce the remaining list.
+            PolymerService.reducePolymers(toReduce);
+
+//            System.out.println("Removed: " + c + "\t\tNew Reduced Length: " + toReduce.size());
+
+            if (toReduce.size() < minLength) {
+                minLength = toReduce.size();
+                minChar = c;
+            }
+        }
+
+        System.out.println("Minimum length: " + minLength + " after removing " + Character.toUpperCase(minChar));
+
+        // Answer:
+        // Minimum length: 4572 after removing M
     }
 }
