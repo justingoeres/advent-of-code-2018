@@ -75,7 +75,7 @@ public class Main {
             RunDay4.problem4B();
             blankLine();
         }
-        
+
         if (RUN_DAY_5 || RUN_ALL) {
             RunDay5.problem5A();
 
