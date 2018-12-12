@@ -5,41 +5,23 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
-public class PolymerService {
-    private String polymersString;
-    private ArrayList<Character> polymersList = new ArrayList<>();
+public abstract class PolymerService {
 
-    public PolymerService(String pathToFile) {
-        loadPolymerStream(pathToFile);
-    }
+    public static void reducePolymers(ArrayList<Character> polymers) {
+        for (int i = 0; i < polymers.size() - 1; i++) {
+            Character current = polymers.get(i);  // get the current polymer
+            Character next = polymers.get(i + 1); // get the next polymer.
 
-    private void loadPolymerStream(String pathToFile) {
-/*  The file looks like
+            if (oppositeCase(current, next)) {
+                // If this polymer and the next one are equal but opposite (e.g. 'd' and 'D')
+                // Remove them both.
+                polymers.remove(i + 1);
+                polymers.remove(i);
 
-        YvVIiMhHcwWCYymIuUiTteE...
-*/
-        // Just read the whole file into a String, we'll look at it character-by-character later.
-        polymersString = readFile(pathToFile, Charset.defaultCharset());
-        polymersString = polymersString.trim(); // remove the trailing \n from the file.
-
-        // Put all the characters of the string into an ArrayList
-        for (int i = 0; i < polymersString.length(); i++) {
-            polymersList.add(polymersString.charAt(i));
+                // And back up the pointer, but not so far that i++ will leave us with a negative index.
+                i = Math.max(i - 2, -1);
+            }
         }
-    }
-
-    static String readFile(String path, Charset encoding) {
-        byte[] encoded = null;
-        try {
-            encoded = Files.readAllBytes(Paths.get(path));
-        } catch (Exception e) {
-            System.out.println("readFile exception occurred: " + e.getMessage());
-        }
-        return new String(encoded, encoding);
-    }
-
-    public ArrayList<Character> getPolymersList() {
-        return polymersList;
     }
 
     public static boolean oppositeCase(Character c1, Character c2) {

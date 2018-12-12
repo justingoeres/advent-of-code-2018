@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class RunDay5 {
     static String pathToInputs = "day05/input.txt";
-    static PolymerService polymerService = new PolymerService(pathToInputs);
+    static PolymerList polymers = new PolymerList(pathToInputs);
 
     static final boolean DISPLAY_FINAL_POLYMERS = false;
 
@@ -37,22 +37,22 @@ public class RunDay5 {
  */
         System.out.println("=== DAY 5A ===");
 
-        ArrayList<Character> polymers = polymerService.getPolymersList();
-
-        for (int i = 0; i < polymers.size() - 1; i++) {
-            Character current = polymers.get(i);  // get the current polymer
-            Character next = polymers.get(i + 1); // get the next polymer.
-
-            if (polymerService.oppositeCase(current, next)) {
-                // If this polymer and the next one are equal but opposite (e.g. 'd' and 'D')
-                // Remove them both.
-                polymers.remove(i + 1);
-                polymers.remove(i);
-
-                // And back up the pointer, but not so far that i++ will leave us with a negative index.
-                i = Math.max(i - 2, -1);
-            }
-        }
+//        ArrayList<Character> polymers = polymerService.getPolymersList();
+//        for (int i = 0; i < polymers.size() - 1; i++) {
+//            Character current = polymers.get(i);  // get the current polymer
+//            Character next = polymers.get(i + 1); // get the next polymer.
+//
+//            if (polymerService.oppositeCase(current, next)) {
+//                // If this polymer and the next one are equal but opposite (e.g. 'd' and 'D')
+//                // Remove them both.
+//                polymers.remove(i + 1);
+//                polymers.remove(i);
+//
+//                // And back up the pointer, but not so far that i++ will leave us with a negative index.
+//                i = Math.max(i - 2, -1);
+//            }
+//        }
+        PolymerService.reducePolymers(polymers);
 
         // When we're done, we should have the minimum set of non-matched polymer pairs.
         if (DISPLAY_FINAL_POLYMERS) {
