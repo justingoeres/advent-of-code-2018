@@ -25,9 +25,9 @@ public abstract class PolymerService {
     }
 
     public static boolean oppositeCase(Character c1, Character c2) {
-        final int CASE_DISTANCE = 32;
+        final int OPPOSITE_CASE_DISTANCE = 32;
         final int distance = Math.abs(c1 - c2);
 
-        return (distance == CASE_DISTANCE);
+        return (distance == OPPOSITE_CASE_DISTANCE);
     }
 }
