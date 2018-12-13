@@ -14,7 +14,20 @@ public class RunDay6 {
          */
         System.out.println("=== DAY 6A ===");
 
-        Grid grid = new Grid(pathToInputs);
+        Centers centers = new Centers(pathToInputs);
+        Grid grid = new Grid(500, 500);
+//        Grid grid = new Grid(100, 100);
+
+        for (GridPoint gridPoint : grid.getGridPoints()) {
+            GridPoint closestGridPoint = GridService.closestGridPoint(gridPoint, centers);
+//            if (closestGridPoint != null) {
+//                System.out.println("[ " + gridPoint.getX() + ", " + gridPoint.getY()
+//                        + " ]\tclosest to\t" + closestGridPoint.getName() + " [ " + closestGridPoint.getX() + ", " + closestGridPoint.getY()
+//                        + " ]\tdistance\t" + GridService.manhattanDistance(gridPoint, closestGridPoint));
+//            } else {
+//                System.out.println("[ " + gridPoint.getX() + ", " + gridPoint.getY() + "\tclose to more than one center");
+//            }
+        }
     }
 
     public static void problem6B() {

@@ -3,10 +3,17 @@ package org.jgoeres.adventofcode.Day06;
 public class GridPoint {
     private Integer x;
     private Integer y;
+    private Character name;
 
     public GridPoint(Integer x, Integer y) {
         this.x = x;
         this.y = y;
+    }
+
+    public GridPoint(Integer x, Integer y, Character name) {
+        this.x = x;
+        this.y = y;
+        this.name = name;
     }
 
     public Integer getX() {
@@ -23,5 +30,13 @@ public class GridPoint {
 
     public void setY(Integer y) {
         this.y = y;
+    }
+
+    public Character getName() {
+        return name;
+    }
+
+    public void setName(Character name) {
+        this.name = name;
     }
 }
