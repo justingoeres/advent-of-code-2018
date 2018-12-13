@@ -5,6 +5,9 @@ public class GridPoint {
     private Integer y;
     private Character name;
 
+    public GridPoint() {
+    }
+
     public GridPoint(Integer x, Integer y) {
         this.x = x;
         this.y = y;

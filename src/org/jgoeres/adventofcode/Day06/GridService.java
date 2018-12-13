@@ -37,4 +37,40 @@ public abstract class GridService {
             return null;
         }
     }
+
+    public static GridBoundary findGridBoundary(Grid grid) {
+        GridBoundary gridBoundary = new GridBoundary();
+
+        for (GridPoint gridPoint:grid.getGridPoints()) {
+            // Process each grid point and find the min & max extents.
+
+            Integer x = gridPoint.getX();
+            Integer y = gridPoint.getY();
+
+            // check left (min x)
+            if ((gridBoundary.getTopLeft().getX() == null)
+                    || x < gridBoundary.getTopLeft().getX()) {
+                gridBoundary.getTopLeft().setX(x);
+            }
+
+            // check right (max x)
+            if ((gridBoundary.getBottomRight().getX() == null)
+                    || x > gridBoundary.getBottomRight().getX()) {
+                gridBoundary.getBottomRight().setX(x);
+            }
+
+            // check top (min y)
+            if ((gridBoundary.getTopLeft().getY() == null)
+                    || y < gridBoundary.getTopLeft().getY()) {
+                gridBoundary.getTopLeft().setY(y);
+            }
+
+            // check bottom (max y)
+            if ((gridBoundary.getBottomRight().getY() == null)
+                    || y > gridBoundary.getBottomRight().getY()) {
+                gridBoundary.getBottomRight().setY(y);
+            }
+        }
+        return gridBoundary;
+    }
 }

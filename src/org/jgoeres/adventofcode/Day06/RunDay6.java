@@ -15,8 +15,9 @@ public class RunDay6 {
         System.out.println("=== DAY 6A ===");
 
         Centers centers = new Centers(pathToInputs);
-        Grid grid = new Grid(500, 500);
-//        Grid grid = new Grid(100, 100);
+        GridBoundary gridBoundary = GridService.findGridBoundary(centers);
+
+        Grid grid = new Grid(gridBoundary);
 
         for (GridPoint gridPoint : grid.getGridPoints()) {
             GridPoint closestGridPoint = GridService.closestGridPoint(gridPoint, centers);
@@ -28,6 +29,7 @@ public class RunDay6 {
 //                System.out.println("[ " + gridPoint.getX() + ", " + gridPoint.getY() + "\tclose to more than one center");
 //            }
         }
+
     }
 
     public static void problem6B() {
