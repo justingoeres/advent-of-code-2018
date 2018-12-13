@@ -16,7 +16,8 @@ public class Main {
     static final boolean RUN_DAY_3 = false;
     static final boolean RUN_DAY_4 = false;
     static final boolean RUN_DAY_5 = false;
-    static final boolean RUN_DAY_6 = true;
+    static final boolean RUN_DAY_6 = false;
+    static final boolean RUN_DAY_7 = true;
 
 
     public static void main(String[] args) {
@@ -89,6 +90,13 @@ public class Main {
             RunDay6.problem6A();
 
             RunDay6.problem6B();
+            blankLine();
+        }
+
+        if (RUN_DAY_7 || RUN_ALL) {
+            RunDay7.problem7A();
+
+            RunDay7.problem7B();
             blankLine();
         }
     }
