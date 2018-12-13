@@ -5,6 +5,7 @@ import org.jgoeres.adventofcode.Day02.RunDay2;
 import org.jgoeres.adventofcode.Day03.RunDay3;
 import org.jgoeres.adventofcode.Day04.RunDay4;
 import org.jgoeres.adventofcode.Day05.RunDay5;
+import org.jgoeres.adventofcode.Day06.RunDay6;
 
 public class Main {
 
@@ -85,9 +86,9 @@ public class Main {
         }
 
         if (RUN_DAY_6 || RUN_ALL) {
-            RunDay5.problem5A();
+            RunDay6.problem6A();
 
-            RunDay5.problem5B();
+            RunDay6.problem6B();
             blankLine();
         }
     }
