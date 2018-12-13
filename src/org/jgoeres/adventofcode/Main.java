@@ -14,7 +14,8 @@ public class Main {
     static final boolean RUN_DAY_2 = false;
     static final boolean RUN_DAY_3 = false;
     static final boolean RUN_DAY_4 = false;
-    static final boolean RUN_DAY_5 = true;
+    static final boolean RUN_DAY_5 = false;
+    static final boolean RUN_DAY_6 = true;
 
 
     public static void main(String[] args) {
@@ -83,6 +84,12 @@ public class Main {
             blankLine();
         }
 
+        if (RUN_DAY_6 || RUN_ALL) {
+            RunDay5.problem5A();
+
+            RunDay5.problem5B();
+            blankLine();
+        }
     }
 
     private static void blankLine(){
