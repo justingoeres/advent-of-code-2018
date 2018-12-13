@@ -73,4 +73,13 @@ public abstract class GridService {
         }
         return gridBoundary;
     }
+
+    public static boolean isOnBoundary(GridPoint gridPoint, GridBoundary gridBoundary) {
+        boolean isOnBoundary = (gridPoint.getX() == gridBoundary.getTopLeft().getX())
+                || (gridPoint.getX() == gridBoundary.getBottomRight().getX())
+                || (gridPoint.getY() == gridBoundary.getTopLeft().getY())
+                || (gridPoint.getY() == gridBoundary.getBottomRight().getY());
+        return isOnBoundary;
+    }
+
 }

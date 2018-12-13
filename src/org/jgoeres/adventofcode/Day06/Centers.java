@@ -2,10 +2,12 @@ package org.jgoeres.adventofcode.Day06;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Centers extends Grid {
+    private HashMap<Character,Integer> centerCountsMap = new HashMap<>();
 
 
     public Centers(String pathToFile) {
@@ -37,8 +39,10 @@ public class Centers extends Grid {
 
 //                System.out.println(gridPoint);
 
-                // Put this event in the schedule.
+                // Put this point in the grid.
                 this.getGridPoints().add(gridPoint);
+                // And also put it in the map.
+                this.getCenterCountsMap().put(gridPointName,0);
 
                 gridPointName++; // Go to the next character for naming.
             }
@@ -48,4 +52,7 @@ public class Centers extends Grid {
 
     }
 
+    public HashMap<Character, Integer> getCenterCountsMap() {
+        return centerCountsMap;
+    }
 }
