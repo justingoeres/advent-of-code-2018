@@ -40,7 +40,7 @@ public class Node {
             // Read the metadata value
             Integer newMetadata = sc.nextInt();
             if (PRINT_NODETREE_DEBUG) {
-                System.out.println("\t\t"+newMetadata);
+                System.out.println("\t\t" + newMetadata);
             }
             // Add it to our list of metadata for this node.
             metaDataEntries.add(newMetadata);
@@ -60,7 +60,6 @@ public class Node {
         for (Node childNode : childNodes) {
             currentSum += childNode.sumAllMetaData();
         }
-
         return currentSum;
     }
 }
