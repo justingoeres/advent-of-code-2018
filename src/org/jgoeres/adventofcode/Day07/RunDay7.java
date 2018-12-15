@@ -63,6 +63,7 @@ public class RunDay7 {
 
                     // Execute it!
                     System.out.print(stepToCheck.getKey().toString());
+//                    System.out.println(stepToCheck.getKey().toString() + "\t" + StepService.duration(stepToCheck.getKey()));
 
                     // Finally, remove it from everyone's parent list.
                     for (Map.Entry<Character, Step> step : stepList.getSteps().entrySet()) {

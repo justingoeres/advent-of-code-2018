@@ -5,7 +5,6 @@ import java.io.FileReader;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.jgoeres.adventofcode.Day07.StepService;
 
 public class StepList {
     private HashMap<Character,Step> steps = new HashMap<>();
