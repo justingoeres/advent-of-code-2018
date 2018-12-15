@@ -52,14 +52,46 @@ public class Node {
         Integer currentSum = 0;
 
         // Add up all the metadata in this node
-        for (Integer metaData : metaDataEntries) {
-            currentSum += metaData;
-        }
+        currentSum += sumNodeMetaData();
 
         // Add to it all the metadata in all the children.
         for (Node childNode : childNodes) {
             currentSum += childNode.sumAllMetaData();
         }
         return currentSum;
+    }
+
+    private Integer sumNodeMetaData() {
+        Integer currentSum = 0;
+
+        for (Integer metaData : metaDataEntries) {
+            currentSum += metaData;
+        }
+        return currentSum;
+    }
+
+    public Integer calculateNodeValue() {
+        // If a node has no child nodes, its value is the sum of its metadata entries.
+        if (childNodes.isEmpty()) {
+            // No child nodes, sum the metadata entries.
+            return sumNodeMetaData();
+        } else {
+            // This node HAS child nodes.
+            // Iterate over all the metadata (as child node references) and add up
+            // those childrens' values.
+            Integer childNodeSum = 0;
+
+            for (Integer childReference : metaDataEntries) {
+                try {
+                    // The value of this node is the sum of the
+                    // values of the child nodes referenced by the metadata entries
+                    Node child = childNodes.get(childReference - 1); // subtract one because "1" refers to the FIRST child node (index 0)
+                    childNodeSum += child.calculateNodeValue();
+                } catch (IndexOutOfBoundsException e) {
+                    // do nothing, out of bounds child references are skipped.
+                }
+            }
+            return childNodeSum;
+        }
     }
 }
