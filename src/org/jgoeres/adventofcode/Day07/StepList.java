@@ -33,8 +33,8 @@ public class StepList {
                 Character childId = (m.group(2)).charAt(0);
 
                 // Look up the child & parent steps in the HashMap, or create them.
-                Step parentStep = (steps.containsKey(parentId)) ? steps.get(parentId) : new Step();
-                Step childStep = (steps.containsKey(childId)) ? steps.get(childId) : new Step();
+                Step parentStep = (steps.containsKey(parentId)) ? steps.get(parentId) : new Step(parentId);
+                Step childStep = (steps.containsKey(childId)) ? steps.get(childId) : new Step(childId);
 
                 // Add this parent to the child
                 steps.put(parentId,parentStep);

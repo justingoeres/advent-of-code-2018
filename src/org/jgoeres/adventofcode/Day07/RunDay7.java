@@ -1,10 +1,8 @@
 package org.jgoeres.adventofcode.Day07;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 public class RunDay7 {
     static String pathToInputs = "day07/input.txt";
@@ -66,7 +64,6 @@ public class RunDay7 {
 
                     // Execute it! (Just print it out)
                     System.out.print(stepToCheck.getKey().toString());
-//                    System.out.println(stepToCheck.getKey().toString() + "\t" + StepService.duration(stepToCheck.getKey()));
 
                     // Finally, remove it from everyone's parent list.
                     for (Map.Entry<Character, Step> step : stepList.getSteps().entrySet()) {
@@ -104,6 +101,7 @@ public class RunDay7 {
         */
         System.out.println("=== DAY 7B ===");
 
+        boolean PRINT_EACH_TIME_STEP = false;
         Integer NUMBER_OF_WORKERS = 5;
 
         // Set up our workers
@@ -112,63 +110,83 @@ public class RunDay7 {
         String[] workerNames = new String[]{"Celia", "Emmett", "Dishita", "Makai", "Silas"};
         for (int i = 0; i < NUMBER_OF_WORKERS; i++) {
             workers.add(new Worker(workerNames[i]));
-//            System.out.println(workers.get(i).isIdle(54));
         }
         String stepsDone = "";
 
         // Reload our stepsList since problem 7A consumed it.
         StepList stepList = new StepList(pathToInputs);
 
-        System.out.println("Step execution flow:");
-        System.out.println("Time\t" + printWorkerNames(workers) + "\tDone");
+        if (PRINT_EACH_TIME_STEP) {
+            System.out.println("Step execution flow:");
+            System.out.println("Time\t" + printWorkerNames(workers) + "\tDone");
+        }
 
-        Integer currentTime = 0; // Start at t=0
+        Integer currentTime = 0; // Start at t = 0
 
-        while (!stepList.getSteps().isEmpty() || !allWorkersIdle(workers,currentTime)) {
+        while (!stepList.getSteps().isEmpty() || !allWorkersIdle(workers)) {
             // Keep going until all steps are complete
+            // Check each worker to see if their current step is done.
+            for (Worker w : workers) {
+                Step doneStep = w.currentStepComplete(currentTime);
+
+                if (doneStep != null) {
+                    // If this worker has just completed a step.
+                    // Remove it from the lists of all parents.
+                    for (Map.Entry<Character, Step> stepToCheck : stepList.getSteps().entrySet()) {
+                        stepToCheck.getValue().getParents().remove(doneStep.getId());
+                    }
+                    // And add it to the String of steps completed.
+                    stepsDone += doneStep.getId();
+                }
+            }
             for (Worker w : workers) {
                 // Are any workers idle?
-                if (w.isIdle(currentTime)) {
-                    // BUG: DoingStepId is already NULL as soon as we check isIdle!
-                    stepsDone = stepsDone + w.getDoingStepId();
-
-                    // Find this worker a step to do, if one is executable.
-                    for (Map.Entry<Character, Step> stepToCheck : stepList.getSteps().entrySet()) {
-                        if (!StepService.hasParent(stepToCheck.getValue())) {
-                            // if this step has NO parents.
+                if (w.isIdle()) {
+                    // Find this idle worker a step to do, if one is executable.
+                    for (Map.Entry<Character, Step> stepToExecute : stepList.getSteps().entrySet()) {
+                        Step step = stepToExecute.getValue();
+                        if (!StepService.hasParent(step)) {
+                            // if this step has NO parents, then it can be executed!
 
                             // Remove it from the remaining list of steps
                             HashMap<Character, Step> modifiedSteps = stepList.getSteps();
-                            modifiedSteps.remove(stepToCheck.getKey());
+                            modifiedSteps.remove(step.getId());
                             stepList.setSteps(modifiedSteps);
 
                             // Give it to this worker.
-                            w.startWork(stepToCheck.getValue(),stepToCheck.getKey(), currentTime);
+                            w.startWork(step, currentTime);
 
-                            // Finally, remove it from everyone's parent list.
-                            for (Map.Entry<Character, Step> step : stepList.getSteps().entrySet()) {
-                                step.getValue().getParents().remove(stepToCheck.getKey());
-                            }
                             break;  // After we find and execute the FIRST AVAILABLE step,
-                            // go back and start looking for the next one.
+                                    // go back and start looking for the next one.
                         }
                     }
                 }
             }
 
-            // Print out everyone's status.
-            System.out.println(currentTime + "\t" + printWorkerStatuses(workers) + "\t" + stepsDone);
-            currentTime = currentTime + 1;
+            if (PRINT_EACH_TIME_STEP) {
+                // Print out everyone's status.
+                System.out.println(currentTime + "\t\t" + printWorkerStatuses(workers) + "\t" + stepsDone);
+            }
+            currentTime = currentTime + 1;  // Advance the clock before starting the next tick.
         }
+        System.out.println("Number of workers:\t" + NUMBER_OF_WORKERS);
+        System.out.println("Step execution order:\t" + stepsDone);
+        System.out.println("Total execution time:\t" + currentTime + " seconds");
+
+        // Answer:
+//        Number of workers:	5
+//        Step execution order:	ABLDNFWMCJVRHQITXKEUZOSYPG
+//        Total execution time:	897 seconds
     }
 
-    private static boolean allWorkersIdle(ArrayList<Worker> workers, Integer currentTime) {
+    private static boolean allWorkersIdle(ArrayList<Worker> workers) {
         boolean result = true; // assume everybody is Idle to start
-        for(Worker worker:workers) {
-            result &=worker.isIdle(currentTime);
+        for (Worker worker : workers) {
+            result &= worker.isIdle();
         }
         return result;
     }
+
     private static String printWorkerNames(ArrayList<Worker> workers) {
         String result = "";
         for (Worker worker : workers) {
@@ -181,10 +199,14 @@ public class RunDay7 {
     private static String printWorkerStatuses(ArrayList<Worker> workers) {
         String result = "";
         for (Worker worker : workers) {
-            result += worker.getDoingStepId() + "\t";
+            result += nameInSpaces(worker.getName()).substring(1) + worker.getDoingStepId() + "\t";
         }
         result = result.trim();
         return result;
     }
 
+    private static String nameInSpaces(String name) {
+        String spaces = name.replaceAll(".", " ");
+        return spaces;
+    }
 }

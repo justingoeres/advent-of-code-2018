@@ -2,7 +2,6 @@ package org.jgoeres.adventofcode.Day07;
 
 public class Worker {
     private Step doingStep;
-    private Character doingStepId;
     private Integer startTime;
     private String name;
 
@@ -10,25 +9,24 @@ public class Worker {
         this.name = name;
     }
 
-    public boolean isIdle(Integer currentTime) {
-        if ((doingStep != null)
-                && (currentTime >= (getStartTime() + StepService.duration(doingStepId)))) {
-            // If we're done with the current step, go Idle.
-            doingStep = null;
-            doingStepId = null;
-        }
-
-        // If we're not doing a step (i.e. doingStep is null) we're idle!
+    public boolean isIdle() {
         return (doingStep == null);
     }
 
-    public void startWork(Step step, Character stepId, Integer startTime) {
+    public void startWork(Step step, Integer startTime) {
         setDoingStep(step);
-        setDoingStepId(stepId);
         setStartTime(startTime);
-
     }
 
+    public Step currentStepComplete(Integer currentTime) {
+        if ((doingStep != null)
+                && (currentTime > (getStartTime() + StepService.duration(doingStep)))) {
+            Step doneStep = doingStep;
+            doingStep = null;
+            return doneStep;
+        }
+        return null; // if we have no step, we're certainly not doing anything!
+    }
 
     public Step getDoingStep() {
         return doingStep;
@@ -39,11 +37,7 @@ public class Worker {
     }
 
     public Character getDoingStepId() {
-        return (doingStepId != null) ? doingStepId : '.';
-    }
-
-    public void setDoingStepId(Character doingStepId) {
-        this.doingStepId = doingStepId;
+        return (doingStep != null) ? doingStep.getId() : '.';
     }
 
     public Integer getStartTime() {
