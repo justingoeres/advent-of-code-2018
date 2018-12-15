@@ -1,16 +1,17 @@
 package org.jgoeres.adventofcode.Day07;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Step {
-    private ArrayList<Step> parents = new ArrayList<>();
+    private HashMap<Character,Step> parents = new HashMap<>();
 
 
-    public ArrayList<Step> getParents() {
+    public HashMap<Character,Step> getParents() {
         return parents;
     }
 
-    public void setParents(ArrayList<Step> parents) {
+    public void setParents(HashMap<Character,Step> parents) {
         this.parents = parents;
     }
 }

@@ -6,6 +6,7 @@ import org.jgoeres.adventofcode.Day03.RunDay3;
 import org.jgoeres.adventofcode.Day04.RunDay4;
 import org.jgoeres.adventofcode.Day05.RunDay5;
 import org.jgoeres.adventofcode.Day06.RunDay6;
+import org.jgoeres.adventofcode.Day07.RunDay7;
 
 public class Main {
 

@@ -1,5 +1,9 @@
 package org.jgoeres.adventofcode.Day07;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 public class RunDay7 {
     static String pathToInputs = "day07/input.txt";
 
@@ -43,8 +47,36 @@ public class RunDay7 {
 
         StepList stepList = new StepList(pathToInputs);
 
+        System.out.print("Step execution order:\t");
+        while (!stepList.getSteps().isEmpty()) {
+            // As long as there are steps we haven't processed yet.
 
+            // Find the first step (alphabetically) with no parents.
+            for (Map.Entry<Character, Step> stepToCheck : stepList.getSteps().entrySet()) {
+                if (!StepService.hasParent(stepToCheck.getValue())) {
+                    // if this step has NO parents.
 
+                    // Remove it from the remaining list of steps
+                    HashMap<Character, Step> modifiedSteps = stepList.getSteps();
+                    modifiedSteps.remove(stepToCheck.getKey());
+                    stepList.setSteps(modifiedSteps);
+
+                    // Execute it!
+                    System.out.print(stepToCheck.getKey().toString());
+
+                    // Finally, remove it from everyone's parent list.
+                    for (Map.Entry<Character, Step> step : stepList.getSteps().entrySet()) {
+                        step.getValue().getParents().remove(stepToCheck.getKey());
+                    }
+                    break;  // After we find and execute the FIRST AVAILABLE step,
+                            // go back and start looking for the next one.
+                }
+            }
+        }
+        System.out.println(); // linefeed when we're all done.
+
+        // Answer:
+        // Step execution order:	ABDCJLFMNVQWHIRKTEUXOZSYPG
     }
 
     public static void problem7B() {

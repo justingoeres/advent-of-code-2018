@@ -1,9 +1,13 @@
 package org.jgoeres.adventofcode.Day07;
 
-public class StepService {
+public abstract class StepService {
 
-    public boolean addParent(Step step, Step newParent){
-        step.getParents().add(newParent);
+    public static void addParent(Step step, Step parentToAdd, Character parentId){
+        step.getParents().put(parentId,parentToAdd);
     }
 
+    public static boolean hasParent(Step step){
+        boolean hasParent = !step.getParents().isEmpty();
+        return hasParent;
+    }
 }
