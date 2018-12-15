@@ -1,11 +1,13 @@
 package org.jgoeres.adventofcode.Day07;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 public class RunDay7 {
     static String pathToInputs = "day07/input.txt";
+//    static String pathToInputs = "day07/input-dnatt.txt";
 
     public static void problem7A() {
         /*
@@ -70,7 +72,7 @@ public class RunDay7 {
                         step.getValue().getParents().remove(stepToCheck.getKey());
                     }
                     break;  // After we find and execute the FIRST AVAILABLE step,
-                            // go back and start looking for the next one.
+                    // go back and start looking for the next one.
                 }
             }
         }
@@ -78,13 +80,39 @@ public class RunDay7 {
 
         // Answer:
         // Step execution order:	ABDCJLFMNVQWHIRKTEUXOZSYPG
+        // Step execution order:	CQSWKZFJONPBEUMXADLYIGVRHT (DNatt)
     }
 
     public static void problem7B() {
         /*
-        Problem Description
+        Now, you need to account for multiple people working on steps simultaneously.
+        If multiple steps are available, workers should still begin them in
+        alphabetical order.
+
+        Each step takes 60 seconds plus an amount corresponding to its letter:
+        A=1, B=2, C=3, and so on. So,
+        step A takes 60+1=61 seconds, while
+        step Z takes 60+26=86 seconds. No time is required between steps.
+
+        Note that the order of the steps has changed; this is because steps
+        now take time to finish and multiple workers can begin multiple steps
+        simultaneously.
+
+        With 5 workers and the 60+ second step durations described above,
+        how long will it take to complete all of the steps?
         */
         System.out.println("=== DAY 7B ===");
+
+        Integer NUMBER_OF_WORKERS = 5;
+
+        // Set up our workers
+        ArrayList<Worker> workers = new ArrayList<>();
+        for (int i = 0; i < NUMBER_OF_WORKERS; i++) {
+            workers.add(new Worker());
+//            System.out.println(workers.get(i).isIdle(54));
+        }
+
+
 
     }
 }
