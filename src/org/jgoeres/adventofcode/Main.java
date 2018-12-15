@@ -7,10 +7,11 @@ import org.jgoeres.adventofcode.Day04.RunDay4;
 import org.jgoeres.adventofcode.Day05.RunDay5;
 import org.jgoeres.adventofcode.Day06.RunDay6;
 import org.jgoeres.adventofcode.Day07.RunDay7;
+import org.jgoeres.adventofcode.Day08.RunDay8;
 
 public class Main {
 
-    static final boolean RUN_ALL = true;
+    static final boolean RUN_ALL = false;
 
     static final boolean RUN_DAY_1 = false;
     static final boolean RUN_DAY_2 = false;
@@ -18,7 +19,8 @@ public class Main {
     static final boolean RUN_DAY_4 = false;
     static final boolean RUN_DAY_5 = false;
     static final boolean RUN_DAY_6 = false;
-    static final boolean RUN_DAY_7 = true;
+    static final boolean RUN_DAY_7 = false;
+    static final boolean RUN_DAY_8 = true;
 
 
     public static void main(String[] args) {
@@ -98,6 +100,13 @@ public class Main {
             RunDay7.problem7A();
 
             RunDay7.problem7B();
+            blankLine();
+        }
+
+        if (RUN_DAY_8 || RUN_ALL) {
+            RunDay8.problem8A();
+
+            RunDay8.problem8B();
             blankLine();
         }
     }
