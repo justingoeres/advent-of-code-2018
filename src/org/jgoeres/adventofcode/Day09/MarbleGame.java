@@ -6,11 +6,10 @@ import java.util.Scanner;
 public class MarbleGame {
     private Integer numPlayers;
     private Integer lastMarbleValue;
-    private Integer currentMarbleIndex;
 
     private CircularArrayList<Player> players = new CircularArrayList<>();
 
-    private CircularArrayList<Integer> marbleCircle = new CircularArrayList<>();
+    private CircularDoubleLinkedList marbleCircle = null;
 
     public MarbleGame(String pathToFile) {
         loadMarbleGame(pathToFile);
@@ -26,11 +25,7 @@ public class MarbleGame {
     }
 
     private void initMarbleCircle() {
-        marbleCircle.clear();
-
-        marbleCircle.add(0); // Initialize the circle with a single marble number "0"
-
-        setCurrentMarbleIndex(0);
+        marbleCircle = new CircularDoubleLinkedList(0);
     }
 
     private void initPlayers() {
@@ -56,33 +51,24 @@ public class MarbleGame {
     }
 
     public void playMarble(Integer newMarbleValue) {
-        // Move one marble clockwise
-        Integer originalSize = marbleCircle.size();
 
         Player currentPlayer = players.get(newMarbleValue);
 
         if ((newMarbleValue % 23) != 0) {
+            // Move one marble clockwise
+            marbleCircle.next();
+
             // If the new marble is NOT a multiple of 23 (the usual case)
-            if (originalSize == 1) {
-                marbleCircle.add(newMarbleValue);
-                currentMarbleIndex = 1;
-            } else {
-                currentMarbleIndex += 2;
-                marbleCircle.add(currentMarbleIndex, newMarbleValue);
-                currentMarbleIndex %= originalSize; // wrap the index.
-            }
+            marbleCircle.insertToRight(newMarbleValue);
         } else {
             // If the new marble IS a multiple of 23
+            // Add this marble to the player's score instead of placing it.
             currentPlayer.addToCurrentScore(newMarbleValue); // Add the current marble to the player's score.
-            Integer newMarbleIndex = currentMarbleIndex - 7;
-            if (newMarbleIndex < 0){
-                newMarbleIndex += originalSize;
-            }
-            Integer removedMarble = marbleCircle.remove((newMarbleIndex) % originalSize); // Remove the marble 7 steps counter-clockwise.
-            currentPlayer.addToCurrentScore(removedMarble); // Add the removed marble to the player's score.
 
-            currentMarbleIndex = newMarbleIndex;
-//            currentMarbleIndex -= 7; // Move the index to the marble one step clockwise from the removed marble.
+            // Jump counterclockwise by 7.
+            marbleCircle.prevByN(7);
+            // Remove this marble and add it to the player's score.
+            currentPlayer.addToCurrentScore(marbleCircle.removeCurrentNode());
         }
     }
 
@@ -94,16 +80,8 @@ public class MarbleGame {
         return lastMarbleValue;
     }
 
-    public CircularArrayList<Integer> getMarbleCircle() {
+    public CircularDoubleLinkedList getMarbleCircle() {
         return marbleCircle;
-    }
-
-    public Integer getCurrentMarbleIndex() {
-        return currentMarbleIndex;
-    }
-
-    public void setCurrentMarbleIndex(Integer currentMarbleIndex) {
-        this.currentMarbleIndex = currentMarbleIndex;
     }
 
     public CircularArrayList<Player> getPlayers() {
