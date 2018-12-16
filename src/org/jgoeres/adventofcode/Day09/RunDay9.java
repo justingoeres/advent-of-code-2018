@@ -2,11 +2,9 @@ package org.jgoeres.adventofcode.Day09;
 
 public class RunDay9 {
     static String pathToInputs = "day09/input.txt";
+    static boolean PRINT_PROGRESS = true;
+    static boolean PRINT_LIST = false;
     static boolean PRINT_PLAYER_SCORES = false;
-
-    static Integer winningPlayerNum = null;
-    static Player winningPlayer = null;
-
 
     public static void problem9A() {
     /*
@@ -37,6 +35,7 @@ public class RunDay9 {
         System.out.println("=== DAY 9A ===");
 // EXAMPLE GAMES
 //        MarbleGame marbleGame = new MarbleGame(10, 1618);
+//        MarbleGame marbleGame = new MarbleGame(10, 100);
 //        MarbleGame marbleGame = new MarbleGame(13, 7999);
 //        MarbleGame marbleGame = new MarbleGame(17, 1104);
 //        MarbleGame marbleGame = new MarbleGame(21, 6111);
@@ -46,27 +45,6 @@ public class RunDay9 {
         MarbleGame marbleGame = new MarbleGame(pathToInputs);
 
         runGame(marbleGame);
-//        for (Integer currentMarble = 1; currentMarble <= marbleGame.getLastMarbleValue(); currentMarble++) {
-//            // Play all N marbles.
-//            marbleGame.playMarble(currentMarble);
-//        }
-//
-//        // Game is over. Figure out who won
-//        Integer playerNum = 1;
-//        Integer winningPlayerNum = null;
-//        Player winningPlayer = null;
-//
-//        for (Player player : marbleGame.getPlayers()) {
-//            if (PRINT_PLAYER_SCORES) {
-//                System.out.println("Player " + playerNum + ":\t" + player.getCurrentScore());
-//            }
-//            if ((winningPlayer == null) || player.getCurrentScore() > winningPlayer.getCurrentScore()) {
-//                winningPlayer = player;
-//                winningPlayerNum = playerNum;
-//            }
-//            playerNum++;
-//        }
-//        System.out.println("WINNER:\t Player " + winningPlayerNum + " with " + winningPlayer.getCurrentScore() + " points.");
 
         // Answer:
         // WINNER:	 Player 230 with 367802 points.
@@ -117,19 +95,29 @@ public class RunDay9 {
 
         runGame(marbleGame);
 
+        // Answer:
+        // WINNER:	 Player 71 with 2996043280 points.
     }
 
     private static void runGame(MarbleGame marbleGame) {
+        Integer winningPlayerNum = null;
+        Player winningPlayer = null;
+
         System.out.println("Playing game with " + marbleGame.getNumPlayers() + " players; last marble is #" + marbleGame.getLastMarbleValue());
 
         for (Integer currentMarble = 1; currentMarble <= marbleGame.getLastMarbleValue(); currentMarble++) {
-            if (currentMarble % 25000 == 0) {
+            if ((currentMarble % 25000 == 0) && PRINT_PROGRESS) {
                 System.out.print("\rPlaying marble #" + currentMarble);
             }
             // Play all N marbles.
             marbleGame.playMarble(currentMarble);
+            if (PRINT_LIST) {
+                System.out.println(marbleGame.getMarbleCircle().printList());
+            }
         }
-        System.out.println(); // linefeed on the status output.
+        if (PRINT_PROGRESS) {
+            System.out.println(); // linefeed on the status output.
+        }
 
         // Game is over. Figure out who won
         Integer playerNum = 1;
@@ -146,6 +134,5 @@ public class RunDay9 {
         }
 
         System.out.println("WINNER:\t Player " + winningPlayerNum + " with " + winningPlayer.getCurrentScore() + " points.");
-
     }
 }

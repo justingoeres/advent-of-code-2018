@@ -1,17 +1,17 @@
 package org.jgoeres.adventofcode.Day09;
 
 public class Player {
-    private Integer currentScore = 0;
+    private Long currentScore = 0L;
 
-    public Integer getCurrentScore() {
+    public Long getCurrentScore() {
         return currentScore;
     }
 
-    public void setCurrentScore(Integer currentScore) {
+    public void setCurrentScore(Long currentScore) {
         this.currentScore = currentScore;
     }
 
     public void addToCurrentScore(Integer pointsToAdd) {
-        setCurrentScore(getCurrentScore()+pointsToAdd);
+        setCurrentScore(getCurrentScore() + pointsToAdd);
     }
 }
