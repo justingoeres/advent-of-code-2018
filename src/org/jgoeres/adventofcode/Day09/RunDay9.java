@@ -4,6 +4,10 @@ public class RunDay9 {
     static String pathToInputs = "day09/input.txt";
     static boolean PRINT_PLAYER_SCORES = false;
 
+    static Integer winningPlayerNum = null;
+    static Player winningPlayer = null;
+
+
     public static void problem9A() {
     /*
     First, the marble numbered 0 is placed in the circle. At this point, while it contains only a single marble,
@@ -29,9 +33,6 @@ public class RunDay9 {
         30 players; last marble is worth 5807 points: high score is 37305
 
     What is the winning Elf's score?
-
-
-
      */
         System.out.println("=== DAY 9A ===");
 // EXAMPLE GAMES
@@ -44,28 +45,28 @@ public class RunDay9 {
 
         MarbleGame marbleGame = new MarbleGame(pathToInputs);
 
-        for (Integer currentMarble = 1; currentMarble <= marbleGame.getLastMarbleValue(); currentMarble++) {
-            // Play all N marbles.
-            marbleGame.playMarble(currentMarble);
-        }
-
-        // Game is over. Figure out who won
-        Integer playerNum = 1;
-        Integer winningPlayerNum = null;
-        Player winningPlayer = null;
-
-        for (Player player : marbleGame.getPlayers()) {
-            if (PRINT_PLAYER_SCORES) {
-                System.out.println("Player " + playerNum + ":\t" + player.getCurrentScore());
-            }
-            if ((winningPlayer == null) || player.getCurrentScore() > winningPlayer.getCurrentScore()) {
-                winningPlayer = player;
-                winningPlayerNum = playerNum;
-            }
-            playerNum++;
-        }
-
-        System.out.println("WINNER:\t Player " + winningPlayerNum + " with " + winningPlayer.getCurrentScore() + " points.");
+        runGame(marbleGame);
+//        for (Integer currentMarble = 1; currentMarble <= marbleGame.getLastMarbleValue(); currentMarble++) {
+//            // Play all N marbles.
+//            marbleGame.playMarble(currentMarble);
+//        }
+//
+//        // Game is over. Figure out who won
+//        Integer playerNum = 1;
+//        Integer winningPlayerNum = null;
+//        Player winningPlayer = null;
+//
+//        for (Player player : marbleGame.getPlayers()) {
+//            if (PRINT_PLAYER_SCORES) {
+//                System.out.println("Player " + playerNum + ":\t" + player.getCurrentScore());
+//            }
+//            if ((winningPlayer == null) || player.getCurrentScore() > winningPlayer.getCurrentScore()) {
+//                winningPlayer = player;
+//                winningPlayerNum = playerNum;
+//            }
+//            playerNum++;
+//        }
+//        System.out.println("WINNER:\t Player " + winningPlayerNum + " with " + winningPlayer.getCurrentScore() + " points.");
 
         // Answer:
         // WINNER:	 Player 230 with 367802 points.
@@ -102,10 +103,49 @@ public class RunDay9 {
 
     public static void problem9B() {
     /*
-        Problem Description
+        Amused by the speed of your answer, the Elves are curious:
+
+        What would the new winning Elf's score be if the number of
+        the last marble were 100 times larger?
     */
         System.out.println("=== DAY 9B ===");
 
+        MarbleGame marbleGame = new MarbleGame(pathToInputs); // Load the game again.
+
+        marbleGame = new MarbleGame(marbleGame.getNumPlayers(),
+                marbleGame.getLastMarbleValue() * 100);    // Re-set the game with a larger lastMarbleValue
+
+        runGame(marbleGame);
+
+    }
+
+    private static void runGame(MarbleGame marbleGame) {
+        System.out.println("Playing game with " + marbleGame.getNumPlayers() + " players; last marble is #" + marbleGame.getLastMarbleValue());
+
+        for (Integer currentMarble = 1; currentMarble <= marbleGame.getLastMarbleValue(); currentMarble++) {
+            if (currentMarble % 25000 == 0) {
+                System.out.print("\rPlaying marble #" + currentMarble);
+            }
+            // Play all N marbles.
+            marbleGame.playMarble(currentMarble);
+        }
+        System.out.println(); // linefeed on the status output.
+
+        // Game is over. Figure out who won
+        Integer playerNum = 1;
+
+        for (Player player : marbleGame.getPlayers()) {
+            if (PRINT_PLAYER_SCORES) {
+                System.out.println("Player " + playerNum + ":\t" + player.getCurrentScore());
+            }
+            if ((winningPlayer == null) || player.getCurrentScore() > winningPlayer.getCurrentScore()) {
+                winningPlayer = player;
+                winningPlayerNum = playerNum;
+            }
+            playerNum++;
+        }
+
+        System.out.println("WINNER:\t Player " + winningPlayerNum + " with " + winningPlayer.getCurrentScore() + " points.");
 
     }
 }

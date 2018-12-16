@@ -4,13 +4,13 @@ import java.io.File;
 import java.util.Scanner;
 
 public class MarbleGame {
-    Integer numPlayers;
-    Integer lastMarbleValue;
-    Integer currentMarbleIndex;
+    private Integer numPlayers;
+    private Integer lastMarbleValue;
+    private Integer currentMarbleIndex;
 
-    CircularArrayList<Player> players = new CircularArrayList<>();
+    private CircularArrayList<Player> players = new CircularArrayList<>();
 
-    CircularArrayList<Integer> marbleCircle = new CircularArrayList<>();
+    private CircularArrayList<Integer> marbleCircle = new CircularArrayList<>();
 
     public MarbleGame(String pathToFile) {
         loadMarbleGame(pathToFile);
@@ -50,7 +50,6 @@ public class MarbleGame {
             numPlayers = sc.nextInt();
             sc.skip("[a-zA-Z ;]+");
             lastMarbleValue = sc.nextInt();
-            System.out.println("Playing game with "+numPlayers +" players; last marble is #"+ lastMarbleValue);
         } catch (Exception e) {
             System.out.println("Exception occurred: " + e.getMessage());
         }
