@@ -2,6 +2,7 @@ package org.jgoeres.adventofcode.Day09;
 
 public class RunDay9 {
     static String pathToInputs = "day09/input.txt";
+    static boolean PRINT_PLAYER_SCORES = false;
 
     public static void problem9A() {
     /*
@@ -21,9 +22,9 @@ public class RunDay9 {
     becomes the new current marble.
 
     Here are a few more examples:
-        10 players; last marble is worth 1618 points: high score is 8317
-        13 players; last marble is worth 7999 points: high score is 146373
-        17 players; last marble is worth 1104 points: high score is 2764
+        10 players; last marble is worth 1618 points: high score is 8317    OK
+        13 players; last marble is worth 7999 points: high score is 146373  OK
+        17 players; last marble is worth 1104 points: high score is 2764    OK
         21 players; last marble is worth 6111 points: high score is 54718
         30 players; last marble is worth 5807 points: high score is 37305
 
@@ -33,19 +34,71 @@ public class RunDay9 {
 
      */
         System.out.println("=== DAY 9A ===");
+// EXAMPLE GAMES
+//        MarbleGame marbleGame = new MarbleGame(10, 1618);
+//        MarbleGame marbleGame = new MarbleGame(13, 7999);
+//        MarbleGame marbleGame = new MarbleGame(17, 1104);
+//        MarbleGame marbleGame = new MarbleGame(21, 6111);
+//        MarbleGame marbleGame = new MarbleGame(30, 5807);
+////////////////
 
-//        MarbleGame marbleGame = new MarbleGame(pathToInputs);
-        MarbleGame marbleGame = new MarbleGame(10, 1618);
+        MarbleGame marbleGame = new MarbleGame(pathToInputs);
 
-        Integer currentMarble; // start at marble #1
-
-        for (currentMarble = 1; currentMarble <= marbleGame.getLastMarbleValue(); currentMarble++) {
+        for (Integer currentMarble = 1; currentMarble <= marbleGame.getLastMarbleValue(); currentMarble++) {
             // Play all N marbles.
-
+            marbleGame.playMarble(currentMarble);
         }
 
+        // Game is over. Figure out who won
+        Integer playerNum = 1;
+        Integer winningPlayerNum = null;
+        Player winningPlayer = null;
 
+        for (Player player : marbleGame.getPlayers()) {
+            if (PRINT_PLAYER_SCORES) {
+                System.out.println("Player " + playerNum + ":\t" + player.getCurrentScore());
+            }
+            if ((winningPlayer == null) || player.getCurrentScore() > winningPlayer.getCurrentScore()) {
+                winningPlayer = player;
+                winningPlayerNum = playerNum;
+            }
+            playerNum++;
+        }
+
+        System.out.println("WINNER:\t Player " + winningPlayerNum + " with " + winningPlayer.getCurrentScore() + " points.");
+
+        // Answer:
+        // WINNER:	 Player 230 with 367802 points.
     }
+
+/*  EXAMPLE GAME TREE
+[-] (0)
+[1]  0 (1)
+[2]  0 (2) 1
+[3]  0  2  1 (3)
+[4]  0 (4) 2  1  3
+[5]  0  4  2 (5) 1  3
+[6]  0  4  2  5  1 (6) 3
+[7]  0  4  2  5  1  6  3 (7)
+[8]  0 (8) 4  2  5  1  6  3  7
+[9]  0  8  4 (9) 2  5  1  6  3  7
+[1]  0  8  4  9  2(10) 5  1  6  3  7
+[2]  0  8  4  9  2 10  5(11) 1  6  3  7
+[3]  0  8  4  9  2 10  5 11  1(12) 6  3  7
+[4]  0  8  4  9  2 10  5 11  1 12  6(13) 3  7
+[5]  0  8  4  9  2 10  5 11  1 12  6 13  3(14) 7
+[6]  0  8  4  9  2 10  5 11  1 12  6 13  3 14  7(15)
+[7]  0(16) 8  4  9  2 10  5 11  1 12  6 13  3 14  7 15
+[8]  0 16  8(17) 4  9  2 10  5 11  1 12  6 13  3 14  7 15
+[9]  0 16  8 17  4(18) 9  2 10  5 11  1 12  6 13  3 14  7 15
+[1]  0 16  8 17  4 18  9(19) 2 10  5 11  1 12  6 13  3 14  7 15
+[2]  0 16  8 17  4 18  9 19  2(20)10  5 11  1 12  6 13  3 14  7 15
+[3]  0 16  8 17  4 18  9 19  2 20 10(21) 5 11  1 12  6 13  3 14  7 15
+[4]  0 16  8 17  4 18  9 19  2 20 10 21  5(22)11  1 12  6 13  3 14  7 15
+[5]  0 16  8 17  4 18(19) 2 20 10 21  5 22 11  1 12  6 13  3 14  7 15
+[6]  0 16  8 17  4 18 19  2(24)20 10 21  5 22 11  1 12  6 13  3 14  7 15
+[7]  0 16  8 17  4 18 19  2 24 20(25)10 21  5 22 11  1 12  6 13  3 14  7 15
+ */
 
     public static void problem9B() {
     /*
