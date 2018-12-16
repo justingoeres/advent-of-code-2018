@@ -24,20 +24,29 @@ public class Main {
     static final boolean RUN_DAY_8 = false;
     static final boolean RUN_DAY_9 = true;
 
+    private static long startTime = 0L;
 
     public static void main(String[] args) {
         //https://adventofcode.com/2018/
+
 
         if (RUN_DAY_1 || RUN_ALL) {
 //             Day 1A
 //             Starting with a frequency of zero, what is the resulting frequency
 //             after all of the changes in frequency have been applied?
+            setStartTime();
             RunDay1.problem1A();
+            printElapsedTime();
 
-//             Day 1B
+            blankLine();
+
+            //             Day 1B
 //             You notice that the device repeats the same frequency change list over and over.
 //             To calibrate the device, you need to find the first frequency it reaches twice.
+            setStartTime();
             RunDay1.problem1B();
+            printElapsedTime();
+
             blankLine();
         }
 
@@ -59,68 +68,134 @@ public class Main {
 //            Of these box IDs, four of them contain a letter which appears exactly twice, and three of them contain a letter which appears exactly three times. Multiplying these together produces a checksum of 4 * 3 = 12.
 //
 //            What is the checksum for your list of box IDs?
+            setStartTime();
             RunDay2.problem2A();
+            printElapsedTime();
+
+            blankLine();
 
 //            DAY 2B
 //            The IDs abcde and axcye are close, but they differ by two characters (the second and fourth).
 //            However, the IDs fghij and fguij differ by exactly one character, the third (h and u). Those must be the correct boxes.
 //
 //            What letters are common between the two correct box IDs?
+            setStartTime();
             RunDay2.problem2B();
+            printElapsedTime();
+
             blankLine();
         }
 
         if (RUN_DAY_3 || RUN_ALL) {
+            setStartTime();
             RunDay3.problem3A();
+            printElapsedTime();
 
+            blankLine();
+
+            setStartTime();
             RunDay3.problem3B();
+            printElapsedTime();
+
             blankLine();
         }
 
         if (RUN_DAY_4 || RUN_ALL) {
+            setStartTime();
             RunDay4.problem4A();
+            printElapsedTime();
 
+            blankLine();
+
+            setStartTime();
             RunDay4.problem4B();
+            printElapsedTime();
+
             blankLine();
         }
 
         if (RUN_DAY_5 || RUN_ALL) {
+            setStartTime();
             RunDay5.problem5A();
+            printElapsedTime();
 
+            blankLine();
+
+            setStartTime();
             RunDay5.problem5B();
+            printElapsedTime();
+
             blankLine();
         }
 
         if (RUN_DAY_6 || RUN_ALL) {
+            setStartTime();
             RunDay6.problem6A();
+            printElapsedTime();
 
+            blankLine();
+
+            setStartTime();
             RunDay6.problem6B();
+            printElapsedTime();
+
             blankLine();
         }
 
         if (RUN_DAY_7 || RUN_ALL) {
+            setStartTime();
             RunDay7.problem7A();
+            printElapsedTime();
 
+            blankLine();
+
+            setStartTime();
             RunDay7.problem7B();
+            printElapsedTime();
+
             blankLine();
         }
 
         if (RUN_DAY_8 || RUN_ALL) {
+            setStartTime();
             RunDay8.problem8A();
+            printElapsedTime();
 
+            blankLine();
+
+            setStartTime();
             RunDay8.problem8B();
+            printElapsedTime();
+
             blankLine();
         }
-
         if (RUN_DAY_9 || RUN_ALL) {
+            setStartTime();
             RunDay9.problem9A();
+            printElapsedTime();
 
+            blankLine();
+
+            setStartTime();
             RunDay9.problem9B();
+            printElapsedTime();
+
             blankLine();
         }
     }
 
-    private static void blankLine(){
+    private static void blankLine() {
         System.out.println();
     }
+
+    private static void setStartTime() {
+        startTime = System.currentTimeMillis();
+    }
+
+    private static void printElapsedTime() {
+        long endTime = System.currentTimeMillis();
+
+        System.out.println("Time elapsed:\t" + (endTime - startTime) + " ms");
+    }
 }
+
