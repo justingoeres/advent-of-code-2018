@@ -58,12 +58,12 @@ public class RunDay10 {
                 // Ask the user if we're done.
                 Scanner scanner = new Scanner(System.in);
                 try {
-                        System.out.print("Continue? (y/n) ");
-                        String input = scanner.nextLine();
-                        if (input.toUpperCase().startsWith("N")){
-                            return; // We're done with the problem!
+                    System.out.print("Continue? (y/n) ");
+                    String input = scanner.nextLine();
+                    if (input.toUpperCase().startsWith("N")) {
+                        return; // We're done with the problem!
                     }
-                } catch(IllegalStateException | NoSuchElementException e) {
+                } catch (IllegalStateException | NoSuchElementException e) {
                     // System.in has been closed
                     System.out.println("System.in was closed; exiting");
                 }
