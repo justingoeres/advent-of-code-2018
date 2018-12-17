@@ -188,13 +188,7 @@ public class Main {
 
         if (RUN_DAY_10 || RUN_ALL) {
             setStartTime();
-            RunDay10.problem10A();
-            printElapsedTime();
-
-            blankLine();
-
-            setStartTime();
-            RunDay10.problem10B();
+            RunDay10.problem10Aand10B();
             printElapsedTime();
 
             blankLine();

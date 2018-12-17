@@ -9,7 +9,7 @@ public class RunDay10 {
 
     static Sky sky = new Sky(pathToInputs);
 
-    public static void problem10A() {
+    public static void problem10Aand10B() {
     /*
     You can see these points of light floating in the distance, and record
     their position in the sky and their velocity, the relative change in
@@ -50,9 +50,9 @@ public class RunDay10 {
                     currentTime++; // increment the clock
                     break;
                 }
-                extents = SkyService.findExtents(skyNow);
                 System.out.println("Time:\t" + currentTime);
-                System.out.println("Width: " + extents.width() + "\tHeight: " + extents.height());
+//                extents = SkyService.findExtents(skyNow);
+//                System.out.println("Width: " + extents.width() + "\tHeight: " + extents.height());
                 SkyService.printSky(skyNow);
 
                 // Ask the user if we're done.
@@ -72,7 +72,7 @@ public class RunDay10 {
         }
         // Answer:
         /*
-            Time:	10813
+            Time:	10813    <<< Part B Answer
             Width: 61	Height: 9
             ######..#####....####...#....#..#.........##.......###..#.....
             #.......#....#..#....#..#....#..#........#..#.......#...#.....
@@ -85,15 +85,6 @@ public class RunDay10 {
             #.......#....#..#....#..#....#..#.......#....#..#...#...#.....
             ######..#....#...####...#....#..######..#....#...###....######
          */
-    }
-
-
-    public static void problem10B() {
-    /*
-    Problem Description
-    */
-        System.out.println("=== DAY 10B ===");
-
     }
 
 }
