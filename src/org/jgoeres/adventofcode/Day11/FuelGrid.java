@@ -53,14 +53,11 @@ public class FuelGrid {
         return powerLevel;
     }
 
-    public Integer getTileTotalPower(Integer x0, Integer y0) {
+    public Integer getTileTotalPower(Integer x0, Integer y0,Integer tileSize) {
         // x0 and y0 are the upper left corner of the tile.
-        // The tiles are 3x3
-
         Integer totalPower = 0;
-        Integer tileCenterDistance = (tileSize - 1) / 2;
-        for (int x = -tileCenterDistance; x <= tileCenterDistance; x++) { // rows
-            for (int y = -tileCenterDistance; y <= tileCenterDistance; y++) { // columns
+        for (int x = 0; x < tileSize; x++) { // rows
+            for (int y = 0; y < tileSize; y++) { // columns
                 Integer gridCellPower = getGridCell(x0 + x, y0 + y);
                 if (gridCellPower != null) {
                     totalPower += gridCellPower; // add up the power in all these cells
@@ -89,6 +86,10 @@ public class FuelGrid {
     private Integer rackId(Integer x) {
         Integer rackId = x + 10;
         return rackId;
+    }
+
+    public Integer getGridSize(){
+        return grid.length;
     }
 
     public void setGridSN(Integer gridSN) {

@@ -1,12 +1,14 @@
 package org.jgoeres.adventofcode.Day11;
 
 public class RunDay11 {
-    static final Integer gridSN = 5034; // From problem webpage.
+    static final Integer gridSN = 5034; // << My input from problem webpage.
     static final Integer gridSize = 300; // 300x300
-//    static final Integer gridSN = 18; // From problem webpage.
-//    static final Integer gridSize = 100; // 300x300
+//    static final Integer gridSN = 42; // Example from problem webpage.
+//    static final Integer gridSize = 100; // smaller grid for examples, to make them go faster.
 
     static final Integer tileSize = 3; // 3x3
+
+    static FuelGrid fuelGrid = new FuelGrid(gridSN, gridSize, tileSize);
 
     static final boolean DEBUG_PRINT_GRID = false;
     static final boolean DEBUG_PRINT_TOTALPOWER = false;
@@ -77,21 +79,79 @@ public class RunDay11 {
         }
 
         // Iterate over the whole grid and find the maximum power tile.
-        Integer maxPower = null;
-        Integer maxX = null;
-        Integer maxY = null;
-        for (int x = 1; x <= gridSize; x++) { // rows
+        CellPower maxCell = calculateMaxPowerTile(fuelGrid, tileSize);
+        // Done scanning the grid, print our results.
+        System.out.println("Max tile power of " + maxCell.getPower() + " at cell (" + maxCell.getX() + "," + maxCell.getY() + ")");
+        // Answer:
+        // Max tile power of 29 at cell (235,63)
+    }
+
+    public static void problem11B() {
+    /*
+    You discover a dial on the side of the device; it seems to let you select a square of any size,
+    not just 3x3. Sizes from 1x1 to 300x300 are supported.
+
+    Realizing this, you now must find the square of any size with the largest total power.
+    Identify this square by including its size as a third parameter after the top-left coordinate:
+    a 9x9 square with a top-left corner of 3,5 is identified as 3,5,9.
+
+    For example:
+
+        - For grid serial number 18, the largest total square (with a total power of 113) is 16x16
+            and has a top-left corner of 90,269, so its identifier is 90,269,16.
+        - For grid serial number 42, the largest total square (with a total power of 119) is 12x12
+            and has a top-left corner of 232,251, so its identifier is 232,251,12.
+
+    What is the X,Y,size identifier of the square with the largest total power?
+    */
+        System.out.println("=== DAY 11B ===");
+
+        CellPower maxCell = new CellPower();
+        // Try every tile size, and track the max cell!
+        for (Integer tileSize = 1; tileSize <= 300; tileSize++) {
+            CellPower tileSizeMaxCell = calculateMaxPowerTile(fuelGrid, tileSize);
+
+            System.out.println("Tile Size: " + tileSize + "x" + tileSize + ":\t("
+                    + tileSizeMaxCell.getX() + ","
+                    + tileSizeMaxCell.getY() + ")\t@ "
+                    + tileSizeMaxCell.getPower());
+            if ((maxCell.getPower() == null) || tileSizeMaxCell.getPower() > maxCell.getPower()) {
+                maxCell.setPower(tileSizeMaxCell.getPower());
+                maxCell.setX(tileSizeMaxCell.getX());
+                maxCell.setY(tileSizeMaxCell.getY());
+                maxCell.setTileSize(tileSize);
+            }
+            if (tileSizeMaxCell.getPower() == 0) {
+                // Does the problem degenerate and start returning 0's after a certain size??
+                // WHY!?!
+                break;
+            }
+        }
+        System.out.println("Max tile power of " + maxCell.getPower()
+                + " at cell (" + maxCell.getX() + "," + maxCell.getY() + ") with tile size "
+                + maxCell.getTileSize());
+        System.out.println("Answer entry: (" + maxCell.getX() + "," + maxCell.getY() + "," + maxCell.getTileSize() + ")");
+
+        // Answer:
+        // Max tile power of 109 at cell (229,251) with tile size 16
+        // Answer entry: (229,251,109)
+    }
+
+
+    private static CellPower calculateMaxPowerTile(FuelGrid fuelGrid, Integer tileSize) {
+        CellPower maxCell = new CellPower();
+        for (int x = 1; x <= fuelGrid.getGridSize(); x++) { // rows
 
             if (DEBUG_PRINT_TOTALPOWER) {
                 System.out.print(x + ":\t"); // print row #
             }
 
             for (int y = 1; y <= gridSize; y++) { // columns
-                Integer tilePower = fuelGrid.getTileTotalPower(x, y);
-                if ((maxPower == null) || (tilePower > maxPower)) {
-                    maxPower = tilePower;
-                    maxX = x;
-                    maxY = y;
+                Integer tilePower = fuelGrid.getTileTotalPower(x, y, tileSize);
+                if ((maxCell.getPower() == null) || (tilePower > maxCell.getPower())) {
+                    maxCell.setPower(tilePower);
+                    maxCell.setX(x);
+                    maxCell.setY(y);
                 }
                 if (DEBUG_PRINT_TOTALPOWER) {
                     System.out.print(tilePower + "\t");// print cell data for this row
@@ -101,19 +161,6 @@ public class RunDay11 {
                 System.out.println(); // CR/LF at end of row
             }
         }
-        // Done scanning the grid, print our results.
-        System.out.println("Max tile power of " + maxPower + " at cell (" + maxX + "," + maxY + ")");
-        System.out.println("Top left of this tile is (" + (maxX - 1) + "," + (maxY - 1) + ")");
-        // Answer:
-        // Max tile power of 29 at cell (236,64)
-        // Top left of this tile is (235,63)
+        return maxCell;
     }
-
-    public static void problem11B() {
-    /*
-    Problem Description
-    */
-        System.out.println("=== DAY 11B ===");
-    }
-
 }
