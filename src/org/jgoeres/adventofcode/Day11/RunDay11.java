@@ -2,6 +2,14 @@ package org.jgoeres.adventofcode.Day11;
 
 public class RunDay11 {
     static final Integer gridSN = 5034; // From problem webpage.
+    static final Integer gridSize = 300; // 300x300
+//    static final Integer gridSN = 18; // From problem webpage.
+//    static final Integer gridSize = 100; // 300x300
+
+    static final Integer tileSize = 3; // 3x3
+
+    static final boolean DEBUG_PRINT_GRID = false;
+    static final boolean DEBUG_PRINT_TOTALPOWER = false;
 
     public static void problem11A() {
     /*
@@ -9,8 +17,8 @@ public class RunDay11 {
     and Y (vertical) direction. In X,Y notation, the top-left cell is 1,1, and the
     top-right cell is 300,1.
 
-    The interface lets you select any 3x3 square of fuel cells. To increase your c
-    hances of getting to your destination, you decide to choose the 3x3 square with
+    The interface lets you select any 3x3 square of fuel cells. To increase your
+    chances of getting to your destination, you decide to choose the 3x3 square with
     the largest total power.
 
     The power level in a given fuel cell can be found through the following process:
@@ -40,21 +48,65 @@ public class RunDay11 {
     */
         System.out.println("=== DAY 11A ===");
 
-//        FuelGridService fuelGridService = new FuelGridService(gridSN);
+        FuelGrid fuelGrid = new FuelGrid(gridSN, gridSize, tileSize);
 
-//        FuelGridService fuelGridService = new FuelGridService(8);
-//        Integer temp = fuelGridService.calculateCellPowerLevel(3,5);
+//        FuelGrid fuelGrid = new FuelGrid(8);
+//        Integer temp = fuelGrid.calculateCellPowerLevel(3,5);
 
-//        FuelGridService fuelGridService = new FuelGridService(57);
-//        Integer temp = fuelGridService.calculateCellPowerLevel(122,79);
+//        FuelGrid fuelGrid = new FuelGrid(57);
+//        Integer temp = fuelGrid.calculateCellPowerLevel(122,79);
 
-//        FuelGridService fuelGridService = new FuelGridService(39);
-//        Integer temp = fuelGridService.calculateCellPowerLevel(217,196);
+//        FuelGrid fuelGrid = new FuelGrid(39);
+//        Integer temp = fuelGrid.calculateCellPowerLevel(217,196);
 
-        FuelGridService fuelGridService = new FuelGridService(71);
-        Integer temp = fuelGridService.calculateCellPowerLevel(101,153);
+//        FuelGrid fuelGrid = new FuelGrid(71);
+//        Integer temp = fuelGrid.calculateCellPowerLevel(101,153);
 
-        System.out.println(temp);
+//        System.out.println(temp);
+
+        if (DEBUG_PRINT_GRID) {
+            for (int x = 1; x <= gridSize; x++) { // rows
+                System.out.print(x + ":\t"); // print row #
+                for (int y = 1; y <= gridSize; y++) { // columns
+                    System.out.print(fuelGrid.getGridCell(x, y) + "\t"); // print cell data for this row
+                }
+                System.out.println(); // CR/LF at end of row
+            }
+            System.out.println(); // spaces before the next outputs.
+            System.out.println();
+        }
+
+        // Iterate over the whole grid and find the maximum power tile.
+        Integer maxPower = null;
+        Integer maxX = null;
+        Integer maxY = null;
+        for (int x = 1; x <= gridSize; x++) { // rows
+
+            if (DEBUG_PRINT_TOTALPOWER) {
+                System.out.print(x + ":\t"); // print row #
+            }
+
+            for (int y = 1; y <= gridSize; y++) { // columns
+                Integer tilePower = fuelGrid.getTileTotalPower(x, y);
+                if ((maxPower == null) || (tilePower > maxPower)) {
+                    maxPower = tilePower;
+                    maxX = x;
+                    maxY = y;
+                }
+                if (DEBUG_PRINT_TOTALPOWER) {
+                    System.out.print(tilePower + "\t");// print cell data for this row
+                }
+            }
+            if (DEBUG_PRINT_TOTALPOWER) {
+                System.out.println(); // CR/LF at end of row
+            }
+        }
+        // Done scanning the grid, print our results.
+        System.out.println("Max tile power of " + maxPower + " at cell (" + maxX + "," + maxY + ")");
+        System.out.println("Top left of this tile is (" + (maxX - 1) + "," + (maxY - 1) + ")");
+        // Answer:
+        // Max tile power of 29 at cell (236,64)
+        // Top left of this tile is (235,63)
     }
 
     public static void problem11B() {
