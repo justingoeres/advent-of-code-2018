@@ -19,7 +19,7 @@ public class RunDay10 {
 
     Rather than wait, you decide to fast-forward the process and calculate
     what the points will eventually spell.
-
+n
     */
         System.out.println("=== DAY 10A ===");
 
