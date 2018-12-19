@@ -30,12 +30,9 @@ public class Greenhouse {
             .##.. => #
          */
 
-//        Pattern p = Pattern.compile("position=<([ -]?\\d+), ([ -]?\\d+)> velocity=<([ -]\\d+), ([ -]?\\d+)>");
-
         try (BufferedReader br = new BufferedReader(new FileReader(pathToFile))) {
             String line;
             String initialPots;
-
 
             // First line of the file has pots.
             line = br.readLine(); // read the first line ("initial state:...")
@@ -53,6 +50,7 @@ public class Greenhouse {
 
             br.readLine(); // Skip the next line (it's blank).
 
+            // Read all the rules.
             Pattern p = Pattern.compile("([#\\.]+) => ([#\\.])");
 
             while ((line = br.readLine()) != null) {
@@ -63,15 +61,17 @@ public class Greenhouse {
 
                 Rule rule = new Rule(m.group(1), m.group(2));
                 rules.add(rule);
-
-
-//                System.out.println(m.group(1));
-//                System.out.println(m.group(2));
-
             }
         } catch (Exception e) {
             System.out.println("Exception occurred: " + e.getMessage());
         }
     }
 
+    public ArrayList<Pot> getPots() {
+        return pots;
+    }
+
+    public ArrayList<Rule> getRules() {
+        return rules;
+    }
 }
