@@ -1,6 +1,8 @@
 package org.jgoeres.adventofcode.Day12;
 
 
+import java.lang.reflect.Array;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -25,15 +27,29 @@ public class RunDay12 {
         ArrayList<Pot> currentPots = greenhouse.getPots(); // set the currentPots to be the initial state of the greenhouse
         ArrayList<Rule> rules = greenhouse.getRules(); // use the greenhouse's rules.
 
+        BigInteger currentPotsAsBigInt = greenhouse.getPotsBitfield();
+        ArrayList<BigInteger> rulesAsBigInts = greenhouse.getRulesAsBitfield();
+        ArrayList<BigInteger> finalMasksAsBigInts = greenhouse.getFinalMasksAsBitfield();
+
         if (DEBUG_PRINT_GREENHOUSE) {
             System.out.println("S:\t" + addSpaces(currentPots, GENERATIONS_TO_RUN) + printPots(currentPots));
         }
 
+        // THE OLD OBJECT WAY
+//        for (int generation = 1; generation <= GENERATIONS_TO_RUN; generation++) {
+//            currentPots = GreenhouseService.calculateNextPots(currentPots, rules);
+//
+//            if (DEBUG_PRINT_GREENHOUSE) {
+//                System.out.println(generation + ":\t" + addSpaces(currentPots, GENERATIONS_TO_RUN) + printPots(currentPots));
+//            }
+//        }
+
+        // THE NEW BIGINTEGER WAY
         for (int generation = 1; generation <= GENERATIONS_TO_RUN; generation++) {
-            currentPots = GreenhouseService.calculateNextPots(currentPots, rules);
+            currentPotsAsBigInt = GreenhouseService.calculateNextPots(currentPotsAsBigInt,rulesAsBigInts,finalMasksAsBigInts);
 
             if (DEBUG_PRINT_GREENHOUSE) {
-                System.out.println(generation + ":\t" + addSpaces(currentPots, GENERATIONS_TO_RUN) + printPots(currentPots));
+                System.out.println(generation + ":\t" + currentPotsAsBigInt.toString(2));
             }
         }
 

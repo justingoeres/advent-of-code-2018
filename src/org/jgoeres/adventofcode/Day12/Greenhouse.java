@@ -2,6 +2,7 @@ package org.jgoeres.adventofcode.Day12;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.lang.reflect.Array;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -13,6 +14,7 @@ public class Greenhouse {
     private ArrayList<Rule> rules = new ArrayList<>();
     private BigInteger potsBitfield = BigInteger.ZERO;
     private ArrayList<BigInteger> rulesAsBitfield = new ArrayList<>();
+    private ArrayList<BigInteger> finalMasksAsBitfield = new ArrayList<>();
 
     public Greenhouse(String pathToFile) {
         loadPotsAndRules(pathToFile);
@@ -76,6 +78,7 @@ public class Greenhouse {
             System.out.println("Exception occurred: " + e.getMessage());
         }
 
+        BigInteger initialFinalMask = BigInteger.valueOf(4); // 00100b is 4d
         // Create the rules as BigIntegers
         for (Rule rule : rules) {
             // For each "PLANT WILL BE TRUE" rule, convert it to a bitfield (int) we can use
@@ -95,11 +98,16 @@ public class Greenhouse {
 
                 // Now that we've got the 5-bit-wide bitfield, copy it out to be 100 bits' worth
                 BigInteger filledPlantMask = BigInteger.ZERO;
+                BigInteger filledFinalMask = BigInteger.ZERO;
                 for (int i = 0; i < 20; i++) { // 20 copies of the 5-wide bitfield = 100 bits
                     BigInteger toAdd = plantMask.shiftLeft(5 * i);
                     filledPlantMask = filledPlantMask.add(toAdd);
+
+                    BigInteger finalMasktoAdd = initialFinalMask.shiftLeft(5*i);
+                    filledFinalMask = filledFinalMask.add(finalMasktoAdd);
                 }
                 rulesAsBitfield.add(filledPlantMask);
+                finalMasksAsBitfield.add(filledFinalMask);
             }
         }
         // Now create 5 rotations of each of the rules, so
@@ -115,6 +123,21 @@ public class Greenhouse {
             }
         }
         rulesAsBitfield.addAll(rotationsToAdd);
+
+        // Add the rotated final masks, too
+        ArrayList<BigInteger> finalMasksToAdd = new ArrayList<>();
+        for (BigInteger finalMaskAsBitfield:finalMasksAsBitfield) {
+            // We can generate the rotations without worrying about
+            // the "left-hand" pots by shifting RIGHT instead of left.
+            for (int i = 1; i <= 4; i++) {
+                // 5 rotations of each rule, and we've already got 1 of them.
+                BigInteger shiftedFinalMaskAsBitfield = finalMaskAsBitfield.shiftRight(i);
+                finalMasksToAdd.add(shiftedFinalMaskAsBitfield);
+            }
+        }
+        finalMasksAsBitfield.addAll(finalMasksToAdd);
+
+
     }
 
     public ArrayList<Pot> getPots() {
@@ -125,7 +148,15 @@ public class Greenhouse {
         return rules;
     }
 
+    public BigInteger getPotsBitfield() {
+        return potsBitfield;
+    }
+
     public ArrayList<BigInteger> getRulesAsBitfield() {
         return rulesAsBitfield;
+    }
+
+    public ArrayList<BigInteger> getFinalMasksAsBitfield() {
+        return finalMasksAsBitfield;
     }
 }

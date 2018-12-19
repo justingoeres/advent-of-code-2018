@@ -1,5 +1,7 @@
 package org.jgoeres.adventofcode.Day12;
 
+import java.lang.reflect.Array;
+import java.math.BigInteger;
 import java.util.ArrayList;
 
 public abstract class GreenhouseService {
@@ -28,6 +30,16 @@ public abstract class GreenhouseService {
 
         return nextPots;
     }
+
+    public static BigInteger calculateNextPots(BigInteger currentPots,
+                                               ArrayList<BigInteger> rules,
+                                               ArrayList<BigInteger> finalMasks) {
+        // Now check all the pots and see if they have a plant next generation!
+        BigInteger nextPots = applyRulesToBigIntegerPots(currentPots, rules, finalMasks);
+
+        return nextPots;
+    }
+
 
     public static void addPotToRightEnd(boolean hasPlant, ArrayList<Pot> pots) {
         Integer endPotId = pots.get(pots.size() - 1).getPotId(); // get the ID of the rightmost pot
@@ -66,6 +78,30 @@ public abstract class GreenhouseService {
         Pot resultPot = new Pot(pot.getPotId(), willHavePlant); // create a new pot with the same ID, but the "next" hasPlant.
         return resultPot;
     }
+
+    public static BigInteger applyRulesToBigIntegerPots(BigInteger pots,
+                                                        ArrayList<BigInteger> rules,
+                                                        ArrayList<BigInteger> finalMasks) {
+        // Apply each rule in turn to all pots.
+
+        BigInteger resultPots = BigInteger.ZERO;
+        BigInteger interimPots = null;
+        if (DEBUG_PRINT) {
+            System.out.println("-------------------------------------");
+        }
+        int i = 0;
+        for (BigInteger rule : rules) {
+            // Calculate all the output bits of nextPots by applying and masking all the rules.
+            interimPots = pots.xor(rule).not(); // !XOR is the same as "bitwise equals"
+            // Shift back & forth to consolidate the sets of '11111'
+            interimPots = interimPots.shiftLeft(2).shiftRight(2);
+            interimPots = interimPots.and(finalMasks.get(i));
+
+            resultPots = resultPots.or(interimPots); // OR the results of this rule check into the final result.
+        }
+        return resultPots;
+    }
+
 
     private static boolean potMatchesRule(Pot pot, ArrayList<Pot> pots, Rule rule) {
         boolean matchesRules = true; // start out assuming the pot WILL match all rules. Stop testing and return if it doesn't.
@@ -120,7 +156,7 @@ public abstract class GreenhouseService {
                 return pot;
             }
         }
-        return new Pot(potId,false); // If we don't find a pot with this ID, fake an empty one.
+        return new Pot(potId, false); // If we don't find a pot with this ID, fake an empty one.
     }
 
     public static String printPots(ArrayList<Pot> pots) {
