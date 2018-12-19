@@ -76,6 +76,7 @@ public class Greenhouse {
             System.out.println("Exception occurred: " + e.getMessage());
         }
 
+        // Create the rules as BigIntegers
         for (Rule rule : rules) {
             // For each "PLANT WILL BE TRUE" rule, convert it to a bitfield (int) we can use
             // for binary math. It will only be 5 bits wide.
@@ -101,6 +102,19 @@ public class Greenhouse {
                 rulesAsBitfield.add(filledPlantMask);
             }
         }
+        // Now create 5 rotations of each of the rules, so
+        // we only have to do it once
+        ArrayList<BigInteger> rotationsToAdd = new ArrayList<>();
+        for (BigInteger ruleAsBitfield:rulesAsBitfield) {
+            // We can generate the rotations without worrying about
+            // the "left-hand" pots by shifting RIGHT instead of left.
+            for (int i = 1; i <= 4; i++) {
+                // 5 rotations of each rule, and we've already got 1 of them.
+                BigInteger shiftedRuleAsBitfield = ruleAsBitfield.shiftRight(i);
+                rotationsToAdd.add(shiftedRuleAsBitfield);
+            }
+        }
+        rulesAsBitfield.addAll(rotationsToAdd);
     }
 
     public ArrayList<Pot> getPots() {
