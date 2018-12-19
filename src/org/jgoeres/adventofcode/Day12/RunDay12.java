@@ -56,31 +56,35 @@ public class RunDay12 {
     */
         System.out.println("=== DAY 12B ===");
 
+
+        // DISABLED EVERYTHING WHILE REFACTORING
+        if (false) {
 //        Integer GENERATIONS_TO_RUN = 50000000000;
-        Integer GENERATIONS_TO_RUN = 300;
-        ArrayList<Pot> currentPots = greenhouse.getPots(); // set the currentPots to be the initial state of the greenhouse
-        ArrayList<Rule> rules = greenhouse.getRules(); // use the greenhouse's rules.
-
-        if (DEBUG_PRINT_GREENHOUSE) {
-            System.out.println("S:\t" + addSpaces(currentPots, GENERATIONS_TO_RUN) + printPots(currentPots));
-        }
-
-        for (int generation = 1; generation <= GENERATIONS_TO_RUN; generation++) {
-            currentPots = GreenhouseService.calculateNextPots(currentPots, rules);
+            Integer GENERATIONS_TO_RUN = 300;
+            ArrayList<Pot> currentPots = greenhouse.getPots(); // set the currentPots to be the initial state of the greenhouse
+            ArrayList<Rule> rules = greenhouse.getRules(); // use the greenhouse's rules.
 
             if (DEBUG_PRINT_GREENHOUSE) {
-                System.out.println(generation + ":\t" + addSpaces(currentPots, GENERATIONS_TO_RUN) + printPots(currentPots));
+                System.out.println("S:\t" + addSpaces(currentPots, GENERATIONS_TO_RUN) + printPots(currentPots));
             }
-        }
 
-        // Now count up the indices of the pots with plants in them. That's our answer.
-        Integer potTotal = 0;
-        for (Pot pot : currentPots) {
-            if (pot.isHasPlant()) {
-                potTotal += pot.getPotId();
+            for (int generation = 1; generation <= GENERATIONS_TO_RUN; generation++) {
+                currentPots = GreenhouseService.calculateNextPots(currentPots, rules);
+
+                if (DEBUG_PRINT_GREENHOUSE) {
+                    System.out.println(generation + ":\t" + addSpaces(currentPots, GENERATIONS_TO_RUN) + printPots(currentPots));
+                }
             }
+
+            // Now count up the indices of the pots with plants in them. That's our answer.
+            Integer potTotal = 0;
+            for (Pot pot : currentPots) {
+                if (pot.isHasPlant()) {
+                    potTotal += pot.getPotId();
+                }
+            }
+            System.out.println("Total sum of all occupied Pot IDs:\t" + potTotal);
         }
-        System.out.println("Total sum of all occupied Pot IDs:\t" + potTotal);
 
 
     }
