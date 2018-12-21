@@ -6,7 +6,7 @@ public class TrackPiece {
     private int y;
 
     private TrackPiece trackConnection1;
-    private TrackPiece getTrackConnection2;
+    private TrackPiece trackConnection2;
 
     public TrackPiece(Character trackGlyph, int x, int y, TrackPiece prevTrackPiece) {
         this.x = x;
@@ -41,5 +41,33 @@ public class TrackPiece {
                 break;
         }
 
+    }
+
+    public TrackPieceType getTrackPieceType() {
+        return trackPieceType;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public TrackPiece getTrackConnection1() {
+        return trackConnection1;
+    }
+
+    public TrackPiece getTrackConnection2() {
+        return trackConnection2;
+    }
+
+    public void setTrackConnection1(TrackPiece trackConnection1) {
+        this.trackConnection1 = trackConnection1;
+    }
+
+    public void setTrackConnection2(TrackPiece trackConnection2) {
+        this.trackConnection2 = trackConnection2;
     }
 }
