@@ -134,7 +134,6 @@ public class TrackNetwork {
                     // Connection 2 is down
                     direction4 = Direction.DOWN;
                     break;
-
             }
 
             // Make the connections in the specified directions

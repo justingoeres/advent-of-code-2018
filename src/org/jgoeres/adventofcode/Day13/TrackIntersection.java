@@ -23,4 +23,20 @@ public class TrackIntersection extends TrackPiece {
     public void setTrackConnection4(TrackPiece trackConnection4) {
         this.trackConnection4 = trackConnection4;
     }
+
+    @Override
+    public TrackPiece getNextPiece(Direction direction) {
+        switch (direction) {
+            case LEFT:
+                return getTrackConnection1();
+            case UP:
+                return getTrackConnection2();
+            case RIGHT:
+                return getTrackConnection3();
+            case DOWN:
+                return getTrackConnection4();
+            default:
+                return null;
+        }
+    }
 }

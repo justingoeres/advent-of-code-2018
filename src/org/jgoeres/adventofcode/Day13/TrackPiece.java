@@ -70,4 +70,36 @@ public class TrackPiece {
     public void setTrackConnection2(TrackPiece trackConnection2) {
         this.trackConnection2 = trackConnection2;
     }
+
+    public TrackPiece getNextPiece(Direction direction) {
+
+        switch (this.getTrackPieceType()) {
+            case VERTICAL:
+                // Connection 1 is up
+                // Connection 2 is down
+                return (direction == Direction.UP ? trackConnection1 : trackConnection2);
+            case HORIZONTAL:
+                // Connection 1 is left
+                // Connection 2 is right
+                return (direction == Direction.LEFT ? trackConnection1 : trackConnection2);
+            case CORNER_LD:
+                // Connection 1 is left
+                // Connection 2 is down
+                return (direction == Direction.LEFT ? trackConnection1 : trackConnection2);
+            case CORNER_RD:
+                // Connection 1 is right
+                // Connection 2 is down
+                return (direction == Direction.RIGHT ? trackConnection1 : trackConnection2);
+            case CORNER_LU:
+                // Connection 1 is left
+                // Connection 2 is up
+                return (direction == Direction.LEFT ? trackConnection1 : trackConnection2);
+            case CORNER_RU:
+                // Connection 1 is right
+                // Connection 2 is up
+                return (direction == Direction.RIGHT ? trackConnection1 : trackConnection2);
+            default:
+                return null;
+        }
+    }
 }
