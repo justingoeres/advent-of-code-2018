@@ -3,22 +3,26 @@ package org.jgoeres.adventofcode.Day12;
 import java.util.ArrayList;
 
 public abstract class GreenhouseService {
+    private static boolean DEBUG_PRINT = false;
+    private static final String FULL = "#";
+    private static final Character FULL_CHAR = FULL.charAt(0);
+    private static final String EMPTY = ".";
+
     public static boolean hasPlantCharToBool(Character hasPlantChar) {
-        return (hasPlantChar == '#');
+        return (hasPlantChar == FULL_CHAR);
     }
 
-    private static boolean DEBUG_PRINT = false;
 
     public static ArrayList<Pot> calculateNextPots(ArrayList<Pot> currentPots, ArrayList<Rule> rules) {
         ArrayList<Pot> nextPots = new ArrayList<>();
 
-        // First, add two empty pots on the left & right ends of our current list so we
+        // First, add pots on the left & right ends of our current list so we
         // can use them to check rules.
-        GreenhouseService.addPotToLeftEnd(false, currentPots);
-        GreenhouseService.addPotToLeftEnd(false, currentPots);
+//        GreenhouseService.addPotToLeftEnd(false, currentPots);
+//        GreenhouseService.addPotToLeftEnd(false, currentPots);
 
         GreenhouseService.addPotToRightEnd(false, currentPots);
-        GreenhouseService.addPotToRightEnd(false, currentPots);
+//        GreenhouseService.addPotToRightEnd(false, currentPots);
 
         // Now check all the pots and see if they have a plant next generation!
         for (Pot pot : currentPots) {
@@ -86,6 +90,7 @@ public abstract class GreenhouseService {
             try {
                 currentHasPlant = potByPotId((potId - 2) + i, pots).isHasPlant(); // start from the pot two (2) to our left
             } catch (IndexOutOfBoundsException e) {
+                System.out.println(e.getMessage());
                 // If the pot we're trying to check is outside the bounds of our pots, it's empty.
                 currentHasPlant = false;
             }
@@ -93,8 +98,8 @@ public abstract class GreenhouseService {
             boolean currentMustHavePlant = rule.getHasPlants().get(i); // get the requirement for this pot.
 
             if (DEBUG_PRINT) {
-                potsString += currentHasPlant ? "#" : ".";             // DEBUG PRINT
-                ruleString += currentMustHavePlant ? "#" : ".";         // DEBUG PRINT
+                potsString += currentHasPlant ? FULL : EMPTY;             // DEBUG PRINT
+                ruleString += currentMustHavePlant ? FULL : EMPTY;         // DEBUG PRINT
             }
 
             matchesRules &= (currentHasPlant == currentMustHavePlant);
@@ -106,7 +111,7 @@ public abstract class GreenhouseService {
         }
         boolean willHavePlant = rule.willHavePlant(); // All rules matched, so this plant will or won't have a plant based on the rule.
         if (DEBUG_PRINT) {
-            willHavePlantString = (willHavePlant ? "#" : ".");
+            willHavePlantString = (willHavePlant ? FULL : EMPTY);
             System.out.println(potsString + "\t" + ruleString + "\t" + willHavePlantString);
         }
 
@@ -115,18 +120,30 @@ public abstract class GreenhouseService {
     }
 
     private static Pot potByPotId(Integer potId, ArrayList<Pot> pots) {
+        if (potId == 128) {
+            Integer temp = 0;
+        }
         for (Pot pot : pots) {
-            if (pot.getPotId() == potId) {
+            Integer thisPotId = pot.getPotId();
+            if (thisPotId.equals(potId)) {
                 return pot;
             }
         }
-        return new Pot(potId,false); // If we don't find a pot with this ID, fake an empty one.
+        return new Pot(potId, false); // If we don't find a pot with this ID, fake an empty one.
     }
 
-    public static String printPots(ArrayList<Pot> pots) {
+    public static String printPots(ArrayList<Pot> pots, boolean trimEmptyEnds) {
         String output = "";
         for (Pot pot : pots) {
-            output += (pot.isHasPlant() ? "#" : ".");
+            output += (pot.isHasPlant() ? FULL : EMPTY);
+        }
+        if (trimEmptyEnds) {
+            // Find the first full pot
+            Integer firstFullPot = output.indexOf(FULL_CHAR);
+            output = output.substring(Math.max((firstFullPot - 2), 0)); // Chop the string two BEFORE the first pot so we capture the two empties that are used to calculate pot #0
+
+            Integer lastFullPot = output.lastIndexOf(FULL_CHAR);
+            output = output.substring(0, Math.min(lastFullPot + 3, output.length())); // Trim the right end of the string to the last full pot plus three empties (
         }
         return output;
     }
@@ -134,7 +151,7 @@ public abstract class GreenhouseService {
     private static String printRule(Rule rule) {
         String output = "";
         for (boolean hasPlant : rule.getHasPlants()) {
-            output += (hasPlant ? "#" : ".");
+            output += (hasPlant ? FULL : EMPTY);
         }
         return output;
     }
