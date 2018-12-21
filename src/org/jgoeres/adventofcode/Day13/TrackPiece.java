@@ -12,31 +12,31 @@ public class TrackPiece {
         this.x = x;
         this.y = y;
         switch (trackGlyph) {
-            case '/':
+            case Renders.CHAR_CORNER_LU:
                 if (prevTrackPiece != null) { // if there was a piece to the left of this one.
                     this.trackPieceType = TrackPieceType.CORNER_LU;
                 } else {
                     this.trackPieceType = TrackPieceType.CORNER_RD;
                 }
                 break;
-            case '\\':
+            case Renders.CHAR_CORNER_RU:
                 if (prevTrackPiece != null) { // if there was a piece to the left of this one.
                     this.trackPieceType = TrackPieceType.CORNER_LD;
                 } else {
                     this.trackPieceType = TrackPieceType.CORNER_RU;
                 }
                 break;
-            case '-':
-            case '>':   // right-moving cart
-            case '<':   // left-moving cart
+            case Renders.CHAR_HORIZONTAL:
+            case Renders.CHAR_CART_RIGHT:   // right-moving cart
+            case Renders.CHAR_CART_LEFT:   // left-moving cart
                 this.trackPieceType = TrackPieceType.HORIZONTAL;
                 break;
-            case '|':
-            case '^':   // up-moving cart
-            case 'v':   // down-moving cart
+            case Renders.CHAR_VERTICAL:
+            case Renders.CHAR_CART_UP:   // up-moving cart
+            case Renders.CHAR_CART_DOWN:   // down-moving cart
                 this.trackPieceType = TrackPieceType.VERTICAL;
                 break;
-            case '+':
+            case Renders.CHAR_INTERSECTION:
                 this.trackPieceType = TrackPieceType.INTERSECTION;
                 break;
         }

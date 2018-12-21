@@ -1,6 +1,5 @@
 package org.jgoeres.adventofcode.Day13;
 
-import javax.sound.midi.Track;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
@@ -41,7 +40,7 @@ public class TrackNetwork {
 
                     if (!currentChar.equals(' ')) { // skip spaces
                         if (currentChar.equals('+')) { // if this is an intersection
-                            newTrackPiece = new TrackIntersection(currentChar,x,y,prevTrackPiece);
+                            newTrackPiece = new TrackIntersection(currentChar, x, y, prevTrackPiece);
                         } else { // just a regular old piece
                             newTrackPiece = new TrackPiece(currentChar, x, y, prevTrackPiece);
                         }
@@ -49,6 +48,15 @@ public class TrackNetwork {
 
                         trackPieces.put(trackCoords, newTrackPiece);
                         prevTrackPiece = newTrackPiece; // keep track of this piece so we can tell what kind of corner the next piece might be.
+
+                        if (glyphIsCart(currentChar)) {
+                            // create a cart at this location
+                            Direction cartDirection = directionFromGlyph(currentChar);
+                            Cart newCart = new Cart(newTrackPiece, cartDirection);
+
+                            carts.add(newCart);
+                        }
+
                     }
                 }
                 y++; // increment the line
@@ -185,6 +193,28 @@ public class TrackNetwork {
         TrackPiece relativeTrackPiece = trackPieces.get(coords);
 
         return relativeTrackPiece;
+    }
+
+    private boolean glyphIsCart(Character trackGlyph) {
+        return ((trackGlyph == Renders.CHAR_CART_UP) ||
+                (trackGlyph == Renders.CHAR_CART_DOWN) ||
+                (trackGlyph == Renders.CHAR_CART_LEFT) ||
+                (trackGlyph == Renders.CHAR_CART_RIGHT));
+    }
+
+    private Direction directionFromGlyph(Character character) {
+        switch (character) {
+            case Renders.CHAR_CART_UP:
+                return Direction.UP;
+            case Renders.CHAR_CART_DOWN:
+                return Direction.DOWN;
+            case Renders.CHAR_CART_LEFT:
+                return Direction.LEFT;
+            case Renders.CHAR_CART_RIGHT:
+                return Direction.RIGHT;
+            default:
+                return null;
+        }
     }
 }
 

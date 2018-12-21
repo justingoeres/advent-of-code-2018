@@ -2,6 +2,7 @@ package org.jgoeres.adventofcode.Day13;
 
 public class RunDay13 {
     static final String pathToInputs = "day13/input-example.txt";
+//    static final String pathToInputs = "day13/input.txt";
 
     static TrackNetwork trackNetwork = new TrackNetwork(pathToInputs);
 
