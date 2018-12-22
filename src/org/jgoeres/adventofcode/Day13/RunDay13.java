@@ -8,9 +8,21 @@ public class RunDay13 {
 
     public static void problem13A() {
     /*
-    After 20 generations, what is the sum of the numbers of all pots which contain a plant?
+    After following their respective paths for a while, the carts eventually crash.
+    To help prevent crashes, you'd like to know the location of the first crash.
+    Locations are given in X,Y coordinates, where the furthest left column
+    is X=0 and the furthest top row is Y=0:
     */
         System.out.println("=== DAY 13A ===");
+
+        int timerTick = 0;
+
+        while(true){
+            trackNetwork.doTimerTick();
+            System.out.println(timerTick);
+            timerTick++;
+        }
+
     }
 
     public static void problem13B() {

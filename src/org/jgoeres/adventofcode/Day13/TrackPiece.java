@@ -13,14 +13,16 @@ public class TrackPiece {
         this.y = y;
         switch (trackGlyph) {
             case Renders.CHAR_CORNER_LU:
-                if (prevTrackPiece != null) { // if there was a piece to the left of this one.
+                if ((prevTrackPiece != null)
+                        && (prevTrackPiece.getTrackPieceType() != TrackPieceType.VERTICAL)) { // if there was a piece to the left of this one.
                     this.trackPieceType = TrackPieceType.CORNER_LU;
                 } else {
                     this.trackPieceType = TrackPieceType.CORNER_RD;
                 }
                 break;
             case Renders.CHAR_CORNER_RU:
-                if (prevTrackPiece != null) { // if there was a piece to the left of this one.
+                if ((prevTrackPiece != null)
+                        && (prevTrackPiece.getTrackPieceType() != TrackPieceType.VERTICAL)) { // if there was a piece to the left of this one.
                     this.trackPieceType = TrackPieceType.CORNER_LD;
                 } else {
                     this.trackPieceType = TrackPieceType.CORNER_RU;

@@ -2,9 +2,7 @@ package org.jgoeres.adventofcode.Day13;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class TrackNetwork {
     HashMap<String, TrackPiece> trackPieces = new HashMap<>();
@@ -12,6 +10,22 @@ public class TrackNetwork {
 
     public TrackNetwork(String pathToFile) {
         loadNetwork(pathToFile);
+    }
+
+    public Cart doTimerTick(){
+        // Return the crashed cart of a collision occurs, otherwise null.
+
+        // Before doing a tick, sort the carts from top-left to bottom-right
+        Collections.sort(carts, new CartComparator());
+
+        for (Cart cart:carts){ // tick for all carts
+            try {
+                cart.doTimerTick();
+            } catch (NullPointerException e) {
+                System.out.println();
+            }
+        }
+    return null;
     }
 
     private void loadNetwork(String pathToFile) {
@@ -33,8 +47,8 @@ public class TrackNetwork {
             Character currentChar;
             int y = 0; // start at line 0
             TrackPiece newTrackPiece = null;
-            TrackPiece prevTrackPiece = null;
             while ((line = br.readLine()) != null) {
+                TrackPiece prevTrackPiece = null;
                 for (int x = 0; x < line.length(); x++) {
                     currentChar = line.charAt(x); // get the next glyph
 
@@ -129,9 +143,9 @@ public class TrackNetwork {
                     direction1 = Direction.LEFT;
                     // Connection 2 is up
                     direction2 = Direction.UP;
-                    // Connection 1 is right
+                    // Connection 3 is right
                     direction3 = Direction.RIGHT;
-                    // Connection 2 is down
+                    // Connection 4 is down
                     direction4 = Direction.DOWN;
                     break;
             }
