@@ -22,7 +22,7 @@ public class TrackNetwork {
             try {
                 cart.doTimerTick();
             } catch (NullPointerException e) {
-                System.out.println();
+                System.out.println(cart);
             }
         }
     return null;
