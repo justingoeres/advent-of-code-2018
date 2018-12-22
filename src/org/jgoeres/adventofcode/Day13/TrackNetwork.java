@@ -12,20 +12,25 @@ public class TrackNetwork {
         loadNetwork(pathToFile);
     }
 
-    public Cart doTimerTick(){
+    public Cart doTimerTick() {
         // Return the crashed cart of a collision occurs, otherwise null.
 
         // Before doing a tick, sort the carts from top-left to bottom-right
         Collections.sort(carts, new CartComparator());
 
-        for (Cart cart:carts){ // tick for all carts
+        boolean collision = false;
+        for (Cart cart : carts) { // tick for all carts
             try {
-                cart.doTimerTick();
+                collision = cart.doTimerTick();
+                if (collision) {
+                    // If this cart collided with something, stop this tick and return the Cart.
+                    return cart;
+                }
             } catch (NullPointerException e) {
                 System.out.println(cart);
             }
         }
-    return null;
+        return null;
     }
 
     private void loadNetwork(String pathToFile) {
@@ -52,8 +57,8 @@ public class TrackNetwork {
                 for (int x = 0; x < line.length(); x++) {
                     currentChar = line.charAt(x); // get the next glyph
 
-                    if (!currentChar.equals(' ')) { // skip spaces
-                        if (currentChar.equals('+')) { // if this is an intersection
+                    if (!currentChar.equals(Renders.SPACE)) { // skip spaces
+                        if (currentChar.equals(Renders.CHAR_INTERSECTION)) { // if this is an intersection
                             newTrackPiece = new TrackIntersection(currentChar, x, y, prevTrackPiece);
                         } else { // just a regular old piece
                             newTrackPiece = new TrackPiece(currentChar, x, y, prevTrackPiece);
@@ -70,7 +75,9 @@ public class TrackNetwork {
 
                             carts.add(newCart);
                         }
-
+                    } else {
+                        // Drop the "previous track piece" on a space.
+                        prevTrackPiece = null;
                     }
                 }
                 y++; // increment the line
@@ -92,6 +99,16 @@ public class TrackNetwork {
         for (Map.Entry<String, TrackPiece> trackPieceEntry : trackPieces.entrySet()) {
             // Find its connections based on type.
             TrackPiece trackPiece = trackPieceEntry.getValue();
+
+            // If this piece is a corner, validate that we've got the right kind.
+            // This catches some edge cases like
+            /*    |
+                -\\--
+                 ||
+
+             where the rightmost corner piece is parsed as LD when it's really LU.
+             */
+
 
             TrackPiece conn1Piece;
             TrackPiece conn2Piece;
@@ -166,6 +183,10 @@ public class TrackNetwork {
 
                 conn4Piece = findRelativeTrackPiece(trackPiece, direction4);
                 ((TrackIntersection) trackPiece).setTrackConnection4(conn4Piece);
+            }
+            if (trackPiece.anyConnectionsNull()) {
+                // Did anything not get connected??
+                System.out.println("Null connections in track piece " + trackPiece.getTrackPieceType() + " at (" + trackPiece.getX() + "," + trackPiece.getY() + ")");
             }
         }
     }

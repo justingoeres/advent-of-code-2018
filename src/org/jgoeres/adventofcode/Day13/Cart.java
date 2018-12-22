@@ -22,7 +22,11 @@ public class Cart {
         TrackPiece nextTrackPiece = currentTrackPiece.getNextPiece(direction);
         TrackPieceType nextTrackPieceType = nextTrackPiece.getTrackPieceType();
 
+        // Move this cart off of the current TrackPiece.
+        currentTrackPiece.setCart(null);
+        // Move this cart onto the nextTrackPiece
         this.currentTrackPiece = nextTrackPiece;
+        collision = currentTrackPiece.setCart(this); // check whether we just smashed into anything.
 
         // Update our direction based on the new piece type, and our current direction.
         if (nextTrackPieceType == TrackPieceType.CORNER_LD) {
@@ -78,9 +82,6 @@ public class Cart {
             // update the intersection behavior for next time.
             incrementIntersectionBehavior();
         }
-
-
-        // TODO: Did we collide with anyone?
         return collision;
     }
 

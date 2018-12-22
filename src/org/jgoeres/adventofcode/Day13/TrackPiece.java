@@ -8,6 +8,8 @@ public class TrackPiece {
     private TrackPiece trackConnection1;
     private TrackPiece trackConnection2;
 
+    private Cart cart;
+
     public TrackPiece(Character trackGlyph, int x, int y, TrackPiece prevTrackPiece) {
         this.x = x;
         this.y = y;
@@ -73,6 +75,16 @@ public class TrackPiece {
         this.trackConnection2 = trackConnection2;
     }
 
+    public Cart getCart() {
+        return cart;
+    }
+
+    public boolean setCart(Cart cart) {
+        boolean collision = (this.cart != null); // If there's already a cart here, that's a collision!
+        this.cart = cart; // But move the new cart onto here anyway.
+        return collision;
+    }
+
     public TrackPiece getNextPiece(Direction direction) {
 
         switch (this.getTrackPieceType()) {
@@ -103,5 +115,10 @@ public class TrackPiece {
             default:
                 return null;
         }
+    }
+
+    public boolean anyConnectionsNull() {
+        // Check all connection pieces and return TRUE if any are null.
+        return ((trackConnection1 == null) || trackConnection2 == null);
     }
 }

@@ -1,8 +1,9 @@
 package org.jgoeres.adventofcode.Day13;
 
 public class RunDay13 {
-//    static final String pathToInputs = "day13/input-example.txt";
+    //    static final String pathToInputs = "day13/input-example.txt";
     static final String pathToInputs = "day13/input.txt";
+    static final boolean DEBUG_PRINT = false;
 
     static TrackNetwork trackNetwork = new TrackNetwork(pathToInputs);
 
@@ -17,17 +18,30 @@ public class RunDay13 {
 
         int timerTick = 0;
 
-        while(true){
-            trackNetwork.doTimerTick();
-            System.out.println(timerTick);
+        Cart collidedCart;
+        while (true) {
+            String output = timerTick + ":\t";
+            collidedCart = trackNetwork.doTimerTick();
+
+            if (collidedCart != null) { // uh oh, we hit something.
+                output += "Collision at ("
+                        + collidedCart.getCurrentTrackPiece().getX()
+                        + "," + collidedCart.getCurrentTrackPiece().getY()
+                        + ")";
+                System.out.println(output);
+                break;
+            } else if (DEBUG_PRINT) {
+                System.out.println(output);
+            }
             timerTick++;
         }
-
+        // Answer:
+        // 183:	Collision at (116,10)
     }
 
     public static void problem13B() {
     /*
-    After 50 BILLION (50000000000) generations, what is the sum of the numbers of all pots which contain a plant?
+    What is the location of the last cart at the end of the first tick where it is the only cart left?
     */
         System.out.println("=== DAY 13B ===");
     }

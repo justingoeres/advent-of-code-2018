@@ -12,4 +12,5 @@ public abstract class Renders {
     public static final char CHAR_CART_DOWN = 'v';
     public static final char CHAR_CART_LEFT = '<';
     public static final char CHAR_CART_RIGHT = '>';
+    public static final char SPACE = ' ';
 }

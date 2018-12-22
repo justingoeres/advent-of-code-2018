@@ -39,4 +39,9 @@ public class TrackIntersection extends TrackPiece {
                 return null;
         }
     }
+
+    @Override
+    public boolean anyConnectionsNull() {
+        return (super.anyConnectionsNull() || (trackConnection3 == null) || (trackConnection4 == null));
+    }
 }
