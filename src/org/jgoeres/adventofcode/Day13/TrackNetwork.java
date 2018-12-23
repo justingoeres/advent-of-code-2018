@@ -13,24 +13,28 @@ public class TrackNetwork {
     }
 
     public Cart doTimerTick() {
-        // Return the crashed cart of a collision occurs, otherwise null.
+        // Return the crashed cart of a collision if one occurs, otherwise null.
 
         // Before doing a tick, sort the carts from top-left to bottom-right
+
         Collections.sort(carts, new CartComparator());
 
         boolean collision = false;
+//        ArrayList<Cart> removedCarts = new ArrayList<>();
+        Cart collidedCart = null;
+
         for (Cart cart : carts) { // tick for all carts
             try {
-                collision = cart.doTimerTick();
+                collision = cart.doTimerTick(); // process tick for this cart (and figure out if it collided with anthing)
                 if (collision) {
-                    // If this cart collided with something, stop this tick and return the Cart.
-                    return cart;
+                    collidedCart = cart;
                 }
             } catch (NullPointerException e) {
-                System.out.println(cart);
+                e.printStackTrace();
             }
         }
-        return null;
+//        carts.removeAll(removedCarts);
+        return collidedCart;
     }
 
     private void loadNetwork(String pathToFile) {
@@ -46,11 +50,11 @@ public class TrackNetwork {
         XY coordinates start in upper left at (0,0).
          */
 
-
         try (BufferedReader br = new BufferedReader(new FileReader(pathToFile))) {
             String line;
             Character currentChar;
             int y = 0; // start at line 0
+            int cartNum = 1;
             TrackPiece newTrackPiece = null;
             while ((line = br.readLine()) != null) {
                 TrackPiece prevTrackPiece = null;
@@ -71,9 +75,10 @@ public class TrackNetwork {
                         if (glyphIsCart(currentChar)) {
                             // create a cart at this location
                             Direction cartDirection = directionFromGlyph(currentChar);
-                            Cart newCart = new Cart(newTrackPiece, cartDirection);
+                            Cart newCart = new Cart(newTrackPiece, cartDirection, cartNum);
 
                             carts.add(newCart);
+                            cartNum++;
                         }
                     } else {
                         // Drop the "previous track piece" on a space.
@@ -99,6 +104,7 @@ public class TrackNetwork {
         for (Map.Entry<String, TrackPiece> trackPieceEntry : trackPieces.entrySet()) {
             // Find its connections based on type.
             TrackPiece trackPiece = trackPieceEntry.getValue();
+//            System.out.println("Processing "+trackPiece.getX()+","+trackPiece.getY());
 
             // If this piece is a corner, validate that we've got the right kind.
             // This catches some edge cases like
@@ -107,8 +113,88 @@ public class TrackNetwork {
                  ||
 
              where the rightmost corner piece is parsed as LD when it's really LU.
+
+             Here's another challenging bit
+             -++-+-
+             -+//+-
+              | ||
              */
 
+            // If this is a corner, validate that it's the correct kind.
+            if ((trackPiece.getTrackPieceType() == TrackPieceType.CORNER_LD)
+                    || (trackPiece.getTrackPieceType() == TrackPieceType.CORNER_LU)
+                    || (trackPiece.getTrackPieceType() == TrackPieceType.CORNER_RD)
+                    || (trackPiece.getTrackPieceType() == TrackPieceType.CORNER_RU)) {
+                int x0 = trackPiece.getX();
+                int y0 = trackPiece.getY();
+
+                TrackPiece pieceAbove = findRelativeTrackPiece(trackPiece, Direction.UP);
+                TrackPiece pieceRight = findRelativeTrackPiece(trackPiece, Direction.RIGHT);
+                TrackPiece pieceBelow = findRelativeTrackPiece(trackPiece, Direction.DOWN);
+                TrackPiece pieceLeft = findRelativeTrackPiece(trackPiece, Direction.LEFT);
+
+                switch (trackPiece.getTrackPieceType()) {
+                    case CORNER_LD:
+                        if ((pieceLeft == null) || (pieceBelow == null)) {
+                            trackPiece.setTrackPieceType(TrackPieceType.CORNER_RU);
+                            break;
+                        }
+                        if (pieceLeft.isHorizontalConnector()
+                                || pieceBelow.isVerticalConnector()) {
+                            // do nothing
+                        } else if ((pieceAbove.isVerticalConnector()
+                                || pieceRight.isHorizontalConnector())) {
+                            // This is actually a CORNER_RU!
+                            trackPiece.setTrackPieceType(TrackPieceType.CORNER_RU);
+                        }
+                        break;
+
+                    case CORNER_LU:
+                        if ((pieceLeft == null) || (pieceAbove == null)) {
+                            trackPiece.setTrackPieceType(TrackPieceType.CORNER_RD);
+                            break;
+                        }
+                        if (pieceLeft.isHorizontalConnector()
+                                || pieceAbove.isVerticalConnector()) {
+                            // do nothing
+                        } else if ((pieceBelow.isVerticalConnector()
+                                || pieceRight.isHorizontalConnector())) {
+                            // This is actually a CORNER_RD!
+                            trackPiece.setTrackPieceType(TrackPieceType.CORNER_RD);
+                        }
+                        break;
+
+                    case CORNER_RD:
+                        if ((pieceRight == null) || (pieceBelow == null)) {
+                            trackPiece.setTrackPieceType(TrackPieceType.CORNER_LU);
+                            break;
+                        }
+                        if (pieceRight.isHorizontalConnector()
+                                || pieceBelow.isVerticalConnector()) {
+                            // do nothing
+                        } else if ((pieceAbove.isVerticalConnector()
+                                || pieceLeft.isHorizontalConnector())) {
+                            // This is actually a CORNER_LU!
+                            trackPiece.setTrackPieceType(TrackPieceType.CORNER_LU);
+                        }
+                        break;
+
+                    case CORNER_RU:
+                        if ((pieceRight == null) || (pieceAbove == null)) {
+                            trackPiece.setTrackPieceType(TrackPieceType.CORNER_LD);
+                            break;
+                        }
+                        if (pieceRight.isHorizontalConnector()
+                                || pieceAbove.isVerticalConnector()) {
+                            // do nothing
+                        } else if ((pieceBelow.isVerticalConnector()
+                                || pieceLeft.isHorizontalConnector())) {
+                            // This is actually a CORNER_LD!
+                            trackPiece.setTrackPieceType(TrackPieceType.CORNER_LD);
+                        }
+                        break;
+                }
+            }
 
             TrackPiece conn1Piece;
             TrackPiece conn2Piece;
@@ -189,6 +275,7 @@ public class TrackNetwork {
                 System.out.println("Null connections in track piece " + trackPiece.getTrackPieceType() + " at (" + trackPiece.getX() + "," + trackPiece.getY() + ")");
             }
         }
+
     }
 
     private String keyFromXY(int x, int y) {
@@ -224,9 +311,12 @@ public class TrackNetwork {
 
     private TrackPiece findRelativeTrackPiece(TrackPiece trackPiece, Direction direction) {
         String coords = relativeKeyFromXY(trackPiece.getX(), trackPiece.getY(), direction);
-        TrackPiece relativeTrackPiece = trackPieces.get(coords);
-
-        return relativeTrackPiece;
+        if (trackPieces.containsKey(coords)) {
+            TrackPiece relativeTrackPiece = trackPieces.get(coords);
+            return relativeTrackPiece;
+        } else {
+            return null;
+        }
     }
 
     private boolean glyphIsCart(Character trackGlyph) {

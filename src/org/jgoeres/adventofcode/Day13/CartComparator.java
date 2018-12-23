@@ -17,7 +17,8 @@ public class CartComparator implements Comparator<Cart> {
         } else {
             // They're in the same row, so
             // compare their x coords
-            return Integer.compare(o1x, o2x);
+            int result = Integer.compare(o1x,o2x);
+            return result;
         }
     }
 }

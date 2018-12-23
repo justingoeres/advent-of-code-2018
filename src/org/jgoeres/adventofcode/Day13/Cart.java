@@ -3,19 +3,26 @@ package org.jgoeres.adventofcode.Day13;
 public class Cart {
     private TrackPiece currentTrackPiece;
     private Direction direction;
+    private int cartNum;
+    private boolean crashed = false;
 
     private enum IntersectionBehavior {LEFT, STRAIGHT, RIGHT}
 
     private IntersectionBehavior intersectionBehavior;
 
-    public Cart(TrackPiece currentTrackPiece, Direction direction) {
+    public Cart(TrackPiece currentTrackPiece, Direction direction, int cartNum) {
         this.currentTrackPiece = currentTrackPiece;
         this.direction = direction;
+        this.cartNum = cartNum;
 
         this.intersectionBehavior = IntersectionBehavior.LEFT; // turn left at first intersection.
     }
 
     public boolean doTimerTick() {
+        if(crashed) {
+            // If this cart is already crashed, don't process timer ticks for it
+            return crashed;
+        }
         boolean collision = false;
 
         // Update our location based on the direction we're headed.
@@ -23,7 +30,7 @@ public class Cart {
         TrackPieceType nextTrackPieceType = nextTrackPiece.getTrackPieceType();
 
         // Move this cart off of the current TrackPiece.
-        currentTrackPiece.setCart(null);
+        currentTrackPiece.clearCart();
         // Move this cart onto the nextTrackPiece
         this.currentTrackPiece = nextTrackPiece;
         collision = currentTrackPiece.setCart(this); // check whether we just smashed into anything.
@@ -83,6 +90,18 @@ public class Cart {
             incrementIntersectionBehavior();
         }
         return collision;
+    }
+
+    public boolean isCrashed() {
+        return crashed;
+    }
+
+    public void setCrashed(boolean crashed) {
+        this.crashed = crashed;
+    }
+
+    public int getCartNum() {
+        return cartNum;
     }
 
     private void turnRight() {

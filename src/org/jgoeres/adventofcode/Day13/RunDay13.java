@@ -1,7 +1,10 @@
 package org.jgoeres.adventofcode.Day13;
 
+import java.util.ArrayList;
+
 public class RunDay13 {
     //    static final String pathToInputs = "day13/input-example.txt";
+    //    static final String pathToInputs = "day13/input-fromReddit.txt";
     static final String pathToInputs = "day13/input.txt";
     static final boolean DEBUG_PRINT = false;
 
@@ -45,53 +48,54 @@ public class RunDay13 {
     */
         System.out.println("=== DAY 13B ===");
 
+
+        final String pathToInputs = "day13/input.txt";
+
         TrackNetwork trackNetwork = new TrackNetwork(pathToInputs);
         int timerTick = 0;
 
         Cart collidedCart;
         while (true) {
-            String output = timerTick + ":\t";
+            String output = "";
             collidedCart = trackNetwork.doTimerTick();
 
             if (collidedCart != null) { // uh oh, we hit something.
-                output += "Collision at ("
+                output += timerTick + ":\tCollision at ("
                         + collidedCart.getCurrentTrackPiece().getX()
                         + "," + collidedCart.getCurrentTrackPiece().getY()
                         + ")";
                 System.out.println(output);
-                // Remove the collided carts.
-                // Figure out which carts are both on the same track piece.
-                for (int i = 0; i < trackNetwork.carts.size(); i++) {
-                    // check each cart
-                    Cart cart1 = trackNetwork.carts.get(i);
-                    for (int j = (i + 1); j < trackNetwork.carts.size(); j++) {
-                        // ...against all the carts we haven't checked yet.
-                        Cart cart2 = trackNetwork.carts.get(j);
 
-                        if (cart1.getCurrentTrackPiece() == cart2.getCurrentTrackPiece()) {
-                            // Are these carts both on the same track piece?
-                            // If so, they've collided. Remove them.
-                            trackNetwork.carts.get(i).getCurrentTrackPiece().setCart(null); // Remove these carts from the track piece they've collided on.
-                            trackNetwork.carts.get(j).getCurrentTrackPiece().setCart(null);
-                            trackNetwork.carts.remove(cart1);
-                            trackNetwork.carts.remove(cart2);
-                            if (DEBUG_PRINT) {
-                                System.out.println("Removed carts:\t" + cart1 + ",\t" + cart2);
-                            }
-                        }
+                // Remove any crashed carts.
+                ArrayList<Cart> cartsToRemove = new ArrayList<>();
+                for (Cart cart : trackNetwork.carts) {
+                    if (cart.isCrashed()) {
+                        // Remove this cart from the trackPiece that's holding it
+                        cart.getCurrentTrackPiece().clearCart();
+                        cartsToRemove.add(cart);
                     }
                 }
-            } else if (DEBUG_PRINT) {
+                trackNetwork.carts.removeAll(cartsToRemove); // Remove all crashed carts.
+//                System.out.println("Remaining carts: " + trackNetwork.carts.size());
+            }
+            if (DEBUG_PRINT) {
+                output = timerTick + ":";
+
+                // Print all the cart locations
+                for (Cart cart : trackNetwork.carts) {
+                    output += "\t" + cart.getCartNum() + ":("
+                            + cart.getCurrentTrackPiece().getX()
+                            + "," + cart.getCurrentTrackPiece().getY() + ")";
+                }
+
                 System.out.println(output);
             }
-
-            timerTick++;
 
             if (trackNetwork.carts.size() == 1) { // are we down to just one cart?
                 // If so, we're done!
 
                 // Do one more tick, because that's what the problem asks for.
-                trackNetwork.doTimerTick();
+//                trackNetwork.doTimerTick();
 
                 // Then find our cart.
                 System.out.println(timerTick + ":\tFinal cart location:\t("
@@ -99,7 +103,12 @@ public class RunDay13 {
                         + "," + trackNetwork.carts.get(0).getCurrentTrackPiece().getY()
                         + ")");
                 break;
+
+                // Answer:
+                // 10746:	Final cart location:	(116,25)
             }
+
+            timerTick++;
         }
     }
 }

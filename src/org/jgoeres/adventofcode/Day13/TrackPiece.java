@@ -51,6 +51,10 @@ public class TrackPiece {
         return trackPieceType;
     }
 
+    public void setTrackPieceType(TrackPieceType trackPieceType) {
+        this.trackPieceType = trackPieceType;
+    }
+
     public int getX() {
         return x;
     }
@@ -79,9 +83,23 @@ public class TrackPiece {
         return cart;
     }
 
+    public void clearCart() {
+        this.cart = null;
+    }
+
     public boolean setCart(Cart cart) {
-        boolean collision = (this.cart != null); // If there's already a cart here, that's a collision!
+        boolean collision = false;
+        if (this.cart != null) {
+            collision = true;
+
+            // If there's already a cart on this piece.
+            // Set it to crashed.
+            this.cart.setCrashed(true);
+            // Also set the new cart to crashed.
+            cart.setCrashed(true);
+        }
         this.cart = cart; // But move the new cart onto here anyway.
+
         return collision;
     }
 
@@ -120,5 +138,15 @@ public class TrackPiece {
     public boolean anyConnectionsNull() {
         // Check all connection pieces and return TRUE if any are null.
         return ((trackConnection1 == null) || trackConnection2 == null);
+    }
+
+    public boolean isHorizontalConnector() {
+        return ((trackPieceType == TrackPieceType.HORIZONTAL)
+                || (trackPieceType == TrackPieceType.INTERSECTION));
+    }
+
+    public boolean isVerticalConnector() {
+        return ((trackPieceType == TrackPieceType.VERTICAL)
+                || (trackPieceType == TrackPieceType.INTERSECTION));
     }
 }
