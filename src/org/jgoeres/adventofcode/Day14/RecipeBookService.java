@@ -32,9 +32,12 @@ public class RecipeBookService {
         return recipeValues;
     }
 
-    public static void addRecipesToBook(CircularLinkedList recipeBook, ArrayList<Integer> recipeValues) {
-        for (Integer recipeValue:recipeValues){
-            recipeBook.addOnRightEnd(recipeValue);
+    public static boolean addRecipesToBook(CircularLinkedList recipeBook, ArrayList<Integer> recipeValues) {
+        boolean patternFound = false;
+
+        for (Integer recipeValue : recipeValues) {
+            patternFound |= recipeBook.addOnRightEnd(recipeValue);
         }
+        return patternFound;
     }
 }

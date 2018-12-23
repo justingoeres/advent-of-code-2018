@@ -53,9 +53,9 @@ public class RunDay14 {
             recipeBook.nextByN(ELF1, (1 + recipeBook.getElfCurrentValue(ELF1)));
             recipeBook.nextByN(ELF2, (1 + recipeBook.getElfCurrentValue(ELF2)));
 
-            if (PRINT_LIST) {
-                System.out.println(recipeBook.printList());
-            }
+//            if (PRINT_LIST) {
+//                System.out.println(recipeBook.printList());
+//            }
         }
 
         // Output the results.
@@ -85,13 +85,67 @@ public class RunDay14 {
         // After creating 765071 recipes, the next 10 will be 3171123923
     }
 
-
     public static void problem14B() {
         /*
-        Problem Description
+        As it turns out, you got the Elves' plan backwards.
+        They actually want to know how many recipes appear on the scoreboard
+        to the left of the first recipes whose scores are the digits from your puzzle input.
+
+            51589 first appears after 9 recipes.
+            01245 first appears after 5 recipes.
+            92510 first appears after 18 recipes.
+            59414 first appears after 2018 recipes.
+
+        How many recipes appear on the scoreboard to the left of the score
+        sequence in your puzzle input?
          */
 
-        System.out.println("=== DAY 1BA ===");
+        System.out.println("=== DAY 14B ===");
+
+        int numRecipesCreated = 0;
+
+        CircularLinkedList recipeBook = new CircularLinkedList(3); // Start with a 3...
+
+//        String patternToFind = "51589"; // 9 recipes
+//        String patternToFind = "01245"; // 5 recipes
+//        String patternToFind = "92510"; // 18 recipes
+//        String patternToFind = "59414"; // 2018 recipes
+        String patternToFind = puzzleInput.toString();
+        recipeBook.setPatternToFind(patternToFind);
+
+        recipeBook.addOnRightEnd(7); // ...and a 7.
+        // Move Elf2 to the new node
+        recipeBook.next(ELF2);
+        numRecipesCreated += 2; // count the two recipes we just made.
+
+        boolean patternFound = false;
+
+        while (true) { // Keep going until we break below
+            Integer currentSum = RecipeBookService.getElfsSum(recipeBook);
+            ArrayList<Integer> newRecipeValues = RecipeBookService.calculateNewRecipeValues(currentSum);
+            patternFound = RecipeBookService.addRecipesToBook(recipeBook, newRecipeValues);
+
+            numRecipesCreated += newRecipeValues.size();
+
+            // Move the elves (both by ONE *PLUS* their current value.
+            recipeBook.nextByN(ELF1, (1 + recipeBook.getElfCurrentValue(ELF1)));
+            recipeBook.nextByN(ELF2, (1 + recipeBook.getElfCurrentValue(ELF2)));
+
+            if (PRINT_LIST) {
+                System.out.println(recipeBook.printList());
+            }
+
+            if (patternFound) break;
+        }
+
+        System.out.println("Pattern " + patternToFind + " found after "
+                + (numRecipesCreated - patternToFind.length()) + " recipes");
+
+        // Examples:
+        // Pattern 765071 found after 9 recipes
+        // Pattern 01245 found after 5 recipes
+        // Pattern 92510 found after 18 recipes
+        // Pattern 59414 found after 2018 recipes
 
     }
 
