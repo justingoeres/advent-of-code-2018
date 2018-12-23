@@ -5,6 +5,7 @@ public class CircularLinkedList {
     private Node rootNode;
     private Node elf1CurrentNode;
     private Node elf2CurrentNode;
+    private Integer size = 0;
 
     enum Elf {ELF1, ELF2}
 
@@ -13,6 +14,7 @@ public class CircularLinkedList {
         // Create the list with one node (the root).
         // Create the root node
         Node newRootNode = new Node(rootNodeValue);
+        size++;
 
         // Set it to point to itself (circularly)
         newRootNode.setNext(newRootNode);
@@ -49,6 +51,7 @@ public class CircularLinkedList {
     public void addOnRightEnd(Integer newNodeValue) {
         // Create a new node.
         Node newNode = new Node(newNodeValue);
+        size++; // increment the size of our list.
 
         Node currentEnd = rootNode.getPrev();
 
@@ -137,6 +140,10 @@ public class CircularLinkedList {
         }
     }
 
+    public void resetElfToRoot(Elf elf) {
+        setElfCurrentNode(elf, rootNode);
+    }
+
     private Node getElfCurrentNode(Elf elf) {
         switch (elf) {
             case ELF1:
@@ -149,5 +156,9 @@ public class CircularLinkedList {
 
     public Integer getElfCurrentValue(Elf elf) {
         return getElfCurrentNode(elf).getValue();
+    }
+
+    public Integer getSize() {
+        return size;
     }
 }

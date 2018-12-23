@@ -7,7 +7,7 @@ import static org.jgoeres.adventofcode.Day14.CircularLinkedList.Elf.ELF2;
 
 public class RunDay14 {
     static final Integer puzzleInput = 765071; // << From problem webpage.
-    static final boolean PRINT_LIST = true;
+    static final boolean PRINT_LIST = false;
 
     public static void problem14A() {
         /*
@@ -40,10 +40,10 @@ public class RunDay14 {
         // Move Elf2 to the new node
         recipeBook.next(ELF2);
 
-        int round = 0;
-        int NUMBER_OF_ROUNDS = 10;
+        int NUMBER_OF_RECIPES = puzzleInput;
+        int NUMBER_TO_EXTRACT = 10;
 
-        while (round < NUMBER_OF_ROUNDS) {
+        while (recipeBook.getSize() < (NUMBER_OF_RECIPES + NUMBER_TO_EXTRACT)) { // Keep going until we have ten recipes PAST our target number.
             // Calculate new recipes
             Integer currentSum = RecipeBookService.getElfsSum(recipeBook);
             ArrayList<Integer> newRecipeValues = RecipeBookService.calculateNewRecipeValues(currentSum);
@@ -56,8 +56,33 @@ public class RunDay14 {
             if (PRINT_LIST) {
                 System.out.println(recipeBook.printList());
             }
-            round++;
         }
+
+        // Output the results.
+        // Hijack Elf #1 to retrieve the recipe values we want.
+        recipeBook.resetElfToRoot(ELF1);
+        // fast-forward Elf #1 to the section we're interested it.
+        recipeBook.nextByN(ELF1, NUMBER_OF_RECIPES);
+
+        String result = "";
+        // Extract the values of the next N recipes
+        for (int i = 0; i < NUMBER_TO_EXTRACT; i++) {
+            result += recipeBook.getElfCurrentValue(ELF1).toString();
+            recipeBook.next(ELF1);
+        }
+
+        System.out.println("After creating " + NUMBER_OF_RECIPES
+                + " recipes, the next " + NUMBER_TO_EXTRACT
+                + " will be " + result);
+
+        // Examples:
+        // After creating 9 recipes, the next 10 will be 5158916779
+        // After creating 5 recipes, the next 10 will be 0124515891
+        // After creating 18 recipes, the next 10 will be 9251071085
+        // After creating 2018 recipes, the next 10 will be 5941429882
+
+        // Answer:
+        // After creating 765071 recipes, the next 10 will be 3171123923
     }
 
 
