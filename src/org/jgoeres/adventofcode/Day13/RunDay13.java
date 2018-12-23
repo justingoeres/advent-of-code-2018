@@ -93,11 +93,7 @@ public class RunDay13 {
 
             if (trackNetwork.carts.size() == 1) { // are we down to just one cart?
                 // If so, we're done!
-
-                // Do one more tick, because that's what the problem asks for.
-//                trackNetwork.doTimerTick();
-
-                // Then find our cart.
+                // Find our cart.
                 System.out.println(timerTick + ":\tFinal cart location:\t("
                         + trackNetwork.carts.get(0).getCurrentTrackPiece().getX()
                         + "," + trackNetwork.carts.get(0).getCurrentTrackPiece().getY()

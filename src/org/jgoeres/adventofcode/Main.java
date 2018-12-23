@@ -16,7 +16,7 @@ import org.jgoeres.adventofcode.Day13.RunDay13;
 
 public class Main {
 
-    static final boolean RUN_ALL = false;
+    static final boolean RUN_ALL = true;
 
     static final boolean RUN_DAY_1 = false;
     static final boolean RUN_DAY_2 = false;
@@ -30,7 +30,7 @@ public class Main {
     static final boolean RUN_DAY_10 = false;
     static final boolean RUN_DAY_11 = false;
     static final boolean RUN_DAY_12 = false;
-    static final boolean RUN_DAY_13 = true;
+    static final boolean RUN_DAY_13 = false;
 
     private static long startTime = 0L;
 
