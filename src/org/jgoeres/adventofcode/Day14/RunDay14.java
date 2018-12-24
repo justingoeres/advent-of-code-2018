@@ -104,27 +104,25 @@ public class RunDay14 {
 
         int numRecipesCreated = 0;
 
-        CircularLinkedList recipeBook = new CircularLinkedList(3); // Start with a 3...
-
 //        String patternToFind = "51589"; // 9 recipes
 //        String patternToFind = "01245"; // 5 recipes
 //        String patternToFind = "92510"; // 18 recipes
 //        String patternToFind = "59414"; // 2018 recipes
         String patternToFind = puzzleInput.toString();
-        recipeBook.setPatternToFind(patternToFind);
 
+        RecipeBookWithPatternRecognizer recipeBook = new RecipeBookWithPatternRecognizer(3, patternToFind); // Start with a 3...
         recipeBook.addOnRightEnd(7); // ...and a 7.
+
         // Move Elf2 to the new node
         recipeBook.next(ELF2);
         numRecipesCreated += 2; // count the two recipes we just made.
 
-        boolean patternFound = false;
 
         while (true) { // Keep going until we break below
             Integer currentSum = RecipeBookService.getElfsSum(recipeBook);
             ArrayList<Integer> newRecipeValues = RecipeBookService.calculateNewRecipeValues(currentSum);
-            patternFound = RecipeBookService.addRecipesToBook(recipeBook, newRecipeValues);
 
+            RecipeBookService.addRecipesToBook(recipeBook, newRecipeValues);
             numRecipesCreated += newRecipeValues.size();
 
             // Move the elves (both by ONE *PLUS* their current value.
@@ -135,7 +133,7 @@ public class RunDay14 {
                 System.out.println(recipeBook.printList());
             }
 
-            if (patternFound) break;
+            if (recipeBook.isPatternFound()) break;
         }
 
         System.out.println("Pattern " + patternToFind + " found after "
@@ -146,6 +144,9 @@ public class RunDay14 {
         // Pattern 01245 found after 5 recipes
         // Pattern 92510 found after 18 recipes
         // Pattern 59414 found after 2018 recipes
+
+        //TODO: ANSWER is 20353748!!!!
+        // TODO: Clean up code so it stops, and outputs that.
 
     }
 

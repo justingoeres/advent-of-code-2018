@@ -9,9 +9,6 @@ public class CircularLinkedList {
     private Node elf2CurrentNode;
     private Integer size = 0;
 
-    private String patternBuffer="";
-    private String patternToFind="";
-
 
     enum Elf {ELF1, ELF2}
 
@@ -29,7 +26,6 @@ public class CircularLinkedList {
         setRootNode(newRootNode);
         setElfCurrentNode(Elf.ELF1, getRootNode()); // Set the "current" node to point at the root.
         setElfCurrentNode(Elf.ELF2, getRootNode()); // Set the "current" node to point at the root.
-        patternBuffer = "";
     }
 
     public void next(Elf elf) {
@@ -55,14 +51,10 @@ public class CircularLinkedList {
         }
     }
 
-    public boolean addOnRightEnd(Integer newNodeValue) {
+    public void addOnRightEnd(Integer newNodeValue) {
         // Create a new node.
         Node newNode = new Node(newNodeValue);
         size++; // increment the size of our list.
-
-        // Add this node to the patternBuffer.
-        patternBufferAddNewValue(newNodeValue); // Add the new value to the buffer.
-        boolean patternFound = patternFound();
 
         Node currentEnd = rootNode.getPrev();
 
@@ -79,7 +71,7 @@ public class CircularLinkedList {
         // For the original "next" node, "previous" points to the new node.
         rootNode.setPrev(newNode);
 
-        return patternFound; // send back notification if we found the pattern!
+        return; // send back notification if we found the pattern!
 
     }
 
@@ -175,24 +167,5 @@ public class CircularLinkedList {
     public Integer getSize() {
         return size;
     }
-
-    private void patternBufferAddNewValue(Integer newNodeValue) {
-        patternBuffer += newNodeValue; // add the new value to the buffer.
-        if (patternBuffer.length() > patternToFind.length()) {
-            // trim the buffer if necessary.
-            patternBuffer = patternBuffer.substring(1); // Take everything starting with the *second* character,
-            // i.e. remove the first element.
-        }
-    }
-
-    public boolean patternFound() {
-        if (patternBuffer.equals(patternToFind)){
-            return true;
-        }
-        return false;
-    }
-
-    public void setPatternToFind(String patternToFind) {
-        this.patternToFind = patternToFind;
-    }
 }
+
