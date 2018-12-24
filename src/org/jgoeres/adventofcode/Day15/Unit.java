@@ -1,5 +1,7 @@
 package org.jgoeres.adventofcode.Day15;
 
+import java.util.ArrayList;
+
 public class Unit {
     private Race race;
     int hitPoints;
@@ -11,5 +13,17 @@ public class Unit {
         this.race = race;
         this.currentCell = currentCell;
         this.hitPoints = STARTING_HIT_POINTS; // all units start with this many.
+    }
+
+    public Race getRace() {
+        return race;
+    }
+
+    public MapCell getCurrentCell() {
+        return currentCell;
+    }
+
+    public void setCurrentCell(MapCell currentCell) {
+        this.currentCell = currentCell;
     }
 }
