@@ -28,6 +28,9 @@ public class Battle {
         ########GE.................#####
 
         XY coordinates start in upper left at (0,0).
+
+        NOTE:   File reading SKIPS walls, just treats them as cells that don't exist
+                (and are null for connections)
          */
 
         try (BufferedReader br = new BufferedReader(new FileReader(pathToFile))) {
@@ -50,6 +53,7 @@ public class Battle {
                                 newUnit = new Unit(RACE_ELF, newCell);
                                 elves.add(newUnit);
                             } else if (currentChar.equals(GOBLIN)) { // if this is a goblin
+                                // Make a goblin
                                 newUnit = new Unit(RACE_GOBLIN, newCell);
                                 goblins.add(newUnit);
                             }

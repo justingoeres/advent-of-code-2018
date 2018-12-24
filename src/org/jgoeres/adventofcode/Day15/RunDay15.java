@@ -19,7 +19,7 @@ public class RunDay15 {
         /*
         Problem Description
         */
-        System.out.println("=== DAY 15A ===");
+        System.out.println("=== DAY 15B ===");
 
     }
 }
