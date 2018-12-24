@@ -1,6 +1,5 @@
 package org.jgoeres.adventofcode.Day14;
 
-
 import java.util.ArrayList;
 
 public class CircularLinkedList {
@@ -8,6 +7,7 @@ public class CircularLinkedList {
     private Node elf1CurrentNode;
     private Node elf2CurrentNode;
     private Integer size = 0;
+
 
 
     enum Elf {ELF1, ELF2}
@@ -51,6 +51,14 @@ public class CircularLinkedList {
         }
     }
 
+    public void addRecipesToBook(ArrayList<Integer> recipeValues) {
+        for (Integer recipeValue : recipeValues) {
+            addOnRightEnd(recipeValue);
+        }
+        return;
+    }
+
+
     public void addOnRightEnd(Integer newNodeValue) {
         // Create a new node.
         Node newNode = new Node(newNodeValue);
@@ -74,6 +82,8 @@ public class CircularLinkedList {
         return; // send back notification if we found the pattern!
 
     }
+
+
 
 //    public Integer removeCurrentNode() {
 //        // We'll return the value of this node after removing.

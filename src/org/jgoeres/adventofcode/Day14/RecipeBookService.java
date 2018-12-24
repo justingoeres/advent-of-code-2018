@@ -32,13 +32,4 @@ public class RecipeBookService {
         return recipeValues;
     }
 
-    public static void addRecipesToBook(CircularLinkedList recipeBook, ArrayList<Integer> recipeValues) {
-        boolean patternFound = false;
-
-        for (Integer recipeValue : recipeValues) {
-            recipeBook.addOnRightEnd(recipeValue);
-//TODO: Figure out how to interrupt recipe addition when patternFound is TRUE (override)
-        }
-        return;
-    }
 }

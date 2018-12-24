@@ -47,7 +47,7 @@ public class RunDay14 {
             // Calculate new recipes
             Integer currentSum = RecipeBookService.getElfsSum(recipeBook);
             ArrayList<Integer> newRecipeValues = RecipeBookService.calculateNewRecipeValues(currentSum);
-            RecipeBookService.addRecipesToBook(recipeBook, newRecipeValues);
+            recipeBook.addRecipesToBook(newRecipeValues);
 
             // Move the elves (both by ONE *PLUS* their current value.
             recipeBook.nextByN(ELF1, (1 + recipeBook.getElfCurrentValue(ELF1)));
@@ -102,8 +102,6 @@ public class RunDay14 {
 
         System.out.println("=== DAY 14B ===");
 
-        int numRecipesCreated = 0;
-
 //        String patternToFind = "51589"; // 9 recipes
 //        String patternToFind = "01245"; // 5 recipes
 //        String patternToFind = "92510"; // 18 recipes
@@ -115,15 +113,12 @@ public class RunDay14 {
 
         // Move Elf2 to the new node
         recipeBook.next(ELF2);
-        numRecipesCreated += 2; // count the two recipes we just made.
-
 
         while (true) { // Keep going until we break below
             Integer currentSum = RecipeBookService.getElfsSum(recipeBook);
             ArrayList<Integer> newRecipeValues = RecipeBookService.calculateNewRecipeValues(currentSum);
 
-            RecipeBookService.addRecipesToBook(recipeBook, newRecipeValues);
-            numRecipesCreated += newRecipeValues.size();
+            recipeBook.addRecipesToBook(newRecipeValues);
 
             // Move the elves (both by ONE *PLUS* their current value.
             recipeBook.nextByN(ELF1, (1 + recipeBook.getElfCurrentValue(ELF1)));
@@ -137,7 +132,7 @@ public class RunDay14 {
         }
 
         System.out.println("Pattern " + patternToFind + " found after "
-                + (numRecipesCreated - patternToFind.length()) + " recipes");
+                + (recipeBook.getSize() - patternToFind.length()) + " recipes");
 
         // Examples:
         // Pattern 765071 found after 9 recipes
@@ -145,9 +140,8 @@ public class RunDay14 {
         // Pattern 92510 found after 18 recipes
         // Pattern 59414 found after 2018 recipes
 
-        //TODO: ANSWER is 20353748!!!!
-        // TODO: Clean up code so it stops, and outputs that.
-
+        // Answer:
+        // Pattern 765071 found after 20353748 recipes
     }
 
 }

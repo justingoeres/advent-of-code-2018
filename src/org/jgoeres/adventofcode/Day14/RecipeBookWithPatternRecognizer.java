@@ -3,8 +3,6 @@ package org.jgoeres.adventofcode.Day14;
 import java.util.ArrayList;
 
 public class RecipeBookWithPatternRecognizer extends CircularLinkedList {
-    private String patternBuffer = "";
-    private String patternToFind = "";
     private ArrayList<Integer> patternToFindQueue = new ArrayList<>();
     private Node patternScannerNode = null;
 
@@ -12,7 +10,6 @@ public class RecipeBookWithPatternRecognizer extends CircularLinkedList {
 
     public RecipeBookWithPatternRecognizer(Integer rootNodeValue, String patternToFind) {
         super(rootNodeValue);
-        this.patternToFind = patternToFind;
 
         // Load up the pattern queue (in reverse because we'll search backwards).
         String patternReversed = new StringBuilder(patternToFind).reverse().toString();
@@ -22,6 +19,15 @@ public class RecipeBookWithPatternRecognizer extends CircularLinkedList {
         }
 
         resetPatternScanner();
+    }
+
+    @Override
+    public void addRecipesToBook(ArrayList<Integer> recipeValues) {
+        for (Integer recipeValue : recipeValues) {
+            addOnRightEnd(recipeValue);
+            if (patternFound) break;
+        }
+        return;
     }
 
     @Override
