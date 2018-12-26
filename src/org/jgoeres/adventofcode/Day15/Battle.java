@@ -2,6 +2,7 @@ package org.jgoeres.adventofcode.Day15;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeSet;
@@ -59,10 +60,15 @@ public class Battle {
                     enemyUnits,
                     map);
 
-            if (targetCells.isEmpty()){
+            if (targetCells.isEmpty()) {
                 // If there are no valid target cells, end turn here somehow.
             }
-            System.out.println(targetCells);
+
+            // Find the closest of the target cells
+            // TODO: Need to eventually account for reachability here.
+            MapCell closestTarget = BattleService.findClosestTarget(unit, targetCells);
+            ArrayList<MapCell> shortestPath = BattleService.sh
+            System.out.println(targetCells + "\t" + closestTarget);
         }
     }
 

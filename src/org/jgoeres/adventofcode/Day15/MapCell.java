@@ -22,6 +22,19 @@ public class MapCell {
         }
     }
 
+    public MapCell getRelativeCell(Direction direction){
+        switch (direction) {
+            case UP:
+                return aboveCell;
+            case RIGHT:
+                return rightCell;
+            case DOWN:
+                return belowCell;
+            case LEFT:
+                return leftCell;
+        }
+    }
+
 
     public MapCell(int x, int y) {
         this.x = x;
