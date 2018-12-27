@@ -11,7 +11,7 @@ public abstract class BattleService {
 
         for (Unit targetUnit : units) {
             if (!(unit == targetUnit)) {    // skip ourselves
-                ArrayList<MapCell> adjacentCells = findAdjacentCells(targetUnit.getCurrentCell());
+                TreeSet<MapCell> adjacentCells = findAdjacentCells(targetUnit.getCurrentCell());
                 targetList.addAll(adjacentCells);
             }
         }
@@ -22,12 +22,12 @@ public abstract class BattleService {
         Integer minDistance = Integer.MAX_VALUE;
         MapCell closestCell = null;
 
-        for (MapCell mapCell : targetCells) {
+   //     for (MapCell mapCell : targetCells) {
             // Because the TreeSet already is in "reading" order, we don't have to worry
             // about ties. The first one we find will be the "first in reading order" one.
 
             // Find the shortest path to this targetCell.
-            TreeMap<MapCell, Integer> shortestPathMap = shortestPathToTarget(unit, mapCell);
+            TreeMap<MapCell, Integer> shortestPathMap = shortestPathToTarget(unit, targetCells);
             //TODO: WORKING HERE!!! NEED TO FIND THE ACTUAL SHORTEST PATH.
             // Use the counter value of Unit.currentCell in the shortestPathMap to determine the
             // shortest path. That will give us the "closestTarget" MapCell.
@@ -49,7 +49,7 @@ public abstract class BattleService {
                 closestCell = mapCell;
             }
             */
-        }
+//        }
         return closestCell;
     }
 
@@ -106,13 +106,13 @@ public abstract class BattleService {
         return (xDist + yDist);
     }
 
-    private static TreeMap<MapCell, Integer> shortestPathToTarget(Unit unit, MapCell targetCell) {
+    private static TreeMap<MapCell, Integer> shortestPathToTarget(Unit unit, TreeSet<MapCell> targetCells) {
         // Calculate the ArrayList of steps (MapCells) that give the shorted path to the target.
         // Algorithm Ref: https://en.scratch-wiki.info/wiki/Pathfinding
 
         TreeMap<MapCell, Integer> pathCells = new TreeMap<>(new MapCellComparator()); // TreeSet to store all the cells we've checked.
-        MapCell endPoint = targetCell; // start at the endpoint and work back to the start.
-        MapCell startPoint = unit.getCurrentCell();
+        //MapCell endPoint = targetCell;
+        MapCell startPoint = unit.getCurrentCell(); // start at the current unit and work outward until we find something..
         // TODO: WORKING HERE. ADD CIRCULAR SCANNING FROM ENDPOINT
         // Go in circles working outward from the endpoint.
         // For each cell with counter value i, get all the adjacent cells.
@@ -120,13 +120,13 @@ public abstract class BattleService {
         // then put counter value i+1 in the ones that remain.
         // Increment i, then repeat.
 
-        boolean reachedStart = false;
+        boolean reachedEnd = false;
         // Initialize our pathCells list with the endPoint (although this may not be strictly necessary)
-        pathCells.put(endPoint, 0);
+        pathCells.put(startPoint, 0);
         int counter = 0; // Start from 0
-        while (!reachedStart) {
+        while (!reachedEnd) {
             // For each PathCell with the current counter value...
-            ArrayList<MapCell> edgeCells = new ArrayList<>();
+            TreeSet<MapCell> edgeCells = new TreeSet<>(new MapCellComparator());
             for (Map.Entry<MapCell, Integer> pathCellEntry : pathCells.entrySet()) {
                 if (pathCellEntry.getValue() == counter) {
                     // If the counter for this cell is the current counter, we're on an edge.
@@ -146,9 +146,11 @@ public abstract class BattleService {
                 }
             }
             // Now we've got all the NEW edge cells added, with the new counter value.
-            // Did we reach the startPoint yet?
-            if (pathCells.containsKey(keyFromMapCell(startPoint))) {
-                reachedStart = true;
+            // Did we reach any endpoints yet?
+            for (MapCell targetCell : targetCells) {
+                if (pathCells.containsKey(targetCell)) {
+                    reachedEnd = true;
+                }
             }
         }
 
@@ -161,8 +163,8 @@ public abstract class BattleService {
     }
 
 
-    private static ArrayList<MapCell> findAdjacentCells(MapCell mapCell) {
-        ArrayList<MapCell> adjacentCells = new ArrayList<>();
+    private static TreeSet<MapCell> findAdjacentCells(MapCell mapCell) {
+        TreeSet<MapCell> adjacentCells = new TreeSet<>(new MapCellComparator());
 
         for (Direction direction : Direction.values()) {
             MapCell relativeCell = mapCell.getRelativeCell(direction);

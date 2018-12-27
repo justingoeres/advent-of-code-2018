@@ -9,7 +9,7 @@ public class MapCell {
 
     private Unit currentUnit;
 
-    public void setRelativeCell(MapCell relativeCell, Direction direction){
+    public void setRelativeCell(MapCell relativeCell, Direction direction) {
         switch (direction) {
             case UP:
                 aboveCell = relativeCell;
@@ -22,7 +22,7 @@ public class MapCell {
         }
     }
 
-    public MapCell getRelativeCell(Direction direction){
+    public MapCell getRelativeCell(Direction direction) {
         switch (direction) {
             case UP:
                 return aboveCell;
@@ -33,6 +33,7 @@ public class MapCell {
             case LEFT:
                 return leftCell;
         }
+        return null; // this should never happen
     }
 
 

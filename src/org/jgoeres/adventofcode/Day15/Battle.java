@@ -67,7 +67,7 @@ public class Battle {
             // Find the closest of the target cells
             // TODO: Need to eventually account for reachability here.
             MapCell closestTarget = BattleService.findClosestTarget(unit, targetCells);
-            ArrayList<MapCell> shortestPath = BattleService.sh
+     //       ArrayList<MapCell> shortestPath = BattleService.sh
             System.out.println(targetCells + "\t" + closestTarget);
         }
     }
