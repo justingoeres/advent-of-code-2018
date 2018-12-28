@@ -54,7 +54,8 @@ public abstract class BattleService {
             // Then find the cell adjacent to our current one (nextStep)
             // that is *closer* to our start point (i.e. its distance is lower)
             for (MapCell adjacentCell : findAdjacentCells(nextStep)) { // these will be sorted in reading order.
-                if (pathMapToTargets.get(adjacentCell) < currentDistance) {
+                if ((pathMapToTargets.get(adjacentCell) != null)
+                        && (pathMapToTargets.get(adjacentCell) < currentDistance)) {
                     // We've found the next closer step.
                     nextStep = adjacentCell;
                     break;
@@ -213,13 +214,14 @@ public abstract class BattleService {
                 x = 0; // and reset our column.
             }
             while (!((currentCell.getX() == x) && (currentCell.getY() == y))) { // keep going until we're at the screen coordinate for the currentCell
-                System.out.print(" ");
+                System.out.print(" \t");
                 x++; // and move forward one character.
             }
             // Then when we get to the current cell, print its counter value.
-            System.out.print(treeMap.get(currentCell));
+            System.out.print(treeMap.get(currentCell) + "\t");
             x++; // and move forward one character.
         }
+        System.out.println(); // linefeed at the end
     }
 
 }

@@ -16,6 +16,8 @@ public class Battle {
     TreeSet<Unit> goblins = new TreeSet<>(new UnitComparator());
     TreeSet<Unit> allUnits = new TreeSet<>(new UnitComparator());
 
+    private static final boolean DEBUG_PRINT_BATTLE = true;
+
     public Battle(String pathToFile) {
         loadBattle(pathToFile);
     }
@@ -70,6 +72,12 @@ public class Battle {
             if (nextStep != null) { // Does this account for when there's no move available?
                 unit.move(nextStep);
             }
+
+            // Print the battle after every move, if requested.
+            if (DEBUG_PRINT_BATTLE) {
+                printBattle();
+            }
+
         }
     }
 
@@ -126,6 +134,9 @@ public class Battle {
         // Done loading, now wire up all the cells.
         findAllConnections();
 
+        if (DEBUG_PRINT_BATTLE) {
+            printBattle();
+        }
     }
 
     private void findAllConnections() {
@@ -140,7 +151,34 @@ public class Battle {
         }
     }
 
-    private void printBattle(){
-        
+    private void printBattle() {
+        // battlefield input is 32x32
+        for (int y = 0; y < 32; y++) {
+            for (int x = 0; x < 32; x++) {
+                MapCell cellToPrint;
+                char charToPrint = '\0';
+                if ((cellToPrint = map.get(BattleService.keyFromXY(x, y))) != null) {
+                    // If this cell exists, see what it contains
+                    if (cellToPrint.getCurrentUnit() != null) {
+                        switch (cellToPrint.getCurrentUnit().getRace()) {
+                            case RACE_ELF:
+                                charToPrint = ELF;
+                                break;
+                            case RACE_GOBLIN:
+                                charToPrint = GOBLIN;
+                                break;
+                        }
+                    } else {
+                        charToPrint = OPEN;
+                    }
+                } else {
+                    // this cell doesn't exist (is a wall)
+                    charToPrint = WALL;
+                }
+                System.out.print(charToPrint);
+            }
+            System.out.println(); // go to the next line.
+        }
+
     }
 }
