@@ -6,6 +6,7 @@ import java.util.*;
 public abstract class BattleService {
 
     private static final boolean DEBUG_PRINT_PATH_MAP = true;
+    private static final boolean DEBUG_PRINT_ATTACKS = true;
 
     public static TreeSet<MapCell> identifyTargets(Unit unit, TreeSet<Unit> units, HashMap<String, MapCell> map) {
         TreeSet<MapCell> targetList = new TreeSet<>(new MapCellComparator());
@@ -142,6 +143,7 @@ public abstract class BattleService {
         while (!reachedEnd) {
             // For each PathCell with the current counter value...
             TreeSet<MapCell> edgeCells = new TreeSet<>(new MapCellComparator());
+            //TODO edgeCells will be empty if we're blocked in! Gives an infinite loop just now.
             for (Map.Entry<MapCell, Integer> pathCellEntry : pathCells.entrySet()) {
                 if (pathCellEntry.getValue() == counter) {
                     // If the counter for this cell is the current counter, we're on an edge.
@@ -178,7 +180,7 @@ public abstract class BattleService {
     }
 
 
-    private static TreeSet<MapCell> findAdjacentCells(MapCell mapCell) {
+    public static TreeSet<MapCell> findAdjacentCells(MapCell mapCell) {
         TreeSet<MapCell> adjacentCells = new TreeSet<>(new MapCellComparator());
 
         for (Direction direction : Direction.values()) {
@@ -190,6 +192,30 @@ public abstract class BattleService {
             }
         }
         return adjacentCells;
+    }
+
+    public static TreeSet<MapCell> findAdjacentEnemies(MapCell mapCell, Race enemyRace) {
+        TreeSet<MapCell> adjacentEnemies = new TreeSet<>(new MapCellComparator());
+
+        for (Direction direction : Direction.values()) {
+            MapCell relativeCell = mapCell.getRelativeCell(direction);
+            if ((relativeCell != null)  // relativeCell must exist (obviously)
+                    && (relativeCell.getCurrentUnit() != null)
+                    && (relativeCell.getCurrentUnit().getRace() == enemyRace))// ... and must contain an enemy
+            {
+                adjacentEnemies.add(relativeCell);
+            }
+        }
+        return adjacentEnemies;
+    }
+
+    public static void handleAttack(Unit attacker, Unit target) {
+        if (DEBUG_PRINT_ATTACKS) {
+            System.out.println(attacker.getRace() + " at (" + attacker.getCurrentCell().getX() + "," + attacker.getCurrentCell().getY() + ") attacks "
+                    + target.getRace() + " at (" + target.getCurrentCell().getX() + "," + target.getCurrentCell().getY() + ")");
+        }
+
+        target.takeHit();
     }
 
     private static void printPathMap(TreeMap<MapCell, Integer> treeMap) {

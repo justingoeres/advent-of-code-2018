@@ -16,7 +16,9 @@ public class Battle {
     TreeSet<Unit> goblins = new TreeSet<>(new UnitComparator());
     TreeSet<Unit> allUnits = new TreeSet<>(new UnitComparator());
 
-    private static final boolean DEBUG_PRINT_BATTLE = true;
+    private static final boolean DEBUG_PRINT_MAP = true;
+    private static final boolean DEBUG_PRINT_ARMIES = true;
+
 
     public Battle(String pathToFile) {
         loadBattle(pathToFile);
@@ -55,27 +57,49 @@ public class Battle {
         // Process this tick for every (living) unit (in order x,y)
         for (Unit unit : allUnits) {
 
-            TreeSet<Unit> enemyUnits = (unit.getRace() == RACE_ELF ? goblins : elves);
-            // targetCells is all empty cells adjacent to enemies.
-            TreeSet<MapCell> targetCells = BattleService.identifyTargets(unit,
-                    enemyUnits,
-                    map);
+            TreeSet<Unit> enemyUnits = (unit.getOppositeRace() == RACE_ELF ? elves : goblins);
+            // TODO: If enemyUnits is empty, the battle is over!
 
-            if (targetCells.isEmpty()) {
-                // If there are no valid target cells, end turn here somehow.
+            if (enemyUnits.isEmpty()) {
+                // No enemies; nothing to do!
+                break;
             }
 
-            // Find the closest of the target cells
-            // TODO: Need to eventually account for reachability here.
-            MapCell nextStep = BattleService.findStepToTarget(unit, targetCells);
+            Unit targetUnit = null;
+            // Are we already next to an enemy?
+            if ((targetUnit = unit.canAttackUnit()) != null) { // if there is a unit available for attack.
+                // Attack it.
+                BattleService.handleAttack(unit, targetUnit);
 
-            if (nextStep != null) { // Does this account for when there's no move available?
-                unit.move(nextStep);
+                if (targetUnit.isDead()) { // Did it die?
+                    // If so, remove it from the lists.
+                    allUnits.remove(targetUnit); // from all units
+                    // from its race
+                    (targetUnit.getRace() == RACE_ELF ? elves : goblins).remove(targetUnit);
+                }
+            } else { // No attack available, so try to move
+                // targetCells is all empty cells adjacent to enemies.
+                TreeSet<MapCell> targetCells = BattleService.identifyTargets(unit,
+                        enemyUnits,
+                        map);
+
+                if (targetCells.isEmpty()) {
+                    // If there are no valid target cells, end turn here somehow.
+                }
+
+                MapCell nextStep = BattleService.findStepToTarget(unit, targetCells);
+
+                if (nextStep != null) { // Does this account for when there's no move available?
+                    unit.move(nextStep);
+                }
+
+                // Print the battle after every move, if requested.
+                if (DEBUG_PRINT_MAP) {
+                    printBattle();
+                }
             }
-
-            // Print the battle after every move, if requested.
-            if (DEBUG_PRINT_BATTLE) {
-                printBattle();
+            if (DEBUG_PRINT_ARMIES) {
+                printArmies();
             }
 
         }
@@ -134,7 +158,7 @@ public class Battle {
         // Done loading, now wire up all the cells.
         findAllConnections();
 
-        if (DEBUG_PRINT_BATTLE) {
+        if (DEBUG_PRINT_MAP) {
             printBattle();
         }
     }
@@ -149,6 +173,12 @@ public class Battle {
                 referenceCell.setRelativeCell(relativeCell, direction);
             }
         }
+    }
+
+    public boolean isOver() {
+        boolean elvesDead = elves.isEmpty();
+        boolean goblinsDead = goblins.isEmpty();
+        return (elvesDead || goblinsDead);
     }
 
     private void printBattle() {
@@ -179,6 +209,20 @@ public class Battle {
             }
             System.out.println(); // go to the next line.
         }
+    }
 
+    private void printArmies() {
+        for (Unit elf : elves) {
+            System.out.println("Elf at (" + elf.getCurrentCell().getX() + ","
+                    + elf.getCurrentCell().getY() + "):\t"
+                    + elf.getHitPoints());
+        }
+        for (Unit goblin : goblins) {
+            System.out.println("Goblin at (" + goblin.getCurrentCell().getX() + ","
+                    + goblin.getCurrentCell().getY() + "):\t"
+                    + goblin.getHitPoints());
+        }
     }
 }
+
+

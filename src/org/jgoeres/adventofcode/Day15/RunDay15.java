@@ -11,7 +11,9 @@ public class RunDay15 {
         System.out.println("=== DAY 15A ===");
 
         Battle battle = new Battle(pathToInputs);
-        battle.doTimerTick();
+        while (!battle.isOver()) {
+            battle.doTimerTick();
+        }
         System.out.println(battle);
     }
 
