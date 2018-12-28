@@ -2,7 +2,7 @@ package org.jgoeres.adventofcode.Day15;
 
 public class RunDay15 {
     static final String pathToInputs = "day15/input.txt";
-    static final boolean DEBUG_PRINT_EACH_TURN = true;
+    static final boolean DEBUG_PRINT_EACH_TURN = false;
 
     public static void problem15A() {
         /*
@@ -12,17 +12,26 @@ public class RunDay15 {
 
         Battle battle = new Battle(pathToInputs);
 
-        int t = 0;
+        int roundsComplete = 0;
         while (!battle.isOver()) {
-            System.out.println("\n============ TURN #"+t+" ============");
+            System.out.println("\n============ TURN #" + roundsComplete + " ============");
             battle.doTimerTick();
-            if (DEBUG_PRINT_EACH_TURN){
+            if (DEBUG_PRINT_EACH_TURN) {
                 battle.printBattle();
                 battle.printArmies();
             }
-            t++;
+            roundsComplete++;
         }
-        System.out.println(battle);
+
+        battle.printArmies();
+
+        Race winner = battle.getWinner();
+        int totalScore = battle.calculateScore(winner);
+        System.out.println("Rounds complete:\t" + roundsComplete);
+        System.out.println("Winner:\t" + winner);
+        System.out.println("Total Score:\t" + totalScore);
+        System.out.println("Answer:\t" + roundsComplete + " x " + totalScore + " = " + (roundsComplete * totalScore));
+    // Wrong Answer: 230989 (too low)
     }
 
     public static void problem15B() {

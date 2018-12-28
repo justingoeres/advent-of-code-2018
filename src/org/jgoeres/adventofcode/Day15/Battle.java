@@ -2,9 +2,7 @@ package org.jgoeres.adventofcode.Day15;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeSet;
+import java.util.*;
 
 import static org.jgoeres.adventofcode.Day15.CharacterSet.*;
 import static org.jgoeres.adventofcode.Day15.Race.RACE_ELF;
@@ -17,7 +15,7 @@ public class Battle {
     TreeSet<Unit> allUnits = new TreeSet<>(new UnitComparator());
 
     private static final boolean DEBUG_PRINT_MAP = false;
-    private static final boolean DEBUG_PRINT_ARMIES = false;
+    private static final boolean DEBUG_PRINT_ARMIES = true;
 
 
     public Battle(String pathToFile) {
@@ -53,59 +51,101 @@ public class Battle {
         a target, the unit ends its turn
          */
 
-
+        TreeSet<Unit> deadUnits = new TreeSet<>(new UnitComparator());
         // Process this tick for every (living) unit (in order x,y)
         for (Unit unit : allUnits) {
+//        for (Iterator allUnitsIterator = allUnits.iterator(); allUnitsIterator.hasNext(); ) {
+//            Unit unit = (Unit) allUnitsIterator.next();
+
+            // TODO: NullPointerException if a unit dies during battle :(.
 
             TreeSet<Unit> enemyUnits = (unit.getOppositeRace() == RACE_ELF ? elves : goblins);
-            // TODO: If enemyUnits is empty, the battle is over!
 
-            if (enemyUnits.isEmpty()) {
+            boolean allDead = allDead(enemyUnits);
+//            if (enemyUnits.isEmpty()) {
+            if (allDead) {
                 // No enemies; nothing to do!
                 break;
             }
+            if (!unit.isDead()) { // if unit is alive
+                Unit targetUnit = null;
+                // Are we already next to an enemy?
+                if ((targetUnit = unit.canAttackUnit()) != null) { // if there is a unit available for attack.
+                    // Attack it.
+                    BattleService.handleAttack(unit, targetUnit);
 
-            Unit targetUnit = null;
-            // Are we already next to an enemy?
-            if ((targetUnit = unit.canAttackUnit()) != null) { // if there is a unit available for attack.
-                // Attack it.
-                BattleService.handleAttack(unit, targetUnit);
+                    if (targetUnit.isDead()) { // Did it die?
+//                    // If so, remove it from the lists.
+//                    allUnits.remove(targetUnit); // from all units
+//                    // from its race
+//                    (targetUnit.getRace() == RACE_ELF ? elves : goblins).remove(targetUnit);
+                        // do nothing, it obviously can't attack
+                        deadUnits.add(targetUnit);
+                    }
+                } else { // No attack available, so try to move
+                    // targetCells is all empty cells adjacent to enemies.
+                    TreeSet<MapCell> targetCells = BattleService.identifyTargets(unit,
+                            enemyUnits,
+                            map);
 
-                if (targetUnit.isDead()) { // Did it die?
-                    // If so, remove it from the lists.
-                    allUnits.remove(targetUnit); // from all units
-                    // from its race
-                    (targetUnit.getRace() == RACE_ELF ? elves : goblins).remove(targetUnit);
+                    if (targetCells.isEmpty()) {
+                        // If there are no valid target cells, end turn here somehow.
+                    }
+
+                    MapCell nextStep = BattleService.findStepToTarget(unit, targetCells);
+
+                    if (nextStep != null) { // Does this account for when there's no move available?
+                        unit.move(nextStep);
+                    } else {
+                        System.out.println("no move available");
+                    }
+
+                    // Print the battle after every move, if requested.
+                    if (DEBUG_PRINT_MAP) {
+                        printBattle();
+                    }
                 }
-            } else { // No attack available, so try to move
-                // targetCells is all empty cells adjacent to enemies.
-                TreeSet<MapCell> targetCells = BattleService.identifyTargets(unit,
-                        enemyUnits,
-                        map);
-
-                if (targetCells.isEmpty()) {
-                    // If there are no valid target cells, end turn here somehow.
-                }
-
-                MapCell nextStep = BattleService.findStepToTarget(unit, targetCells);
-
-                if (nextStep != null) { // Does this account for when there's no move available?
-                    unit.move(nextStep);
-                } else {
-                    System.out.println("no move available");
-                }
-
-                // Print the battle after every move, if requested.
-                if (DEBUG_PRINT_MAP) {
-                    printBattle();
-                }
-            }
-            if (DEBUG_PRINT_ARMIES) {
-                printArmies();
-            }
-
+            } // end if unit is alive.
         }
+        // Remove any dead bodies from the unit lists.
+//        for (Iterator deadUnitIterator = allUnits.iterator(); deadUnitIterator.hasNext(); ) {
+//            Unit unit = (Unit) deadUnitIterator.next();
+//            if (unit.isDead()) {
+//                deadUnitIterator.remove(); // remove from allUnits
+//                (unit.getRace() == RACE_ELF ? elves : goblins).remove(unit); // remove from its race.
+//            }
+
+       /* for (Unit deadUnit : deadUnits) {
+            for (Unit unit : allUnits) {
+                // remove if the name matches
+                if (deadUnit.getName().equals(unit.getName())) {
+                    allUnits.remove(unit); // remove from all units.
+                    break;
+                }
+            }
+            TreeSet<Unit> deadUnitRaceSet = (deadUnit.getRace() == RACE_ELF ? elves : goblins);
+            for (Unit unit : deadUnitRaceSet) {
+                // remove if the name matches
+                if (deadUnit.getName().equals(unit.getName())) {
+                    deadUnitRaceSet.remove(unit); // remove from race units.
+                    break;
+                }
+            }
+
+            //            boolean allUnitsRemoved = allUnits.remove(deadUnit);
+//            Race deadUnitRace = deadUnit.getRace();
+//            TreeSet<Unit> deadUnitRaceSet = (deadUnitRace == RACE_ELF ? elves : goblins);
+//            boolean raceRemoved = deadUnitRaceSet.remove(deadUnit); // remove from its race.
+//                        boolean raceRemoved = (deadUnit.getRace() == RACE_ELF ? elves : goblins).remove(deadUnit); // remove from its race.
+//            System.out.println(allUnitsRemoved + "\t" + raceRemoved);
+        }
+        */
+        if (DEBUG_PRINT_ARMIES) {
+            printArmies();
+        }
+
     }
+
 
     private void loadBattle(String pathToFile) {
         /*
@@ -137,11 +177,11 @@ public class Battle {
                             Unit newUnit = null;
                             if (currentChar.equals(ELF)) { // if this is an elf
                                 // Make an elf
-                                newUnit = new Unit(RACE_ELF, newCell);
+                                newUnit = new Unit(RACE_ELF, newCell, "E" + x + "," + y);
                                 elves.add(newUnit);
                             } else if (currentChar.equals(GOBLIN)) { // if this is a goblin
                                 // Make a goblin
-                                newUnit = new Unit(RACE_GOBLIN, newCell);
+                                newUnit = new Unit(RACE_GOBLIN, newCell, "E" + x + "," + y);
                                 goblins.add(newUnit);
                             }
                             if (newUnit != null) {
@@ -177,10 +217,38 @@ public class Battle {
         }
     }
 
+    private boolean allDead(TreeSet<Unit> enemyUnits) {
+        boolean allDead = true;
+        for (Unit enemyUnit : enemyUnits) {
+            allDead &= enemyUnit.isDead();
+            if (!allDead) {
+                break;
+            }
+        }
+        return allDead;
+    }
+
     public boolean isOver() {
-        boolean elvesDead = elves.isEmpty();
-        boolean goblinsDead = goblins.isEmpty();
+        boolean elvesDead = allDead(elves);
+        boolean goblinsDead = allDead(goblins);
         return (elvesDead || goblinsDead);
+    }
+
+    public Race getWinner() {
+        if (!allDead(elves)) return RACE_ELF;
+        return RACE_GOBLIN;
+    }
+
+    public int calculateScore(Race winner) {
+        TreeSet<Unit> winningSet = (winner == RACE_ELF ? elves : goblins);
+        int totalScore = 0;
+        for (Unit unit : winningSet) {
+            if (!unit.isDead()) {
+                // Ignore dead guys
+                totalScore += unit.getHitPoints();
+            }
+        }
+        return totalScore;
     }
 
     public void printBattle() {

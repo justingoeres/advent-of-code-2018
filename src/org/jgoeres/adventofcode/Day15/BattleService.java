@@ -6,7 +6,7 @@ import java.util.*;
 public abstract class BattleService {
 
     private static final boolean DEBUG_PRINT_PATH_MAP = false;
-    private static final boolean DEBUG_PRINT_ATTACKS = true;
+    private static final boolean DEBUG_PRINT_ATTACKS = false;
 
     public static TreeSet<MapCell> identifyTargets(Unit unit, TreeSet<Unit> units, HashMap<String, MapCell> map) {
         TreeSet<MapCell> targetList = new TreeSet<>(new MapCellComparator());
