@@ -1,7 +1,9 @@
 package org.jgoeres.adventofcode.Day15;
 
 public class RunDay15 {
-    static final String pathToInputs = "day15/input.txt";
+//    static final String pathToInputs = "day15/input.txt";
+//static final String pathToInputs = "day15/input-example1.txt";
+    static final String pathToInputs = "day15/input-example2.txt";
     static final boolean DEBUG_PRINT_EACH_TURN = false;
 
     public static void problem15A() {
