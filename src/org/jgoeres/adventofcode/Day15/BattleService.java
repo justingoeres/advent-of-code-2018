@@ -1,10 +1,11 @@
 package org.jgoeres.adventofcode.Day15;
 
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 public abstract class BattleService {
+
+    private static final boolean DEBUG_PRINT_PATH_MAP = true;
 
     public static TreeSet<MapCell> identifyTargets(Unit unit, TreeSet<Unit> units, HashMap<String, MapCell> map) {
         TreeSet<MapCell> targetList = new TreeSet<>(new MapCellComparator());
@@ -18,39 +19,52 @@ public abstract class BattleService {
         return targetList;
     }
 
-    public static MapCell findClosestTarget(Unit unit, TreeSet<MapCell> targetCells) {
+    public static MapCell findStepToTarget(Unit unit, TreeSet<MapCell> targetCells) {
         Integer minDistance = Integer.MAX_VALUE;
         MapCell closestCell = null;
 
-   //     for (MapCell mapCell : targetCells) {
-            // Because the TreeSet already is in "reading" order, we don't have to worry
-            // about ties. The first one we find will be the "first in reading order" one.
+        //     for (MapCell mapCell : targetCells) {
+        // Because the TreeSet already is in "reading" order, we don't have to worry
+        // about ties. The first one we find will be the "first in reading order" one.
 
-            // Find the shortest path to this targetCell.
-            TreeMap<MapCell, Integer> shortestPathMap = shortestPathToTarget(unit, targetCells);
-            //TODO: WORKING HERE!!! NEED TO FIND THE ACTUAL SHORTEST PATH.
-            // Use the counter value of Unit.currentCell in the shortestPathMap to determine the
-            // shortest path. That will give us the "closestTarget" MapCell.
+        // Find the shortest path to this targetCell.
+        TreeMap<MapCell, Integer> pathMapToTargets = pathMapToTargets(unit, targetCells);
+        if (DEBUG_PRINT_PATH_MAP) {
+            printPathMap(pathMapToTargets);
+        }
 
-            // Then (in the calling code?) get the minimum counter number from each "shortestPath" (there maybe more than one)
-            // for each cell adjacent to Unit.currentCell. -- or maybe we calculate the first step here and return that.
-
-
-            /*
-            // Find the manhattan distance to each target cell,
-            // keeping track of the closest one.
-            // TODO: Account for pathfinding & reachability at some point.
-            Integer distance = manhattanDistance(unit.getCurrentCell(), mapCell);
-            if ((distance < minDistance)
-                    || (closestCell == null)) {
-                // If this is the closest cell we've seen.
-                // Update the minimum.
-                minDistance = distance;
-                closestCell = mapCell;
+        // Now search through the pathMapToTargets to find the first target (in reading order)
+        // in the map. That's the one we're going to move towards.
+        MapCell destinationCell = null;
+        for (MapCell pathTarget : pathMapToTargets.keySet()) {
+            if (targetCells.contains(pathTarget)) {
+                // if this cell in the pathMap is a targetCell, that's our destination!
+                destinationCell = pathTarget;
+                break;
             }
-            */
-//        }
-        return closestCell;
+        }
+
+        // Now trace the path from destinationCell back to our currentCell.
+        TreeMap<Integer, MapCell> pathSteps = new TreeMap<>(); // will sort by Integer by default? (I hope)
+        MapCell nextStep = destinationCell;
+        int currentDistance = 0;
+        while ((currentDistance = pathMapToTargets.get(nextStep)) > 1) { // while we're still not all the way back to our currentCell
+            // Add this step to the path.
+            pathSteps.put(currentDistance, nextStep);
+            // Then find the cell adjacent to our current one (nextStep)
+            // that is *closer* to our start point (i.e. its distance is lower)
+            for (MapCell adjacentCell : findAdjacentCells(nextStep)) { // these will be sorted in reading order.
+                if (pathMapToTargets.get(adjacentCell) < currentDistance) {
+                    // We've found the next closer step.
+                    nextStep = adjacentCell;
+                    break;
+                }
+            }
+        }
+
+        // When we get here, nextStep is the cell we need to move to!
+
+        return nextStep;
     }
 
 
@@ -106,8 +120,8 @@ public abstract class BattleService {
         return (xDist + yDist);
     }
 
-    private static TreeMap<MapCell, Integer> shortestPathToTarget(Unit unit, TreeSet<MapCell> targetCells) {
-        // Calculate the ArrayList of steps (MapCells) that give the shorted path to the target.
+    private static TreeMap<MapCell, Integer> pathMapToTargets(Unit unit, TreeSet<MapCell> targetCells) {
+        // Calculate the ArrayList of steps (MapCells) that give the shortest path(s) to the target(s).
         // Algorithm Ref: https://en.scratch-wiki.info/wiki/Pathfinding
 
         TreeMap<MapCell, Integer> pathCells = new TreeMap<>(new MapCellComparator()); // TreeSet to store all the cells we've checked.
@@ -154,7 +168,7 @@ public abstract class BattleService {
             }
         }
 
-        // Now we've got a whole TreeMap of PathCells that includes our startPoint!
+        // Now we've got a whole TreeMap of PathCells that includes our startPoint and at least one targetCell!
         // We just need to find a path through it that obeys our "go in reading order" rules.
 
         //TODO: Working above on the TreeMap comparator, but overall need to somehow sort our PathCells.
@@ -176,4 +190,37 @@ public abstract class BattleService {
         }
         return adjacentCells;
     }
+
+    private static void printPathMap(TreeMap<MapCell, Integer> treeMap) {
+        // The TreeMap is already sorted for printing, so we *should* be able to just itertate through it.
+        MapCell origin = treeMap.firstKey(); // upper-leftmost cell.
+//        MapCell extent = treeMap.lastKey(); // lower-rightmost cell
+        int x0 = origin.getX();
+        int y0 = origin.getY();
+//        int xmax = extent.getX();
+//        int ymax = extent.getY();
+
+        int x = 0;
+        int y = 0;
+        for (Iterator itr = treeMap.keySet().iterator(); itr.hasNext(); ) { // for each MapCell in the map
+            MapCell currentCell = (MapCell) itr.next();
+            if (currentCell.getY() > y) {
+                // If we're on a new row...
+                // Start a new line
+                System.out.println();
+                // And update our row.
+                y = currentCell.getY();
+                x = 0; // and reset our column.
+            }
+            while (!((currentCell.getX() == x) && (currentCell.getY() == y))) { // keep going until we're at the screen coordinate for the currentCell
+                System.out.print(" ");
+                x++; // and move forward one character.
+            }
+            // Then when we get to the current cell, print its counter value.
+            System.out.print(treeMap.get(currentCell));
+            x++; // and move forward one character.
+        }
+    }
+
 }
+

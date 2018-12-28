@@ -2,7 +2,6 @@ package org.jgoeres.adventofcode.Day15;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeSet;
@@ -66,9 +65,11 @@ public class Battle {
 
             // Find the closest of the target cells
             // TODO: Need to eventually account for reachability here.
-            MapCell closestTarget = BattleService.findClosestTarget(unit, targetCells);
-     //       ArrayList<MapCell> shortestPath = BattleService.sh
-            System.out.println(targetCells + "\t" + closestTarget);
+            MapCell nextStep = BattleService.findStepToTarget(unit, targetCells);
+
+            if (nextStep != null) { // Does this account for when there's no move available?
+                unit.move(nextStep);
+            }
         }
     }
 
@@ -139,5 +140,7 @@ public class Battle {
         }
     }
 
-
+    private void printBattle(){
+        
+    }
 }

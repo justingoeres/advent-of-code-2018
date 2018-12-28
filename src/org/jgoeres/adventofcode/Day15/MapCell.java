@@ -58,4 +58,8 @@ public class MapCell {
         this.currentUnit = currentUnit;
     }
 
+    public void removeUnit(){
+        setCurrentUnit(null);
+    }
+
 }
