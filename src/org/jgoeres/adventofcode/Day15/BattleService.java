@@ -5,7 +5,7 @@ import java.util.*;
 
 public abstract class BattleService {
 
-    private static final boolean DEBUG_PRINT_PATH_MAP = true;
+    private static final boolean DEBUG_PRINT_PATH_MAP = false;
     private static final boolean DEBUG_PRINT_ATTACKS = true;
 
     public static TreeSet<MapCell> identifyTargets(Unit unit, TreeSet<Unit> units, HashMap<String, MapCell> map) {
@@ -30,6 +30,11 @@ public abstract class BattleService {
 
         // Find the shortest path to this targetCell.
         TreeMap<MapCell, Integer> pathMapToTargets = pathMapToTargets(unit, targetCells);
+        if (pathMapToTargets == null) {
+            // If there was no path to any target.
+            return null; // give up and return null.
+        }
+
         if (DEBUG_PRINT_PATH_MAP) {
             printPathMap(pathMapToTargets);
         }
@@ -150,31 +155,36 @@ public abstract class BattleService {
                     edgeCells.add(pathCellEntry.getKey());
                 }
             }
-            // Now we've got all the edge cells.
-            counter++; // increment counter because all the cells we're about to add are 1 further from the endPoint.
+            if (!edgeCells.isEmpty()) // If we have new edge cells to add.
+            {
+                // Now we've got all the edge cells.
+                counter++; // increment counter because all the cells we're about to add are 1 further from the endPoint.
 
-            // For each edge cell, get all of its adjacent cells, but drop the ones already in our TreeMap.
-            for (MapCell edgeCell : edgeCells) {
-                for (MapCell newEdgeCandidate : findAdjacentCells(edgeCell)) {
-                    if (!pathCells.containsKey(newEdgeCandidate)) {
-                        // If this cell is NOT already in our pathCells...
-                        pathCells.put(newEdgeCandidate, counter);
+                // For each edge cell, get all of its adjacent cells, but drop the ones already in our TreeMap.
+                for (MapCell edgeCell : edgeCells) {
+                    for (MapCell newEdgeCandidate : findAdjacentCells(edgeCell)) {
+                        if (!pathCells.containsKey(newEdgeCandidate)) {
+                            // If this cell is NOT already in our pathCells...
+                            pathCells.put(newEdgeCandidate, counter);
+                        }
                     }
                 }
-            }
-            // Now we've got all the NEW edge cells added, with the new counter value.
-            // Did we reach any endpoints yet?
-            for (MapCell targetCell : targetCells) {
-                if (pathCells.containsKey(targetCell)) {
-                    reachedEnd = true;
+                // Now we've got all the NEW edge cells added, with the new counter value.
+                // Did we reach any endpoints yet?
+                for (MapCell targetCell : targetCells) {
+                    if (pathCells.containsKey(targetCell)) {
+                        reachedEnd = true;
+                    }
                 }
+            } else { // no new edge cells were found, so we've filled up everything we can get to.
+                // No move available, so return null.
+                return null;
             }
         }
 
         // Now we've got a whole TreeMap of PathCells that includes our startPoint and at least one targetCell!
         // We just need to find a path through it that obeys our "go in reading order" rules.
 
-        //TODO: Working above on the TreeMap comparator, but overall need to somehow sort our PathCells.
         // I think.
         return pathCells; // Return the entire pathCells map. Let the calling code decide what to do with it.
     }

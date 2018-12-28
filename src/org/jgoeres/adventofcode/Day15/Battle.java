@@ -16,8 +16,8 @@ public class Battle {
     TreeSet<Unit> goblins = new TreeSet<>(new UnitComparator());
     TreeSet<Unit> allUnits = new TreeSet<>(new UnitComparator());
 
-    private static final boolean DEBUG_PRINT_MAP = true;
-    private static final boolean DEBUG_PRINT_ARMIES = true;
+    private static final boolean DEBUG_PRINT_MAP = false;
+    private static final boolean DEBUG_PRINT_ARMIES = false;
 
 
     public Battle(String pathToFile) {
@@ -91,6 +91,8 @@ public class Battle {
 
                 if (nextStep != null) { // Does this account for when there's no move available?
                     unit.move(nextStep);
+                } else {
+                    System.out.println("no move available");
                 }
 
                 // Print the battle after every move, if requested.
@@ -181,7 +183,7 @@ public class Battle {
         return (elvesDead || goblinsDead);
     }
 
-    private void printBattle() {
+    public void printBattle() {
         // battlefield input is 32x32
         for (int y = 0; y < 32; y++) {
             for (int x = 0; x < 32; x++) {
@@ -211,7 +213,7 @@ public class Battle {
         }
     }
 
-    private void printArmies() {
+    public void printArmies() {
         for (Unit elf : elves) {
             System.out.println("Elf at (" + elf.getCurrentCell().getX() + ","
                     + elf.getCurrentCell().getY() + "):\t"
