@@ -45,7 +45,6 @@ public class Unit {
                 if ((weakestEnemy == null)
                         || (adjacentEnemy.getHitPoints() < weakestEnemy.getHitPoints())) {
                     weakestEnemy = adjacentEnemy;
-                    break;
                 }
             }
         }

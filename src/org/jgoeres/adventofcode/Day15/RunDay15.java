@@ -1,10 +1,10 @@
 package org.jgoeres.adventofcode.Day15;
 
 public class RunDay15 {
-//    static final String pathToInputs = "day15/input.txt";
-//static final String pathToInputs = "day15/input-example1.txt";
-    static final String pathToInputs = "day15/input-example2.txt";
-    static final boolean DEBUG_PRINT_EACH_TURN = false;
+    //    static final String pathToInputs = "day15/input.txt";
+    static final String pathToInputs = "day15/input-example1.txt"; // 47 rounds, 590 hp = 27730.
+    //static final String pathToInputs = "day15/input-example2.txt";
+    static final boolean DEBUG_PRINT_EACH_TURN = true;
 
     public static void problem15A() {
         /*

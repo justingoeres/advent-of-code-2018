@@ -15,7 +15,7 @@ public class Battle {
     TreeSet<Unit> allUnits = new TreeSet<>(new UnitComparator());
 
     private static final boolean DEBUG_PRINT_MAP = false;
-    private static final boolean DEBUG_PRINT_ARMIES = true;
+    private static final boolean DEBUG_PRINT_ARMIES = false;
 
 
     public Battle(String pathToFile) {
@@ -57,7 +57,6 @@ public class Battle {
 //        for (Iterator allUnitsIterator = allUnits.iterator(); allUnitsIterator.hasNext(); ) {
 //            Unit unit = (Unit) allUnitsIterator.next();
 
-            // TODO: NullPointerException if a unit dies during battle :(.
 
             TreeSet<Unit> enemyUnits = (unit.getOppositeRace() == RACE_ELF ? elves : goblins);
 
@@ -98,6 +97,21 @@ public class Battle {
                         unit.move(nextStep);
                     } else {
                         System.out.println("no move available");
+                    }
+
+                    // After the move, try to attack.
+                    if ((targetUnit = unit.canAttackUnit()) != null) { // if there is a unit available for attack.
+                        // Attack it.
+                        BattleService.handleAttack(unit, targetUnit);
+
+                        if (targetUnit.isDead()) { // Did it die?
+//                    // If so, remove it from the lists.
+//                    allUnits.remove(targetUnit); // from all units
+//                    // from its race
+//                    (targetUnit.getRace() == RACE_ELF ? elves : goblins).remove(targetUnit);
+                            // do nothing, it obviously can't attack
+                            deadUnits.add(targetUnit);
+                        }
                     }
 
                     // Print the battle after every move, if requested.
@@ -181,7 +195,7 @@ public class Battle {
                                 elves.add(newUnit);
                             } else if (currentChar.equals(GOBLIN)) { // if this is a goblin
                                 // Make a goblin
-                                newUnit = new Unit(RACE_GOBLIN, newCell, "E" + x + "," + y);
+                                newUnit = new Unit(RACE_GOBLIN, newCell, "G" + x + "," + y);
                                 goblins.add(newUnit);
                             }
                             if (newUnit != null) {
@@ -253,8 +267,16 @@ public class Battle {
 
     public void printBattle() {
         // battlefield input is 32x32
-        for (int y = 0; y < 32; y++) {
-            for (int x = 0; x < 32; x++) {
+
+        int xmax = 0;
+        int ymax = 0;
+        for(Map.Entry<String,MapCell> mapCellEntry: map.entrySet()){
+            MapCell mapCell = mapCellEntry.getValue();
+            if (mapCell.getX() > xmax) xmax = mapCell.getX();
+            if (mapCell.getY() > ymax) ymax = mapCell.getY();
+        }
+        for (int y = 0; y <= ymax; y++) {
+            for (int x = 0; x <= xmax; x++) {
                 MapCell cellToPrint;
                 char charToPrint = '\0';
                 if ((cellToPrint = map.get(BattleService.keyFromXY(x, y))) != null) {
