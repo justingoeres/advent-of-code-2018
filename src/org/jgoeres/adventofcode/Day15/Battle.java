@@ -10,9 +10,12 @@ import static org.jgoeres.adventofcode.Day15.Race.RACE_GOBLIN;
 
 public class Battle {
     HashMap<String, MapCell> map = new HashMap<>();
-    TreeSet<Unit> elves = new TreeSet<>(new UnitComparator());
-    TreeSet<Unit> goblins = new TreeSet<>(new UnitComparator());
-    TreeSet<Unit> allUnits = new TreeSet<>(new UnitComparator());
+    //    TreeSet<Unit> elves = new TreeSet<>(new UnitComparator());
+//    TreeSet<Unit> goblins = new TreeSet<>(new UnitComparator());
+//    TreeSet<Unit> allUnits = new TreeSet<>(new UnitComparator());
+    ArrayList<Unit> elves = new ArrayList<>();
+    ArrayList<Unit> goblins = new ArrayList<>();
+    ArrayList<Unit> allUnits = new ArrayList<>();
 
     private static final boolean DEBUG_PRINT_MAP = false;
     private static final boolean DEBUG_PRINT_ARMIES = false;
@@ -51,6 +54,11 @@ public class Battle {
         a target, the unit ends its turn
          */
 
+        // Sort everything?
+        allUnits.sort(new UnitComparator());
+        elves.sort(new UnitComparator());
+        goblins.sort(new UnitComparator());
+
         TreeSet<Unit> deadUnits = new TreeSet<>(new UnitComparator());
         // Process this tick for every (living) unit (in order x,y)
         for (Unit unit : allUnits) {
@@ -58,7 +66,7 @@ public class Battle {
 //            Unit unit = (Unit) allUnitsIterator.next();
 
 
-            TreeSet<Unit> enemyUnits = (unit.getOppositeRace() == RACE_ELF ? elves : goblins);
+            ArrayList<Unit> enemyUnits = (unit.getOppositeRace() == RACE_ELF ? elves : goblins);
 
             boolean allDead = allDead(enemyUnits);
 //            if (enemyUnits.isEmpty()) {
@@ -96,7 +104,7 @@ public class Battle {
                     if (nextStep != null) { // Does this account for when there's no move available?
                         unit.move(nextStep);
                     } else {
-                        System.out.println("no move available");
+//                        System.out.println("no move available");
                     }
 
                     // After the move, try to attack.
@@ -231,7 +239,7 @@ public class Battle {
         }
     }
 
-    private boolean allDead(TreeSet<Unit> enemyUnits) {
+    private boolean allDead(ArrayList<Unit> enemyUnits) {
         boolean allDead = true;
         for (Unit enemyUnit : enemyUnits) {
             allDead &= enemyUnit.isDead();
@@ -254,7 +262,7 @@ public class Battle {
     }
 
     public int calculateScore(Race winner) {
-        TreeSet<Unit> winningSet = (winner == RACE_ELF ? elves : goblins);
+        ArrayList<Unit> winningSet = (winner == RACE_ELF ? elves : goblins);
         int totalScore = 0;
         for (Unit unit : winningSet) {
             if (!unit.isDead()) {
@@ -270,7 +278,7 @@ public class Battle {
 
         int xmax = 0;
         int ymax = 0;
-        for(Map.Entry<String,MapCell> mapCellEntry: map.entrySet()){
+        for (Map.Entry<String, MapCell> mapCellEntry : map.entrySet()) {
             MapCell mapCell = mapCellEntry.getValue();
             if (mapCell.getX() > xmax) xmax = mapCell.getX();
             if (mapCell.getY() > ymax) ymax = mapCell.getY();
