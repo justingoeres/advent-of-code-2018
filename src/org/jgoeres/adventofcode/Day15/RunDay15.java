@@ -41,7 +41,7 @@ public class RunDay15 {
     Outcome: 20 * 937 = 18740
      */
 
-    static final boolean DEBUG_PRINT_EACH_TURN = false;
+    static final boolean DEBUG_PRINT_EACH_TURN = true;
 
     public static void problem15A() {
         /*
@@ -68,16 +68,18 @@ public class RunDay15 {
             }
         }
 
+        battle.printBattle();
         battle.printArmies();
 
         Race winner = battle.getWinner();
         int totalScore = battle.calculateScore(winner);
         System.out.println("Rounds complete:\t" + roundsComplete);
         System.out.println("Winner:\t\t" + winner);
-        System.out.println("Total Hitpoint:\t\t" + totalScore);
+        System.out.println("Total Hitpoints:\t\t" + totalScore);
         System.out.println("Answer:\t" + roundsComplete + " x " + totalScore + " =\t" + (roundsComplete * totalScore));
         // Wrong Answer: 230989 (too low)
-        // Wrong Answer: 237745 (too high)
+        // Wrong Answer: 234948 (too low)   (84 x 2797)
+        // Wrong Answer: 237745 (too high)  (85 x 2797)
     }
 
     public static void problem15B() {

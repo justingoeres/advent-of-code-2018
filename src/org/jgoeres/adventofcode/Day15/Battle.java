@@ -130,13 +130,13 @@ public class Battle {
             } // end if unit is alive.
         }
         // Remove any dead bodies from the unit lists.
-//        for (Iterator deadUnitIterator = allUnits.iterator(); deadUnitIterator.hasNext(); ) {
-//            Unit unit = (Unit) deadUnitIterator.next();
-//            if (unit.isDead()) {
-//                deadUnitIterator.remove(); // remove from allUnits
-//                (unit.getRace() == RACE_ELF ? elves : goblins).remove(unit); // remove from its race.
-//            }
-
+        for (Iterator deadUnitIterator = allUnits.iterator(); deadUnitIterator.hasNext(); ) {
+            Unit unit = (Unit) deadUnitIterator.next();
+            if (unit.isDead()) {
+                deadUnitIterator.remove(); // remove from allUnits
+                (unit.getRace() == RACE_ELF ? elves : goblins).remove(unit); // remove from its race.
+            }
+        }
        /* for (Unit deadUnit : deadUnits) {
             for (Unit unit : allUnits) {
                 // remove if the name matches

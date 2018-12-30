@@ -120,13 +120,6 @@ public abstract class BattleService {
         }
     }
 
-    private static Integer manhattanDistance(MapCell p1, MapCell p2) {
-        Integer xDist = Math.abs(p2.getX() - p1.getX());
-        Integer yDist = Math.abs(p2.getY() - p1.getY());
-
-        return (xDist + yDist);
-    }
-
     private static TreeMap<MapCell, Integer> pathMapToTargets(Unit unit, TreeSet<MapCell> targetCells) {
         // Calculate the ArrayList of steps (MapCells) that give the shortest path(s) to the target(s).
         // Algorithm Ref: https://en.scratch-wiki.info/wiki/Pathfinding
