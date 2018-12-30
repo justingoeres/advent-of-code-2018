@@ -18,8 +18,6 @@ public class Battle {
     ArrayList<Unit> allUnits = new ArrayList<>();
 
     private static final boolean DEBUG_PRINT_MAP = false;
-    private static final boolean DEBUG_PRINT_ARMIES = false;
-
 
     public Battle(String pathToFile) {
         loadBattle(pathToFile);
@@ -162,10 +160,6 @@ public class Battle {
 //            System.out.println(allUnitsRemoved + "\t" + raceRemoved);
         }
         */
-        if (DEBUG_PRINT_ARMIES) {
-            printArmies();
-        }
-
     }
 
 
@@ -283,13 +277,17 @@ public class Battle {
             if (mapCell.getX() > xmax) xmax = mapCell.getX();
             if (mapCell.getY() > ymax) ymax = mapCell.getY();
         }
+
         for (int y = 0; y <= ymax; y++) {
+            String battleLine = "";
+            ArrayList<Unit> unitsInfo = new ArrayList<>();
             for (int x = 0; x <= xmax; x++) {
                 MapCell cellToPrint;
                 char charToPrint = '\0';
                 if ((cellToPrint = map.get(BattleService.keyFromXY(x, y))) != null) {
                     // If this cell exists, see what it contains
                     if (cellToPrint.getCurrentUnit() != null) {
+                        unitsInfo.add(cellToPrint.getCurrentUnit());
                         switch (cellToPrint.getCurrentUnit().getRace()) {
                             case RACE_ELF:
                                 charToPrint = ELF;
@@ -305,9 +303,11 @@ public class Battle {
                     // this cell doesn't exist (is a wall)
                     charToPrint = WALL;
                 }
-                System.out.print(charToPrint);
+//                System.out.print(charToPrint);
+                battleLine += charToPrint;
             }
-            System.out.println(); // go to the next line.
+//            System.out.println(); // go to the next line.
+            System.out.println(battleLine + "\t" + BattleService.formatUnitsInfo(unitsInfo)); // go to the next line.
         }
     }
 

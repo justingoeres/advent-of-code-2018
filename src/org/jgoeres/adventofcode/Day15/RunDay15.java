@@ -53,13 +53,10 @@ public class RunDay15 {
 
         int roundsComplete = 0;
         while (true) {
-            if (DEBUG_PRINT_EACH_TURN) {
-                System.out.println("\n============ TURN #" + roundsComplete + " ============");
-            }
             battle.doTimerTick();
             if (DEBUG_PRINT_EACH_TURN) {
+                System.out.println("\n============ TURN #" + roundsComplete + " ============");
                 battle.printBattle();
-                battle.printArmies();
             }
             if (!battle.isOver()) { // If we're not done...
                 roundsComplete++; // ... mark the round complete, then continue.
@@ -68,8 +65,8 @@ public class RunDay15 {
             }
         }
 
+        System.out.println("\n============ FINAL RESULT AFTER " + roundsComplete + " ROUNDS ============");
         battle.printBattle();
-        battle.printArmies();
 
         Race winner = battle.getWinner();
         int totalScore = battle.calculateScore(winner);

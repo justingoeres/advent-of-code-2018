@@ -1,6 +1,8 @@
 package org.jgoeres.adventofcode.Day15;
 
 
+import static org.jgoeres.adventofcode.Day15.CharacterSet.ELF;
+import static org.jgoeres.adventofcode.Day15.CharacterSet.GOBLIN;
 import static org.jgoeres.adventofcode.Day15.Race.RACE_ELF;
 import static org.jgoeres.adventofcode.Day15.Race.RACE_GOBLIN;
 
@@ -97,6 +99,12 @@ public class Unit {
         return name;
     }
 
+    public String formatUnitInfo() {
+        String result = String.format("%c(%d)",
+                (getRace() == RACE_ELF ? ELF : GOBLIN),
+                getHitPoints());
+        return result;
+    }
 }
 
 

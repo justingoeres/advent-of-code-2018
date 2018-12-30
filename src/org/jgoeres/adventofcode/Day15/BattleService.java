@@ -253,5 +253,16 @@ public abstract class BattleService {
         System.out.println(); // linefeed at the end
     }
 
+    public static String formatUnitsInfo(ArrayList<Unit> units) {
+        String result = "";
+        Iterator<Unit> it = units.iterator();
+        if (it.hasNext()) {
+            result += it.next().formatUnitInfo();
+        }
+        while (it.hasNext()) {
+            result += ", " + it.next().formatUnitInfo();
+        }
+        return result;
+    }
 }
 
