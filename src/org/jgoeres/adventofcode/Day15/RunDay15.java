@@ -1,7 +1,7 @@
 package org.jgoeres.adventofcode.Day15;
 
 public class RunDay15 {
-//    static final String pathToInputs = "day15/input.txt";
+    static final String pathToInputs = "day15/input.txt";
 //    static final String pathToInputs = "day15/input-example1.txt";
     // 47 rounds, 590 hp = 27730.
 
@@ -51,13 +51,13 @@ public class RunDay15 {
     Outcome: 13400 (200 x 67) (PASS)
      */
 
-    static String pathToInputs = "day15/examples/aoc-2018/15/tests/reddit2/input.txt";
+//    static String pathToInputs = "day15/examples/aoc-2018/15/tests/reddit2/input.txt";
     /*
     Outcome: Part 1: 13987 (197 x 71) (PASS)
      */
 
 
-    static final boolean DEBUG_PRINT_EACH_TURN = true;
+    static final boolean DEBUG_PRINT_EACH_TURN = false;
 
     public static void problem15A() {
         problem15A(pathToInputs);
@@ -97,10 +97,12 @@ public class RunDay15 {
         System.out.println("Winner:\t\t" + winner);
         System.out.println("Total Hitpoints:\t\t" + totalScore);
         System.out.println("Answer:\t" + roundsComplete + " x " + totalScore + " =\t" + (roundsComplete * totalScore));
-        // Wrong Answer: 230989 (too low)
-        // Wrong Answer: 234948 (too low)   (84 x 2797)
-        // Wrong Answer: 237745 (too high)  (85 x 2797)
-        // RIGHT ANSWER: 237490 (found with python example BUT WHY??)
+        /* Answer:
+        Rounds complete:	85
+        Winner:		RACE_GOBLIN
+        Total Hitpoints:		2794
+        Answer:	85 x 2794 =	237490
+         */
 
         return totalScore * roundsComplete;
     }

@@ -51,13 +51,14 @@ public abstract class BattleService {
         }
 
         // Now trace the path from currentCell to our destinationCell to find the next step we need to take.
-        MapCell nextStep = traceNextStep(destinationCell,pathMapToTargets);
+//        MapCell nextStep = traceNextStep(destinationCell, pathMapToTargets);
+        MapCell nextStep = traceNextStepForward(unit.getCurrentCell(), destinationCell, pathMapToTargets);
         // When we get here, nextStep is the cell we need to move to!
 
         return nextStep;
     }
 
-    private static MapCell traceNextStep(MapCell destinationCell,TreeMap<MapCell, Integer> pathMapToTargets) {
+    private static MapCell traceNextStep(MapCell destinationCell, TreeMap<MapCell, Integer> pathMapToTargets) {
         // Now trace the path from destinationCell back to our currentCell.
         TreeMap<Integer, MapCell> pathSteps = new TreeMap<>(); // will sort by Integer by default? (I hope)
         MapCell nextStep = destinationCell;
@@ -77,6 +78,43 @@ public abstract class BattleService {
             }
         }
         return nextStep;
+    }
+
+    private static MapCell traceNextStepForward(MapCell startCell, MapCell destinationCell, TreeMap<MapCell, Integer> pathMapToTargets) {
+        int counter = 0;
+
+        ArrayList<MapCell> pathSteps = new ArrayList<>();
+
+        boolean foundPath = false;
+//        MapCell currentCell = startCell;
+        traceNextStepRecursive(startCell, destinationCell, pathMapToTargets, counter, pathSteps);
+
+        return pathSteps.get(pathSteps.size() - 1); // last element of pathSteps is our next step on the path.
+    }
+
+    private static boolean traceNextStepRecursive(MapCell currentCell, MapCell destinationCell,
+                                                  TreeMap<MapCell, Integer> pathMapToTargets,
+                                                  int counter,
+                                                  ArrayList<MapCell> pathSteps) {
+        if (currentCell == destinationCell) {
+            return true;
+        }
+        boolean foundPath = false;
+        for (MapCell adjacentCell : findAdjacentCells(currentCell)) { // Check all the cells around the current one, in reading order.
+            if ((pathMapToTargets.containsKey(adjacentCell))
+                    && (pathMapToTargets.get(adjacentCell) == counter + 1)) { // if this adjacent cell is one step FURTHER from the start
+                // then investigate that path.
+                foundPath = traceNextStepRecursive(adjacentCell, destinationCell, pathMapToTargets, counter + 1, pathSteps);
+                if (foundPath) {
+                    pathSteps.add(adjacentCell);
+                    break;
+                }
+            } else {
+                // do nothing, this adjacentCell would be a step backward.
+            }
+        }
+        return foundPath;
+
     }
 
     public static String keyFromXY(int x, int y) {
@@ -114,7 +152,8 @@ public abstract class BattleService {
         return cellCoords;
     }
 
-    public static MapCell findRelativeMapCell(MapCell mapCell, Direction direction, HashMap<String, MapCell> map) {
+    public static MapCell findRelativeMapCell(MapCell mapCell, Direction
+            direction, HashMap<String, MapCell> map) {
         String coords = relativeKeyFromXY(mapCell.getX(), mapCell.getY(), direction);
         if (map.containsKey(coords)) {
             MapCell relativeMapCell = map.get(coords);
