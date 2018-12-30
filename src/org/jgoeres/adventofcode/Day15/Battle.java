@@ -16,6 +16,7 @@ public class Battle {
     ArrayList<Unit> elves = new ArrayList<>();
     ArrayList<Unit> goblins = new ArrayList<>();
     ArrayList<Unit> allUnits = new ArrayList<>();
+    private boolean isOver = false;
 
     private static final boolean DEBUG_PRINT_MAP = false;
 
@@ -23,7 +24,8 @@ public class Battle {
         loadBattle(pathToFile);
     }
 
-    public void doTimerTick() {
+    public boolean doTimerTick() {
+        boolean roundComplete = true; // assume the round will complete.
         /*
         All units are very disciplined and always follow very strict combat rules.
         Units never move or attack diagonally, as doing so would be dishonorable.
@@ -68,11 +70,13 @@ public class Battle {
 
             boolean allDead = allDead(enemyUnits);
 //            if (enemyUnits.isEmpty()) {
-            if (allDead) {
-                // No enemies; nothing to do!
-                break;
-            }
             if (!unit.isDead()) { // if unit is alive
+                if (allDead) {
+                    // No enemies; nothing to do!
+                    isOver = true;
+                    roundComplete = false;
+                    break;
+                }
                 Unit targetUnit = null;
                 // Are we already next to an enemy?
                 if ((targetUnit = unit.canAttackUnit()) != null) { // if there is a unit available for attack.
@@ -160,6 +164,7 @@ public class Battle {
 //            System.out.println(allUnitsRemoved + "\t" + raceRemoved);
         }
         */
+        return roundComplete;
     }
 
 
@@ -245,9 +250,10 @@ public class Battle {
     }
 
     public boolean isOver() {
-        boolean elvesDead = allDead(elves);
-        boolean goblinsDead = allDead(goblins);
-        return (elvesDead || goblinsDead);
+//        boolean elvesDead = allDead(elves);
+//        boolean goblinsDead = allDead(goblins);
+//        return (elvesDead || goblinsDead);
+        return isOver;
     }
 
     public Race getWinner() {
