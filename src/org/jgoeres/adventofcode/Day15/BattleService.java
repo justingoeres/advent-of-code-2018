@@ -50,6 +50,14 @@ public abstract class BattleService {
             }
         }
 
+        // Now trace the path from currentCell to our destinationCell to find the next step we need to take.
+        MapCell nextStep = traceNextStep(destinationCell,pathMapToTargets);
+        // When we get here, nextStep is the cell we need to move to!
+
+        return nextStep;
+    }
+
+    private static MapCell traceNextStep(MapCell destinationCell,TreeMap<MapCell, Integer> pathMapToTargets) {
         // Now trace the path from destinationCell back to our currentCell.
         TreeMap<Integer, MapCell> pathSteps = new TreeMap<>(); // will sort by Integer by default? (I hope)
         MapCell nextStep = destinationCell;
@@ -68,12 +76,8 @@ public abstract class BattleService {
                 }
             }
         }
-
-        // When we get here, nextStep is the cell we need to move to!
-
         return nextStep;
     }
-
 
     public static String keyFromXY(int x, int y) {
         String trackCoords = x + "," + y;
