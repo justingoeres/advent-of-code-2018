@@ -100,6 +100,8 @@ public class RunDay15 {
         // Wrong Answer: 230989 (too low)
         // Wrong Answer: 234948 (too low)   (84 x 2797)
         // Wrong Answer: 237745 (too high)  (85 x 2797)
+        // RIGHT ANSWER: 237490 (found with python example BUT WHY??)
+
         return totalScore * roundsComplete;
     }
 
