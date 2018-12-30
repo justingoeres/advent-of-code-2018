@@ -3,9 +3,9 @@ package org.jgoeres.adventofcode.Day15;
 public class MapCell {
     private int x, y;
     private MapCell aboveCell;
+    private MapCell leftCell;
     private MapCell rightCell;
     private MapCell belowCell;
-    private MapCell leftCell;
 
     private Unit currentUnit;
 
@@ -13,12 +13,16 @@ public class MapCell {
         switch (direction) {
             case UP:
                 aboveCell = relativeCell;
-            case RIGHT:
-                rightCell = relativeCell;
-            case DOWN:
-                belowCell = relativeCell;
+                break;
             case LEFT:
                 leftCell = relativeCell;
+                break;
+            case RIGHT:
+                rightCell = relativeCell;
+                break;
+            case DOWN:
+                belowCell = relativeCell;
+                break;
         }
     }
 
@@ -26,12 +30,12 @@ public class MapCell {
         switch (direction) {
             case UP:
                 return aboveCell;
+            case LEFT:
+                return leftCell;
             case RIGHT:
                 return rightCell;
             case DOWN:
                 return belowCell;
-            case LEFT:
-                return leftCell;
         }
         return null; // this should never happen
     }
@@ -58,7 +62,7 @@ public class MapCell {
         this.currentUnit = currentUnit;
     }
 
-    public void removeUnit(){
+    public void removeUnit() {
         setCurrentUnit(null);
     }
 
