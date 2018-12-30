@@ -40,13 +40,14 @@ def dbg(units):
                             key=lambda item: item[1]))
         print(row + '   ' + etc if etc else row)
 
-for elf_power in range(3, 201):
+#for elf_power in range(3, 201):
+for elf_power in range(4):
     dead_elves, full_rounds = 0, 0
     units = {pos: Unit(is_elf) for pos, is_elf in initial_units.items()}
     while len(set(unit.is_elf for unit in units.values())) > 1:
-        #print('After {} round{}:'.format(full_rounds, 's' if full_rounds > 1 else '') if full_rounds else 'Initially:')
-        #dbg(units)
-        #print('')
+        print('After {} round{}:'.format(full_rounds, 's' if full_rounds > 1 else '') if full_rounds else 'Initially:')
+        dbg(units)
+        print('')
         queue, units = OrderedDict(sorted(units.items())), {}
         while queue:
             pos, unit = queue.popitem(last=False)
@@ -74,12 +75,12 @@ for elf_power in range(3, 201):
                 break
         else:
             full_rounds += 1
-    #print('Finally:')
-    #dbg(units)
-    #print('')
+    print('Finally:')
+    dbg(units)
+    print('')
     total_hp = sum(unit.hp for unit in units.values())
     print(u'power: {}\trounds: {}\t\u2211hp: {}\tscore: {}\tdead: {}'.format(
         elf_power, full_rounds, total_hp, full_rounds * total_hp, dead_elves))
-    #print('\n')
+    print('\n')
     if not dead_elves:
         break
