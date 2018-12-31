@@ -261,7 +261,7 @@ public abstract class BattleService {
                     + target.getRace() + " at (" + target.getCurrentCell().getX() + "," + target.getCurrentCell().getY() + ")");
         }
 
-        target.takeHit();
+        target.takeHit(attacker);
     }
 
     private static void printPathMap(TreeMap<MapCell, Integer> treeMap) {

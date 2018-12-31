@@ -17,7 +17,7 @@ public class Battle {
     ArrayList<Unit> goblins = new ArrayList<>();
     ArrayList<Unit> allUnits = new ArrayList<>();
     private boolean isOver = false;
-    private int roundsComplete =0;
+    private int roundsComplete = 0;
 
     private static final boolean DEBUG_PRINT_MAP = false;
 
@@ -358,6 +358,11 @@ public class Battle {
 
     public int getRoundsComplete() {
         return roundsComplete;
+    }
+
+    public int getNumberOfUnits(Race race) {
+        int numberOfUnits = (race == RACE_ELF ? elves : goblins).size();
+        return numberOfUnits;
     }
 }
 

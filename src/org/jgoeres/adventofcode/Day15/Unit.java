@@ -75,9 +75,9 @@ public class Unit {
         return ((getRace() == RACE_ELF) ? RACE_GOBLIN : RACE_ELF);
     }
 
-    public void takeHit() {
+    public void takeHit(Unit enemy) {
         // Reduce my strength by the attack power of the hit.
-        hitPoints -= getAttackPower();
+        hitPoints -= enemy.getAttackPower();
 
         if (isDead()) {
             // it's dead.

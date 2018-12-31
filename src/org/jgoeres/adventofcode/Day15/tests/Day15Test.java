@@ -7,13 +7,18 @@ import org.junit.Test;
 
 public class Day15Test {
     @Test
-    public void testJustin() {
+    public void testJustin15A() {
         String pathToInputs = "day15/input.txt";
         int expectedResult = 237490;
-        /*
-        Outcome: 197025
-         */
         int result = RunDay15.problem15A(pathToInputs);
+        assertEquals("Outcome is "+result,expectedResult,result);
+    }
+
+    @Test
+    public void testJustin15B() {
+        String pathToInputs = "day15/input.txt";
+        int expectedResult = 38424;
+        int result = RunDay15.problem15B(pathToInputs);
         assertEquals("Outcome is "+result,expectedResult,result);
     }
 
