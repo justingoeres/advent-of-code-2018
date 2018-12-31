@@ -2,60 +2,6 @@ package org.jgoeres.adventofcode.Day15;
 
 public class RunDay15 {
     static final String pathToInputs = "day15/input.txt";
-//    static final String pathToInputs = "day15/input-example1.txt";
-    // 47 rounds, 590 hp = 27730.
-
-//    static final String pathToInputs = "day15/input-example2.txt";
-    /*
-    Combat ends after 37 full rounds
-    Elves win with 982 total hit points left
-    Outcome: 37 * 982 = 36334
-     */
-
-//    static final String pathToInputs = "day15/input-example3.txt";
-    /*
-    Combat ends after 46 full rounds
-    Elves win with 859 total hit points left
-    Outcome: 46 * 859 = 39514
-     */
-
-//    static final String pathToInputs = "day15/input-example4.txt";
-    /*
-    Combat ends after 35 full rounds
-    Goblins win with 793 total hit points left
-    Outcome: 35 * 793 = 27755
-     */
-
-
-//    static final String pathToInputs = "day15/input-example5.txt";
-    /*
-    Combat ends after 54 full rounds
-    Goblins win with 536 total hit points left
-    Outcome: 54 * 536 = 28944
-     */
-
-//    static final String pathToInputs = "day15/input-example6.txt";
-    /*
-    Combat ends after 20 full rounds
-    Goblins win with 937 total hit points left
-    Outcome: 20 * 937 = 18740
-     */
-
-//        static final String pathToInputs = "day15/examples/aoc-2018/15/input.txt";
-    /*
-    Outcome: 197025
-     */
-
-//    static final String pathToInputs = "day15/examples/aoc-2018/15/tests/reddit1/input.txt";
-    /*
-    Outcome: 13400 (200 x 67) (PASS)
-     */
-
-//    static String pathToInputs = "day15/examples/aoc-2018/15/tests/reddit2/input.txt";
-    /*
-    Outcome: Part 1: 13987 (197 x 71) (PASS)
-     */
-
 
     static final boolean DEBUG_PRINT_EACH_TURN = false;
 
@@ -71,22 +17,9 @@ public class RunDay15 {
 
         Battle battle = new Battle(pathToInputs);
 
-        int roundsComplete = 0;
-        while (true) {
-            boolean roundComplete = battle.doTimerTick();
-
-            if (roundComplete) {
-                roundsComplete++; // ... mark the round complete, then continue.
-            }
-            if (!battle.isOver()) { // If we're not done...
-                if (DEBUG_PRINT_EACH_TURN) {
-                    System.out.println("\n============ AFTER ROUND #" + roundsComplete + " ============");
-                    battle.printBattle();
-                }
-            } else {
-                break; // we're done.
-            }
-        }
+        // Run the entire battle to completion
+        battle.runBattle(DEBUG_PRINT_EACH_TURN);
+        int roundsComplete = battle.getRoundsComplete();
 
         System.out.println("\n============ FINAL RESULT AFTER " + roundsComplete + " ROUNDS ============");
         battle.printBattle();
@@ -108,11 +41,24 @@ public class RunDay15 {
     }
 
     public static void problem15B() {
+        problem15B(pathToInputs);
+    }
+
+    public static void problem15B(String pathToInputs) {
 
         /*
-        Problem Description
+        find the outcome of the battle in which the Elves have the lowest integer attack power
+        (at least 4) that allows them to win without a single death.
+        The Goblins always have an attack power of 3.
         */
         System.out.println("=== DAY 15B ===");
+
+        // load the battle from scratch each time through (surely there's a faster way to do this)
+        Battle battle = new Battle(pathToInputs);
+
+        // Set the elves' attack power
+        battle.setRaceAttackPower(Race.RACE_ELF, 4); // TODO: Iterate attack power.
+
 
     }
 }

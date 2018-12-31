@@ -17,11 +17,30 @@ public class Battle {
     ArrayList<Unit> goblins = new ArrayList<>();
     ArrayList<Unit> allUnits = new ArrayList<>();
     private boolean isOver = false;
+    private int roundsComplete =0;
 
     private static final boolean DEBUG_PRINT_MAP = false;
 
     public Battle(String pathToFile) {
         loadBattle(pathToFile);
+    }
+
+    public void runBattle(boolean PRINT_EACH_TURN) {
+        while (true) {
+            boolean roundComplete = this.doTimerTick();
+
+            if (roundComplete) {
+                roundsComplete++; // ... mark the round complete, then continue.
+            }
+            if (!this.isOver()) { // If we're not done...
+                if (PRINT_EACH_TURN) {
+                    System.out.println("\n============ AFTER ROUND #" + roundsComplete + " ============");
+                    this.printBattle();
+                }
+            } else {
+                break; // we're done.
+            }
+        }
     }
 
     public boolean doTimerTick() {
@@ -238,6 +257,13 @@ public class Battle {
         }
     }
 
+    public void setRaceAttackPower(Race race, int attackPower) {
+        ArrayList<Unit> unitsToModify = (race == RACE_ELF ? elves : goblins);
+        for (Unit unit : unitsToModify) {
+            unit.setAttackPower(attackPower);
+        }
+    }
+
     private boolean allDead(ArrayList<Unit> enemyUnits) {
         boolean allDead = true;
         for (Unit enemyUnit : enemyUnits) {
@@ -328,6 +354,10 @@ public class Battle {
                     + goblin.getCurrentCell().getY() + "):\t"
                     + goblin.getHitPoints());
         }
+    }
+
+    public int getRoundsComplete() {
+        return roundsComplete;
     }
 }
 

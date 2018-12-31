@@ -11,9 +11,10 @@ public class Unit {
     private Race race;
     int hitPoints;
     MapCell currentCell;
+    private int attackPower;
 
     public static final int STARTING_HIT_POINTS = 200;
-    public static final int ATTACK_POWER = 3;
+    public static final int DEFAULT_ATTACK_POWER = 3;
     private static final MapCell NOWHERE = new MapCell(-1, -1);
 
     public Unit(Race race, MapCell currentCell, String name) {
@@ -21,6 +22,7 @@ public class Unit {
         this.currentCell = currentCell;
         this.hitPoints = STARTING_HIT_POINTS; // all units start with this many.
         this.name = name;
+        this.attackPower = DEFAULT_ATTACK_POWER; // create unit with default power, it can be changed later.
     }
 
     public void move(MapCell destination) {
@@ -75,7 +77,7 @@ public class Unit {
 
     public void takeHit() {
         // Reduce my strength by the attack power of the hit.
-        hitPoints -= ATTACK_POWER;
+        hitPoints -= getAttackPower();
 
         if (isDead()) {
             // it's dead.
@@ -97,6 +99,14 @@ public class Unit {
 
     public String getName() {
         return name;
+    }
+
+    public int getAttackPower() {
+        return attackPower;
+    }
+
+    public void setAttackPower(int attackPower) {
+        this.attackPower = attackPower;
     }
 
     public String formatUnitInfo() {

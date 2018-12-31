@@ -7,6 +7,17 @@ import org.junit.Test;
 
 public class Day15Test {
     @Test
+    public void testJustin() {
+        String pathToInputs = "day15/input.txt";
+        int expectedResult = 237490;
+        /*
+        Outcome: 197025
+         */
+        int result = RunDay15.problem15A(pathToInputs);
+        assertEquals("Outcome is "+result,expectedResult,result);
+    }
+
+    @Test
     public void testShaneMcC() {
         String pathToInputs = "day15/examples/aoc-2018/15/input.txt";
         int expectedResult = 197025;
