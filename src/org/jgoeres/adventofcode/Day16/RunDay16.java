@@ -144,39 +144,41 @@ public class RunDay16 {
             for (IOpCode opCode : OpCodes) {
                 cpu.copyToMemory(sample.getMemoryBefore());
 
-                // Execute this opCode
-                opCode.execute(sample.getCodeOperation().getInputA(),
-                        sample.getCodeOperation().getInputB(),
-                        sample.getCodeOperation().getOutputC());
+                if ((sourceOpCodeMapping[sample.getCodeOperation().getOpCode()] & mapFlag) > 0) {
+                    // Execute this opCode
+                    opCode.execute(sample.getCodeOperation().getInputA(),
+                            sample.getCodeOperation().getInputB(),
+                            sample.getCodeOperation().getOutputC());
 
-                // Test the resulting memory to see if it matches the expected "After"
-                boolean matches = cpu.getMemory().equals(sample.getMemoryAfter());
+                    // Test the resulting memory to see if it matches the expected "After"
+                    boolean matches = cpu.getMemory().equals(sample.getMemoryAfter());
 
-                if (matches) {
-                    numMatches++; // increment our counter.
+                    if (matches) {
+                        numMatches++; // increment our counter.
 
-                    // Record in our map that this OpCode matched the expected After result.
-                    opCodeNumMap |= mapFlag;
+                        // Record in our map that this OpCode matched the expected After result.
+                        opCodeNumMap |= mapFlag;
 
-                    if (DEBUG_PRINT_MATCH_INFO) {
-                        String output = sampleNum + ": Before:\t" + sample.getMemoryBefore().toString();
-                        output += "\tOperation:\t" + opCodeNames[opCodeNum] + "\t"
-                                + sample.getCodeOperation().getInputA() + " "
-                                + sample.getCodeOperation().getInputB() + " "
-                                + sample.getCodeOperation().getOutputC() + "\t"
-                                + "After:\t" + cpu.getMemory().toString();
-                        System.out.println(output);
+                        if (DEBUG_PRINT_MATCH_INFO) {
+                            String output = sampleNum + ": Before:\t" + sample.getMemoryBefore().toString();
+                            output += "\tOperation:\t" + opCodeNames[opCodeNum] + "\t"
+                                    + sample.getCodeOperation().getInputA() + " "
+                                    + sample.getCodeOperation().getInputB() + " "
+                                    + sample.getCodeOperation().getOutputC() + "\t"
+                                    + "After:\t" + cpu.getMemory().toString();
+                            System.out.println(output);
+                        }
+
+
+                        //                    if (numMatches >= 3) { // If we've matched three opcodes...
+                        //                        // Increment our total count and stop looking!
+                        //                        if (DEBUG_PRINT_MATCH_INFO) {
+                        //                            System.out.println("^^^^^^^^ THREE MATCHES ^^^^^^^^");
+                        //                        }
+                        //                        totalMatchSamples++;
+                        //                        break;
+                        //                    }
                     }
-
-
-//                    if (numMatches >= 3) { // If we've matched three opcodes...
-//                        // Increment our total count and stop looking!
-//                        if (DEBUG_PRINT_MATCH_INFO) {
-//                            System.out.println("^^^^^^^^ THREE MATCHES ^^^^^^^^");
-//                        }
-//                        totalMatchSamples++;
-//                        break;
-//                    }
                 }
                 opCodeNum++;
                 mapFlag <<= 1; // shift the flag and keep going.
@@ -191,6 +193,15 @@ public class RunDay16 {
 
             // Update our running map of possible source opcode mappings.
             sourceOpCodeMapping[sample.getCodeOperation().getOpCode()] &= opCodeNumMap; // mask out all the opcodes that DIDN'T match for this opcode number.
+
+            // if we now know exactly which operation this opCode is, mask it out of every other source OpCode.
+            if (numMatches == 1) {
+                for (int i = 0; i < sourceOpCodeMapping.length; i++) {
+                    if (i != sample.getCodeOperation().getOpCode()) { // don't mask the opCode we're currently testing.
+                        sourceOpCodeMapping[i] &= ~opCodeNumMap;
+                    }
+                }
+            }
 
             sampleNum++; // go to the next sample.
         }
