@@ -1,6 +1,7 @@
 package org.jgoeres.adventofcode.Day16;
 
 import java.util.Arrays;
+import java.util.HashMap;
 
 public class RunDay16 {
     static final String DEFAULT_PATH_TO_INPUTS = "day16/input.txt";
@@ -96,7 +97,7 @@ public class RunDay16 {
         int[] sourceOpCodeMapping = new int[16];
         Arrays.fill(sourceOpCodeMapping, allOpCodesPossible);
 
-        IOpCode[] OpCodes = opCodeFunctor(cpu);
+        IOpCode[] opCodes = opCodeFunctor(cpu);
 
         int sampleNum = 0;
         for (CodeSample sample : samples.getCodeSamples()) { // check every sample we have
@@ -104,7 +105,7 @@ public class RunDay16 {
             int opCodeNum = 0;
             int opCodeNumMap = 0x00; // initial map for this opCode.
             int mapFlag = 0x01; // to set bits in the map as we go.
-            for (IOpCode opCode : OpCodes) {
+            for (IOpCode opCode : opCodes) {
                 cpu.copyToMemory(sample.getMemoryBefore());
 
                 if ((sourceOpCodeMapping[sample.getCodeOperation().getOpCode()] & mapFlag) > 0) { // If this opCode isn't already known exactly.
@@ -136,12 +137,6 @@ public class RunDay16 {
                 opCodeNum++;
                 mapFlag <<= 1; // shift the flag and keep going.
             }
-            if (numMatches >= 3) { // If we've matched three opcodes...
-                // Increment our total count and stop looking!
-                if (DEBUG_PRINT_MATCH_INFO) {
-                    System.out.println("^^^^^^^^ " + numMatches + " MATCHES ^^^^^^^^");
-                }
-            }
 
             // Update our running map of possible source opcode mappings.
             sourceOpCodeMapping[sample.getCodeOperation().getOpCode()] &= opCodeNumMap; // mask out all the opcodes that DIDN'T match for this opcode number.
@@ -154,11 +149,36 @@ public class RunDay16 {
                     }
                 }
             }
-
             sampleNum++; // go to the next sample.
         }
 
-        return 0;
+        // Once we get here, we have a sourceOpCodeMapping that contains a bitfield mapping each of
+        // the SOURCE OpCodes (int 0-15) to our IOpCode functions (1's in the bitfield)
+
+        // Make that mapping into a HashMap
+        HashMap<Integer, Integer> opCodesSourceToCpu = new HashMap<>(); // key is source OpCode, value is our opCode index.
+        for (int i = 0; i < sourceOpCodeMapping.length; i++) {
+            for (int bitNum = 0; bitNum < 16; bitNum++) {
+                if ((sourceOpCodeMapping[i] & (1L << bitNum)) != 0) { // if this bit is set.
+                    opCodesSourceToCpu.put(i, bitNum);
+                }
+            }
+        }
+
+        // Now we can execute the program!
+        cpu.getMemory().clear();    // Reset the CPU memory first.
+
+        for (CodeOperation op : samples.getProgramCode()) {     // Run the whole program
+            int mappedOpCodeNum = opCodesSourceToCpu.get(op.getOpCode()); // Map the source opCode to our implementation.
+            opCodes[mappedOpCodeNum].execute(op.getInputA(),    // execute the operation
+                    op.getInputB(),
+                    op.getOutputC());
+        }
+
+        int finalRegister0 = cpu.getMemory().getRegisterValue(0);
+        System.out.println("Final value of register 0 is " + finalRegister0);
+
+        return finalRegister0;
     }
 
     private static IOpCode[] opCodeFunctor(CPU cpu) {

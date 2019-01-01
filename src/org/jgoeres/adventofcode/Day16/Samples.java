@@ -97,4 +97,8 @@ public class Samples {
     public void setCodeSamples(ArrayList<CodeSample> codeSamples) {
         this.codeSamples = codeSamples;
     }
+
+    public ArrayList<CodeOperation> getProgramCode() {
+        return programCode;
+    }
 }

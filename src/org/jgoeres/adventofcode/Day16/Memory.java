@@ -27,6 +27,12 @@ public class Memory {
         registers[registerAsInt] = value;
     }
 
+    public void clear() {
+        for (int i = 0; i < registers.length; i++) {
+            registers[i] = 0;
+        }
+    }
+
     @Override
     public String toString() {
         String registerValues = "";
