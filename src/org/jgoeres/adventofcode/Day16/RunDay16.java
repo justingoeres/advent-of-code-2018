@@ -9,10 +9,13 @@ public class RunDay16 {
 
     public static int problem16A(String pathToInputs) {
         /*
-        Problem Description
+        Ignoring the opcode numbers, how many codeSamples in your puzzle input behave like three or more opcodes?
         */
         System.out.println("=== DAY 16A ===");
 
+        Samples samples = new Samples(pathToInputs);
+        // TODO: Write comparisons to test each sample against every opcode type and count the number of matches.
+        System.out.println(samples);
         return 0;
     }
 
