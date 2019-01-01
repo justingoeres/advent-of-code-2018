@@ -15,6 +15,7 @@ import org.jgoeres.adventofcode.Day12.RunDay12;
 import org.jgoeres.adventofcode.Day13.RunDay13;
 import org.jgoeres.adventofcode.Day14.RunDay14;
 import org.jgoeres.adventofcode.Day15.RunDay15;
+import org.jgoeres.adventofcode.Day16.RunDay16;
 
 public class Main {
 
@@ -34,13 +35,13 @@ public class Main {
     static final boolean RUN_DAY_12 = false;
     static final boolean RUN_DAY_13 = false;
     static final boolean RUN_DAY_14 = false;
-    static final boolean RUN_DAY_15 = true;
+    static final boolean RUN_DAY_15 = false;
+    static final boolean RUN_DAY_16 = true;
 
     private static long startTime = 0L;
 
     public static void main(String[] args) {
         //https://adventofcode.com/2018/
-
 
         if (RUN_DAY_1 || RUN_ALL) {
 //             Day 1A
@@ -269,6 +270,20 @@ public class Main {
 
             setStartTime();
             RunDay15.problem15B();
+            printElapsedTime();
+
+            blankLine();
+        }
+
+        if (RUN_DAY_16 || RUN_ALL) {
+            setStartTime();
+            RunDay16.problem16A();
+            printElapsedTime();
+
+            blankLine();
+
+            setStartTime();
+            RunDay16.problem16B();
             printElapsedTime();
 
             blankLine();
