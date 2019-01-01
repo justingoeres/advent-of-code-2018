@@ -14,4 +14,12 @@ public class Day16Test {
         assertEquals("Outcome is "+result,expectedResult,result);
     }
 
+    @Test
+    public void testJustin16B() {
+        String pathToInputs = "day16/input.txt";
+        int expectedResult = -1; // TBD
+        int result = RunDay16.problem16B(pathToInputs);
+        assertEquals("Outcome is "+result,expectedResult,result);
+    }
+
 }
