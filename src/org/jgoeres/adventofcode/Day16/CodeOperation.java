@@ -13,6 +13,10 @@ public class CodeOperation {
         this.outputC = outputC;
     }
 
+    public int getOpCode() {
+        return opCode;
+    }
+
     public int getInputA() {
         return inputA;
     }

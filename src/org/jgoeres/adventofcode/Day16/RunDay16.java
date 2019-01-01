@@ -1,5 +1,7 @@
 package org.jgoeres.adventofcode.Day16;
 
+import java.util.Arrays;
+
 public class RunDay16 {
     static final String DEFAULT_PATH_TO_INPUTS = "day16/input.txt";
 
@@ -19,9 +21,15 @@ public class RunDay16 {
 
         CPU cpu = new CPU();
 
+        int allOpCodesPossible = 0xFFFF; // binary sixteen 1's.
+
         String[] opCodeNames = {"addr", "addi", "mulr", "muli",
                 "banr", "bani", "borr", "bori", "setr", "seti",
                 "gtir", "gtri", "gtrr", "eqir", "eqri", "eqrr"};
+
+        int[] sourceOpCodeMapping = new int[16];
+        Arrays.fill(sourceOpCodeMapping, allOpCodesPossible);
+
         IOpCode[] OpCodes = new IOpCode[]{
                 new IOpCode() {
                     @Override
@@ -131,6 +139,8 @@ public class RunDay16 {
         for (CodeSample sample : samples.getCodeSamples()) { // check every sample we have
             int numMatches = 0; // Count how many opcodes this matches.
             int opCodeNum = 0;
+            int opCodeNumMap = 0x00; // initial map for this opCode.
+            int mapFlag = 0x01; // to set bits in the map as we go.
             for (IOpCode opCode : OpCodes) {
                 cpu.copyToMemory(sample.getMemoryBefore());
 
@@ -145,8 +155,11 @@ public class RunDay16 {
                 if (matches) {
                     numMatches++; // increment our counter.
 
+                    // Record in our map that this OpCode matched the expected After result.
+                    opCodeNumMap |= mapFlag;
+
                     if (DEBUG_PRINT_MATCH_INFO) {
-                        String output = sampleNum+": Before:\t" + sample.getMemoryBefore().toString();
+                        String output = sampleNum + ": Before:\t" + sample.getMemoryBefore().toString();
                         output += "\tOperation:\t" + opCodeNames[opCodeNum] + "\t"
                                 + sample.getCodeOperation().getInputA() + " "
                                 + sample.getCodeOperation().getInputB() + " "
@@ -156,18 +169,30 @@ public class RunDay16 {
                     }
 
 
-                    if (numMatches >= 3) { // If we've matched three opcodes...
-                        // Increment our total count and stop looking!
-                        if(DEBUG_PRINT_MATCH_INFO){
-                            System.out.println("^^^^^^^^ THREE MATCHES ^^^^^^^^");
-                        }
-                        totalMatchSamples++;
-                        break;
-                    }
+//                    if (numMatches >= 3) { // If we've matched three opcodes...
+//                        // Increment our total count and stop looking!
+//                        if (DEBUG_PRINT_MATCH_INFO) {
+//                            System.out.println("^^^^^^^^ THREE MATCHES ^^^^^^^^");
+//                        }
+//                        totalMatchSamples++;
+//                        break;
+//                    }
                 }
                 opCodeNum++;
+                mapFlag <<= 1; // shift the flag and keep going.
             }
-            sampleNum++;
+            if (numMatches >= 3) { // If we've matched three opcodes...
+                // Increment our total count and stop looking!
+                if (DEBUG_PRINT_MATCH_INFO) {
+                    System.out.println("^^^^^^^^ " + numMatches + " MATCHES ^^^^^^^^");
+                }
+                totalMatchSamples++;
+            }
+
+            // Update our running map of possible source opcode mappings.
+            sourceOpCodeMapping[sample.getCodeOperation().getOpCode()] &= opCodeNumMap; // mask out all the opcodes that DIDN'T match for this opcode number.
+
+            sampleNum++; // go to the next sample.
         }
 
         System.out.println("Number of Code Samples matching 3 or more opcodes:\t" + totalMatchSamples
@@ -189,8 +214,6 @@ public class RunDay16 {
         System.out.println("=== DAY 16B ===");
 
         Samples samples = new Samples(pathToInputs); // Reload the samples (this is slow -- we could find a way to not do this twice)
-
-
 
 
         return 0;
