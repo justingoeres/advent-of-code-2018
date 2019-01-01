@@ -174,7 +174,7 @@ public class RunDay16 {
                 + " out of " + samples.getCodeSamples().size());
 
         // Answer: 547
-        return 0;
+        return totalMatchSamples;
     }
 
 
@@ -187,6 +187,11 @@ public class RunDay16 {
         Problem Description
         */
         System.out.println("=== DAY 16B ===");
+
+        Samples samples = new Samples(pathToInputs); // Reload the samples (this is slow -- we could find a way to not do this twice)
+
+
+
 
         return 0;
     }

@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 
 public class Samples {
     private ArrayList<CodeSample> codeSamples = new ArrayList<>();
+    private ArrayList<CodeOperation> programCode = new ArrayList<>();
 
     public Samples(String pathToFile) {
         loadSamples(pathToFile);
@@ -27,11 +28,12 @@ public class Samples {
          */
 
         Pattern beforePattern = Pattern.compile("^B.+");
-
+        Pattern codePattern = Pattern.compile("^\\d.+");
         try (BufferedReader br = new BufferedReader(new FileReader(pathToFile))) {
             String line;
             while ((line = br.readLine()) != null) {    // Keep reading until the end of the file.
                 Matcher beforeMatcher = beforePattern.matcher(line);
+                Matcher codeMatcher = codePattern.matcher(line);
 
                 if (beforeMatcher.matches()) { // If this is a BEFORE line.
                     // Get the BEFORE matches.
@@ -39,18 +41,7 @@ public class Samples {
 
                     // Get the CodeOperation matches.
                     line = br.readLine();
-                    List<Integer> co = new ArrayList<>();
-                    Matcher m = Pattern.compile("\\d+")
-                            .matcher(line);
-                    while (m.find()) {
-                        co.add(Integer.parseInt(m.group()));
-                    }
-
-                    CodeOperation codeOperation = new CodeOperation(
-                            co.get(0),
-                            co.get(1),
-                            co.get(2),
-                            co.get(3));
+                    CodeOperation codeOperation = lineToCodeOperation(line);
 
                     // Then get the AFTER matches.
                     line = br.readLine();
@@ -58,7 +49,10 @@ public class Samples {
 
                     CodeSample sample = new CodeSample(beforeMemory, codeOperation, afterMemory);
                     codeSamples.add(sample);
-                } // else this line isn't a "Before", so skip it.
+                } else if (codeMatcher.matches()) { // else if this line is a "code section" line.
+                    CodeOperation codeOperation = lineToCodeOperation(line);
+                    programCode.add(codeOperation);
+                }
             }
         } catch (Exception e) {
             System.out.println("Exception occurred: " + e.getMessage());
@@ -77,6 +71,23 @@ public class Samples {
             memory.setRegisterValue(Register.intToEnum(i), Integer.parseInt(m.group()));
         }
         return memory;
+    }
+
+    private CodeOperation lineToCodeOperation(String line) {
+        List<Integer> co = new ArrayList<>();
+        Matcher m = Pattern.compile("\\d+")
+                .matcher(line);
+        while (m.find()) {
+            co.add(Integer.parseInt(m.group()));
+        }
+
+        CodeOperation codeOperation = new CodeOperation(
+                co.get(0),
+                co.get(1),
+                co.get(2),
+                co.get(3));
+
+        return codeOperation;
     }
 
     public ArrayList<CodeSample> getCodeSamples() {
