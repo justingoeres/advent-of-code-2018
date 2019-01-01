@@ -13,10 +13,15 @@ public class RunDay16 {
         */
         System.out.println("=== DAY 16A ===");
 
+        final boolean DEBUG_PRINT_MATCH_INFO = false;
+
         Samples samples = new Samples(pathToInputs);
-        // TODO: Write comparisons to test each sample against every opcode type and count the number of matches.
 
         CPU cpu = new CPU();
+
+        String[] opCodeNames = {"addr", "addi", "mulr", "muli",
+                "banr", "bani", "borr", "bori", "setr", "seti",
+                "gtir", "gtri", "gtrr", "eqir", "eqri", "eqrr"};
         IOpCode[] OpCodes = new IOpCode[]{
                 new IOpCode() {
                     @Override
@@ -121,26 +126,54 @@ public class RunDay16 {
                     }
                 },
         };
-        CodeSample sample = samples.getCodeSamples().get(0);
-        for (IOpCode opCode : OpCodes) {
-            cpu.setMemory(sample.getMemoryBefore());
+        int totalMatchSamples = 0; // tally how many samples match at least 3 opcodes.
+        int sampleNum = 0;
+        for (CodeSample sample : samples.getCodeSamples()) { // check every sample we have
+            int numMatches = 0; // Count how many opcodes this matches.
+            int opCodeNum = 0;
+            for (IOpCode opCode : OpCodes) {
+                cpu.copyToMemory(sample.getMemoryBefore());
 
-            // Execute this opCode
-            opCode.execute(sample.getCodeOperation().getInputA(),
-                    sample.getCodeOperation().getInputB(),
-                    sample.getCodeOperation().getOutputC());
+                // Execute this opCode
+                opCode.execute(sample.getCodeOperation().getInputA(),
+                        sample.getCodeOperation().getInputB(),
+                        sample.getCodeOperation().getOutputC());
 
-            // Test the resulting memory to see if it matches the expected "After"
-            boolean matches = cpu.getMemory().equals(sample.getMemoryAfter());
+                // Test the resulting memory to see if it matches the expected "After"
+                boolean matches = cpu.getMemory().equals(sample.getMemoryAfter());
 
-            System.out.println("CPU:\t"+cpu.getMemory().toString()+"\tExpected:\t"+sample.getMemoryAfter().toString());
-            if (matches) {
-                System.out.println("Result matches!");
+                if (matches) {
+                    numMatches++; // increment our counter.
+
+                    if (DEBUG_PRINT_MATCH_INFO) {
+                        String output = sampleNum+": Before:\t" + sample.getMemoryBefore().toString();
+                        output += "\tOperation:\t" + opCodeNames[opCodeNum] + "\t"
+                                + sample.getCodeOperation().getInputA() + " "
+                                + sample.getCodeOperation().getInputB() + " "
+                                + sample.getCodeOperation().getOutputC() + "\t"
+                                + "After:\t" + cpu.getMemory().toString();
+                        System.out.println(output);
+                    }
+
+
+                    if (numMatches >= 3) { // If we've matched three opcodes...
+                        // Increment our total count and stop looking!
+                        if(DEBUG_PRINT_MATCH_INFO){
+                            System.out.println("^^^^^^^^ THREE MATCHES ^^^^^^^^");
+                        }
+                        totalMatchSamples++;
+                        break;
+                    }
+                }
+                opCodeNum++;
             }
+            sampleNum++;
         }
 
+        System.out.println("Number of Code Samples matching 3 or more opcodes:\t" + totalMatchSamples
+                + " out of " + samples.getCodeSamples().size());
 
-        System.out.println(samples);
+        // Answer: 547
         return 0;
     }
 

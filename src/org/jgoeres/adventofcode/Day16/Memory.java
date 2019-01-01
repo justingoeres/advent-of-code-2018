@@ -15,6 +15,9 @@ public class Memory {
         return value;
     }
 
+    public int[] getRegisters() {
+        return registers;
+    }
 
     public void setRegisterValue(Register register, int value) {
         registers[register.asInt()] = value;
@@ -39,10 +42,10 @@ public class Memory {
         if (this == obj)
             return true;
 
-        // it checks if the argument is of the
-        // type Geek by comparing the classes
+        // check if the argument is of the
+        // type Memory by comparing the classes
         // of the passed argument and this object.
-        // if(!(obj instanceof Geek)) return false; ---> avoid.
+        // if(!(obj instanceof Memory)) return false; ---> avoid.
         if (obj == null || obj.getClass() != this.getClass())
             return false;
 

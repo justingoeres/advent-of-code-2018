@@ -26,10 +26,7 @@ public class Samples {
             After:  [0, 1, 2, 3]
          */
 
-//        Pattern beforePattern = Pattern.compile("B.+(\\d), (\\d), (\\d), (\\d).*");
         Pattern beforePattern = Pattern.compile("^B.+");
-//        Pattern beforePattern = Pattern.compile("Before.*");
-        Pattern afterPattern = Pattern.compile("A.*(\\d), (\\d), (\\d), (\\d).*");
 
         try (BufferedReader br = new BufferedReader(new FileReader(pathToFile))) {
             String line;

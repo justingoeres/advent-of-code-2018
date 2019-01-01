@@ -3,8 +3,10 @@ package org.jgoeres.adventofcode.Day16;
 public class CPU {
     Memory memory = new Memory();
 
-    public void setMemory(Memory memory) {
-        this.memory = memory;
+    public void copyToMemory(Memory sourceMemory) {
+        for (int i = 0; i < memory.getRegisters().length; i++) {
+            memory.setRegisterValue(i,sourceMemory.getRegisterValue(i));
+        }
     }
 
     public Memory getMemory() {
@@ -93,7 +95,7 @@ public class CPU {
         /*
         gtir (greater-than immediate/register) sets register C to 1 if value A is greater than register B. Otherwise, register C is set to 0.
          */
-        int result = (A > memory.getRegisterValue(B) ? 1 : 0);
+        int result = ((A > memory.getRegisterValue(B)) ? 1 : 0);
         memory.setRegisterValue(C, result);
     }
 
@@ -101,7 +103,7 @@ public class CPU {
         /*
         gtri (greater-than register/immediate) sets register C to 1 if register A is greater than value B. Otherwise, register C is set to 0.
          */
-        int result = (memory.getRegisterValue(A) > B ? 1 : 0);
+        int result = ((memory.getRegisterValue(A) > B) ? 1 : 0);
         memory.setRegisterValue(C, result);
     }
 
@@ -109,7 +111,7 @@ public class CPU {
         /*
         gtrr (greater-than register/register) sets register C to 1 if register A is greater than register B. Otherwise, register C is set to 0.
          */
-        int result = (memory.getRegisterValue(A) > memory.getRegisterValue(B) ? 1 : 0);
+        int result = ((memory.getRegisterValue(A) > memory.getRegisterValue(B)) ? 1 : 0);
         memory.setRegisterValue(C, result);
     }
 
@@ -117,7 +119,7 @@ public class CPU {
         /*
         eqir (equal immediate/register) sets register C to 1 if value A is equal to register B. Otherwise, register C is set to 0.
          */
-        int result = (A == memory.getRegisterValue(B) ? 1 : 0);
+        int result = ((A == memory.getRegisterValue(B)) ? 1 : 0);
         memory.setRegisterValue(C, result);
     }
 
@@ -125,7 +127,7 @@ public class CPU {
         /*
         eqri (equal register/immediate) sets register C to 1 if register A is equal to value B. Otherwise, register C is set to 0.
          */
-        int result = (memory.getRegisterValue(A) == B ? 1 : 0);
+        int result = ((memory.getRegisterValue(A) == B) ? 1 : 0);
         memory.setRegisterValue(C, result);
     }
 
@@ -133,7 +135,7 @@ public class CPU {
         /*
         eqrr (equal register/register) sets register C to 1 if register A is equal to register B. Otherwise, register C is set to 0.
          */
-        int result = (memory.getRegisterValue(A) == memory.getRegisterValue(B) ? 1 : 0);
+        int result = ((memory.getRegisterValue(A) == memory.getRegisterValue(B)) ? 1 : 0);
         memory.setRegisterValue(C, result);
     }
 
