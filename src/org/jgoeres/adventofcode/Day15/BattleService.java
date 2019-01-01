@@ -24,10 +24,6 @@ public abstract class BattleService {
         Integer minDistance = Integer.MAX_VALUE;
         MapCell closestCell = null;
 
-        //     for (MapCell mapCell : targetCells) {
-        // Because the TreeSet already is in "reading" order, we don't have to worry
-        // about ties. The first one we find will be the "first in reading order" one.
-
         // Find the shortest path to this targetCell.
         TreeMap<MapCell, Integer> pathMapToTargets = pathMapToTargets(unit, targetCells);
         if (pathMapToTargets == null) {
@@ -51,32 +47,8 @@ public abstract class BattleService {
         }
 
         // Now trace the path from currentCell to our destinationCell to find the next step we need to take.
-//        MapCell nextStep = traceNextStep(destinationCell, pathMapToTargets);
         MapCell nextStep = traceNextStepForward(unit.getCurrentCell(), destinationCell, pathMapToTargets);
         // When we get here, nextStep is the cell we need to move to!
-
-        return nextStep;
-    }
-
-    private static MapCell traceNextStep(MapCell destinationCell, TreeMap<MapCell, Integer> pathMapToTargets) {
-        // Now trace the path from destinationCell back to our currentCell.
-        TreeMap<Integer, MapCell> pathSteps = new TreeMap<>(); // will sort by Integer by default? (I hope)
-        MapCell nextStep = destinationCell;
-        int currentDistance = 0;
-        while ((currentDistance = pathMapToTargets.get(nextStep)) > 1) { // while we're still not all the way back to our currentCell
-            // Add this step to the path.
-            pathSteps.put(currentDistance, nextStep);
-            // Then find the cell adjacent to our current one (nextStep)
-            // that is *closer* to our start point (i.e. its distance is lower)
-            for (MapCell adjacentCell : findAdjacentCells(nextStep)) { // these will be sorted in reading order.
-                if ((pathMapToTargets.get(adjacentCell) != null)
-                        && (pathMapToTargets.get(adjacentCell) < currentDistance)) {
-                    // We've found the next closer step.
-                    nextStep = adjacentCell;
-                    break;
-                }
-            }
-        }
         return nextStep;
     }
 
@@ -86,7 +58,6 @@ public abstract class BattleService {
         ArrayList<MapCell> pathSteps = new ArrayList<>();
 
         boolean foundPath = false;
-//        MapCell currentCell = startCell;
         traceNextStepRecursive(startCell, destinationCell, pathMapToTargets, counter, pathSteps);
 
         return pathSteps.get(pathSteps.size() - 1); // last element of pathSteps is our next step on the path.
@@ -170,7 +141,6 @@ public abstract class BattleService {
         TreeMap<MapCell, Integer> pathCells = new TreeMap<>(new MapCellComparator()); // TreeSet to store all the cells we've checked.
         //MapCell endPoint = targetCell;
         MapCell startPoint = unit.getCurrentCell(); // start at the current unit and work outward until we find something..
-        // TODO: WORKING HERE. ADD CIRCULAR SCANNING FROM ENDPOINT
         // Go in circles working outward from the endpoint.
         // For each cell with counter value i, get all the adjacent cells.
         // Drop the ones that are already in our pathCells TreeSet,
@@ -184,7 +154,6 @@ public abstract class BattleService {
         while (!reachedEnd) {
             // For each PathCell with the current counter value...
             TreeSet<MapCell> edgeCells = new TreeSet<>(new MapCellComparator());
-            //TODO edgeCells will be empty if we're blocked in! Gives an infinite loop just now.
             for (Map.Entry<MapCell, Integer> pathCellEntry : pathCells.entrySet()) {
                 if (pathCellEntry.getValue() == counter) {
                     // If the counter for this cell is the current counter, we're on an edge.
@@ -220,8 +189,6 @@ public abstract class BattleService {
 
         // Now we've got a whole TreeMap of PathCells that includes our startPoint and at least one targetCell!
         // We just need to find a path through it that obeys our "go in reading order" rules.
-
-        // I think.
         return pathCells; // Return the entire pathCells map. Let the calling code decide what to do with it.
     }
 
@@ -266,13 +233,6 @@ public abstract class BattleService {
 
     private static void printPathMap(TreeMap<MapCell, Integer> treeMap) {
         // The TreeMap is already sorted for printing, so we *should* be able to just itertate through it.
-        MapCell origin = treeMap.firstKey(); // upper-leftmost cell.
-//        MapCell extent = treeMap.lastKey(); // lower-rightmost cell
-        int x0 = origin.getX();
-        int y0 = origin.getY();
-//        int xmax = extent.getX();
-//        int ymax = extent.getY();
-
         int x = 0;
         int y = 0;
         for (Iterator itr = treeMap.keySet().iterator(); itr.hasNext(); ) { // for each MapCell in the map

@@ -4,6 +4,7 @@ public class RunDay15 {
     static final String pathToInputs = "day15/input.txt";
 
     static final boolean DEBUG_PRINT_EACH_TURN = false;
+    static final boolean PRINT_FINAL_BOARD = false;
 
     public static void problem15A() {
         problem15A(pathToInputs);
@@ -22,7 +23,9 @@ public class RunDay15 {
         int roundsComplete = battle.getRoundsComplete();
 
         System.out.println("\n============ FINAL RESULT AFTER " + roundsComplete + " ROUNDS ============");
-        battle.printBattle();
+        if (PRINT_FINAL_BOARD) {
+            battle.printBattle();
+        }
 
         Race winner = battle.getWinner();
         int totalScore = battle.calculateScore(winner);
@@ -57,22 +60,26 @@ public class RunDay15 {
 
         int elvesAttackPower = 4; // start at 4.
 
+        System.out.print("Running battle with elves' attack power:\t");
+        boolean firstOutput = true;
         while (true) { // continue until NO elves die in battle
             // load the battle from scratch each time through (surely there's a faster way to do this)
             battle = new Battle15B(pathToInputs);
 
             // Set the elves' attack power
-            battle.setRaceAttackPower(Race.RACE_ELF, elvesAttackPower); // TODO: Iterate attack power.
+            battle.setRaceAttackPower(Race.RACE_ELF, elvesAttackPower);
+            System.out.print((firstOutput ? "" : ", ") + elvesAttackPower); // extend the output of power levels we've tried.
+            firstOutput = false;
 
-            System.out.println("Running battle with elves attack power:\t" + elvesAttackPower);
             // Run the entire battle to completion
             battle.runBattle(DEBUG_PRINT_EACH_TURN);
             roundsComplete = battle.getRoundsComplete();
 
-            System.out.println("\n============ FINAL RESULT AFTER " + roundsComplete + " ROUNDS ============");
-            battle.printBattle();
+            if (PRINT_FINAL_BOARD) {
+                battle.printBattle();
+            }
 
-            System.out.println("Number of elves remaining:\t" + battle.getNumberOfUnits(Race.RACE_ELF));
+//            System.out.println("Number of elves remaining:\t" + battle.getNumberOfUnits(Race.RACE_ELF));
             if (!(battle.elvesLostSomeone())) {
                 break;  // If the elves DIDN'T lose anyone, we're done.
             } else {
@@ -81,11 +88,12 @@ public class RunDay15 {
             }
         }
 
+        System.out.println("\n============ FINAL RESULT ============");
         Race winner = battle.getWinner();
         int totalScore = battle.calculateScore(winner);
         System.out.println("Rounds complete:\t" + roundsComplete);
         System.out.println("Winner:\t\t" + winner);
-        System.out.println("Elves Attack Power:\t" + elvesAttackPower);
+        System.out.println("Elves' Attack Power:\t" + elvesAttackPower);
         System.out.println("Total Hitpoints:\t\t" + totalScore);
         System.out.println("Answer:\t" + roundsComplete + " x " + totalScore + " =\t" + (roundsComplete * totalScore));
         /* Answer:

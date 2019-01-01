@@ -10,9 +10,6 @@ import static org.jgoeres.adventofcode.Day15.Race.RACE_GOBLIN;
 
 public class Battle {
     HashMap<String, MapCell> map = new HashMap<>();
-    //    TreeSet<Unit> elves = new TreeSet<>(new UnitComparator());
-//    TreeSet<Unit> goblins = new TreeSet<>(new UnitComparator());
-//    TreeSet<Unit> allUnits = new TreeSet<>(new UnitComparator());
     ArrayList<Unit> elves = new ArrayList<>();
     ArrayList<Unit> goblins = new ArrayList<>();
     ArrayList<Unit> allUnits = new ArrayList<>();
@@ -81,14 +78,9 @@ public class Battle {
         TreeSet<Unit> deadUnits = new TreeSet<>(new UnitComparator());
         // Process this tick for every (living) unit (in order x,y)
         for (Unit unit : allUnits) {
-//        for (Iterator allUnitsIterator = allUnits.iterator(); allUnitsIterator.hasNext(); ) {
-//            Unit unit = (Unit) allUnitsIterator.next();
-
-
             ArrayList<Unit> enemyUnits = (unit.getOppositeRace() == RACE_ELF ? elves : goblins);
 
             boolean allDead = allDead(enemyUnits);
-//            if (enemyUnits.isEmpty()) {
             if (!unit.isDead()) { // if unit is alive
                 if (allDead) {
                     // No enemies; nothing to do!
@@ -103,11 +95,7 @@ public class Battle {
                     BattleService.handleAttack(unit, targetUnit);
 
                     if (targetUnit.isDead()) { // Did it die?
-//                    // If so, remove it from the lists.
-//                    allUnits.remove(targetUnit); // from all units
-//                    // from its race
-//                    (targetUnit.getRace() == RACE_ELF ? elves : goblins).remove(targetUnit);
-                        // do nothing, it obviously can't attack
+                        // Add it to the list of deadUnits for removal later.
                         deadUnits.add(targetUnit);
                     }
                 } else { // No attack available, so try to move
@@ -134,11 +122,7 @@ public class Battle {
                         BattleService.handleAttack(unit, targetUnit);
 
                         if (targetUnit.isDead()) { // Did it die?
-//                    // If so, remove it from the lists.
-//                    allUnits.remove(targetUnit); // from all units
-//                    // from its race
-//                    (targetUnit.getRace() == RACE_ELF ? elves : goblins).remove(targetUnit);
-                            // do nothing, it obviously can't attack
+                            // Add it to the list of deadUnits for removal later.
                             deadUnits.add(targetUnit);
                         }
                     }
@@ -158,31 +142,6 @@ public class Battle {
                 (unit.getRace() == RACE_ELF ? elves : goblins).remove(unit); // remove from its race.
             }
         }
-       /* for (Unit deadUnit : deadUnits) {
-            for (Unit unit : allUnits) {
-                // remove if the name matches
-                if (deadUnit.getName().equals(unit.getName())) {
-                    allUnits.remove(unit); // remove from all units.
-                    break;
-                }
-            }
-            TreeSet<Unit> deadUnitRaceSet = (deadUnit.getRace() == RACE_ELF ? elves : goblins);
-            for (Unit unit : deadUnitRaceSet) {
-                // remove if the name matches
-                if (deadUnit.getName().equals(unit.getName())) {
-                    deadUnitRaceSet.remove(unit); // remove from race units.
-                    break;
-                }
-            }
-
-            //            boolean allUnitsRemoved = allUnits.remove(deadUnit);
-//            Race deadUnitRace = deadUnit.getRace();
-//            TreeSet<Unit> deadUnitRaceSet = (deadUnitRace == RACE_ELF ? elves : goblins);
-//            boolean raceRemoved = deadUnitRaceSet.remove(deadUnit); // remove from its race.
-//                        boolean raceRemoved = (deadUnit.getRace() == RACE_ELF ? elves : goblins).remove(deadUnit); // remove from its race.
-//            System.out.println(allUnitsRemoved + "\t" + raceRemoved);
-        }
-        */
         return roundComplete;
     }
 
