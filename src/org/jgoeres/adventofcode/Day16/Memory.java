@@ -1,5 +1,7 @@
 package org.jgoeres.adventofcode.Day16;
 
+import java.util.Arrays;
+
 public class Memory {
     private int[] registers = new int[Register.values().length];
 
@@ -22,4 +24,35 @@ public class Memory {
         registers[registerAsInt] = value;
     }
 
+    @Override
+    public String toString() {
+        String registerValues = "";
+        for (int registerValue : registers) {
+            registerValues += registerValue + " ";
+        }
+        return "Memory{" + registerValues + '}';
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (this == obj)
+            return true;
+
+        // it checks if the argument is of the
+        // type Geek by comparing the classes
+        // of the passed argument and this object.
+        // if(!(obj instanceof Geek)) return false; ---> avoid.
+        if (obj == null || obj.getClass() != this.getClass())
+            return false;
+
+        // type casting of the argument.
+        Memory memory = (Memory) obj;
+
+        // comparing the state of argument with
+        // the state of 'this' Object.
+
+        boolean result = Arrays.equals(this.registers, memory.registers);
+        return result;
+    }
 }

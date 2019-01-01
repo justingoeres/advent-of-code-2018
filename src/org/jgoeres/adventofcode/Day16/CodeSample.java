@@ -10,4 +10,16 @@ public class CodeSample {
         this.codeOperation = codeOperation;
         this.memoryAfter = memoryAfter;
     }
+
+    public Memory getMemoryBefore() {
+        return memoryBefore;
+    }
+
+    public CodeOperation getCodeOperation() {
+        return codeOperation;
+    }
+
+    public Memory getMemoryAfter() {
+        return memoryAfter;
+    }
 }

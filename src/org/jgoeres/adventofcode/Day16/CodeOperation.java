@@ -12,4 +12,16 @@ public class CodeOperation {
         this.inputB = inputB;
         this.outputC = outputC;
     }
+
+    public int getInputA() {
+        return inputA;
+    }
+
+    public int getInputB() {
+        return inputB;
+    }
+
+    public int getOutputC() {
+        return outputC;
+    }
 }

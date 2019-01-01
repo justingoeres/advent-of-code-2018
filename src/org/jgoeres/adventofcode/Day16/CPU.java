@@ -3,6 +3,14 @@ package org.jgoeres.adventofcode.Day16;
 public class CPU {
     Memory memory = new Memory();
 
+    public void setMemory(Memory memory) {
+        this.memory = memory;
+    }
+
+    public Memory getMemory() {
+        return memory;
+    }
+
     public void addr(int A, int B, int C) {
         /*
         addr (add register) stores into register C the result of adding register A and register B.
