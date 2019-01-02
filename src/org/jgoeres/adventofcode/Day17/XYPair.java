@@ -33,10 +33,9 @@ public class XYPair {
     @Override
     public boolean equals(Object o)
     {
-        System.out.println("equals");
         if(o instanceof XYPair
-                && (x == ((XYPair) o).getX())
-                && (y == ((XYPair) o).getY())
+                && (((XYPair) o).getX().equals(x))
+                && (((XYPair) o).getY().equals(y))
                 )
         {
             return true;
@@ -49,6 +48,8 @@ public class XYPair {
 
     @Override
     public int hashCode() {
-        return this.toString().hashCode(); // Make the hashCode equivalent for XYPairs at the same coords.
+        String hashString = this.toString();
+        int hashCode = hashString.hashCode();
+        return hashCode; // Make the hashCode equivalent for XYPairs at the same coords.
     }
 }

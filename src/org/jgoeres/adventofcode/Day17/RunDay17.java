@@ -13,7 +13,7 @@ public class RunDay17 {
         */
         System.out.println("=== DAY 17A ===");
 
-        Reservoir reservoir =  new Reservoir();
+        Reservoir reservoir =  new Reservoir(pathToInputs);
         return 0;
     }
 
