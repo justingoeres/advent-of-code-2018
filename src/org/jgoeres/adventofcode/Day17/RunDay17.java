@@ -12,6 +12,8 @@ public class RunDay17 {
         Ignoring the opcode numbers, how many codeSamples in your puzzle input behave like three or more opcodes?
         */
         System.out.println("=== DAY 17A ===");
+
+        Reservoir reservoir =  new Reservoir();
         return 0;
     }
 
