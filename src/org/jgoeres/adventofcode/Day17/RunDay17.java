@@ -9,7 +9,7 @@ public class RunDay17 {
 
     public static int problem17A(String pathToInputs) {
         /*
-        Ignoring the opcode numbers, how many codeSamples in your puzzle input behave like three or more opcodes?
+        How many tiles can the water reach within the range of y values in your scan?
         */
         System.out.println("=== DAY 17A ===");
 

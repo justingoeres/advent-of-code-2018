@@ -18,6 +18,8 @@ public class Reservoir {
 //    XYPair two = new XYPair(1, 1);
 
     private static final boolean DEBUG_PRINT_RESERVOIR = false;
+    private static final boolean DEBUG_PRINT_ONLY_WATER = true;
+
 
     public Reservoir(String pathToFile) {
 
@@ -126,8 +128,20 @@ public class Reservoir {
 
 
     public void printReservoir() {
+        int yMax = Integer.MIN_VALUE;
+        if (DEBUG_PRINT_ONLY_WATER) {
+            // find the maximum y coordinate of the waterCells. Print only just past that.
+            for (XYPair waterCell : waterCells) {
+                yMax = Integer.max(yMax, waterCell.getY());
+            }
+            yMax += 3; // Print a little past it.
+            yMax = Integer.min(yMax, BottomRight.getY()); // But not past the bottom of the whole reservoir.
+        } else {
+            yMax = BottomRight.getY();
+        }
+
 //        for (int y = 0; y <= BottomRight.getY(); y++) { // start at y=0 so we print the water source.
-        for (int y = 0; y <= 25; y++) { // start at y=0 so we print the water source.
+        for (int y = 0; y <= yMax; y++) { // start at y=0 so we print the water source.
             String output = "";
             for (int x = TopLeft.getX(); x <= BottomRight.getX(); x++) {
                 if (wallCells.contains(new XYPair(x, y))) {

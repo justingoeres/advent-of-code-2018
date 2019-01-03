@@ -15,6 +15,15 @@ public class WaterCell extends XYPair {
 
         // Recursively calculate the next flow step from this cell.
 
+        if (cellBelow().getY() > reservoir.BottomRight.getY()){
+            // If the next cell would be off the bottom end of the scan.
+            return; // then WE'RE DONE!
+        }
+
+        //        reservoir.printReservoir();
+
+
+
         // If this cell isn't surrounded by anything, flowing down is easy!
         if (reservoir.isEmpty(cellBelow())
                 && reservoir.isEmpty(cellLeft())
@@ -61,8 +70,6 @@ public class WaterCell extends XYPair {
                 return;
             }
 
-            reservoir.printReservoir();
-
             // If we can't flow left any further, go backwards up the list of sourceWater to see if we can flow right.
             // Check only in our current y row.
             nextSource = sourceWater;
@@ -71,31 +78,16 @@ public class WaterCell extends XYPair {
             }
             // Flow (right) from here.
             nextSource.doNextFlow(reservoir);
-
-
-            // Now we're back to wherever the water turned left.
-//            if (reservoir.isEmpty(cellRight())) {
-//                // Try to flow right.
-//                WaterCell cellRight = cellRight();
-//                cellRight.setSourceWater(this); // Should this be setSourceWater(nextSource) since that's where the WaterCell is connected to?
-////                cellRight.setSourceWater(nextSource);
-//                cellRight.doNextFlow(reservoir);
-//                return;
-//            }
-
-//            nextSource = sourceWater; // Reset the source to the source of the current cell.
-//            // If we get here, we can't flow left OR right any further, so start going back up.
-//            while (true) { // keep stepping backward
-//                if (nextSource.getY().equals(this.getY() - 1)) { // If we've gone up one row
-//                    break; // stop searching
-//                }
-//                nextSource = nextSource.sourceWater; // step backward.
-//            }
-//            // Now we're one row up, so try to flow from here.
-//            nextSource.doNextFlow(reservoir);
-//            return;
-
         }
+
+        // Then try to flow down!?
+        if (reservoir.isEmpty(cellBelow())) {
+            WaterCell cellBelow = cellBelow();
+            cellBelow.setSourceWater(this);
+            cellBelow.doNextFlow(reservoir);
+            return;
+        }
+
 
         return;
 
