@@ -14,6 +14,9 @@ public class RunDay17 {
         System.out.println("=== DAY 17A ===");
 
         Reservoir reservoir =  new Reservoir(pathToInputs);
+
+        reservoir.getWaterSource().doNextFlow(reservoir);
+        reservoir.printReservoir();
         return 0;
     }
 

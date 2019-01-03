@@ -4,6 +4,9 @@ public class XYPair {
     private Integer x;
     private Integer y;
 
+    public XYPair() {
+    }
+
     public XYPair(Integer x, Integer y) {
         this.x = x;
         this.y = y;
@@ -31,17 +34,13 @@ public class XYPair {
     }
 
     @Override
-    public boolean equals(Object o)
-    {
-        if(o instanceof XYPair
+    public boolean equals(Object o) {
+        if (o instanceof XYPair
                 && (((XYPair) o).getX().equals(x))
                 && (((XYPair) o).getY().equals(y))
-                )
-        {
+                ) {
             return true;
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
@@ -53,3 +52,4 @@ public class XYPair {
         return hashCode; // Make the hashCode equivalent for XYPairs at the same coords.
     }
 }
+

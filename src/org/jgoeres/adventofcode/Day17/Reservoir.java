@@ -9,21 +9,27 @@ import java.util.regex.Pattern;
 
 public class Reservoir {
     HashSet<XYPair> wallCells = new HashSet<>();
+    HashSet<XYPair> waterCells = new HashSet<>();
     XYPair TopLeft = new XYPair(Integer.MAX_VALUE, Integer.MAX_VALUE);
     XYPair BottomRight = new XYPair(Integer.MIN_VALUE, Integer.MIN_VALUE);
-    XYPair waterSource = new XYPair(500, 0); // per problem statement
+    WaterCell waterSource = new WaterCell(500, 0, null); // per problem statement
 
-    XYPair one = new XYPair(1, 1);
-    XYPair two = new XYPair(1, 1);
+//    XYPair one = new XYPair(1, 1);
+//    XYPair two = new XYPair(1, 1);
 
     private static final boolean DEBUG_PRINT_RESERVOIR = false;
 
     public Reservoir(String pathToFile) {
 
-        wallCells.add(one);
-        System.out.println(wallCells.contains(two));
+//        wallCells.add(one);
+//        System.out.println(wallCells.contains(two));
 
+//        waterCells.add(waterSource);
         loadReservoir(pathToFile);
+    }
+
+    public WaterCell getWaterSource() {
+        return waterSource;
     }
 
     private void loadReservoir(String pathToFile) {
@@ -102,7 +108,24 @@ public class Reservoir {
 
     }
 
-    private void printReservoir() {
+
+    public boolean isEmpty(XYPair xyPair) {
+        boolean isEmpty = ((!isWall(xyPair)) && (!isWater(xyPair)));
+        return isEmpty;
+    }
+
+    public boolean isWall(XYPair xyPair) {
+        boolean isWall = wallCells.contains(xyPair);
+        return isWall;
+    }
+
+    public boolean isWater(XYPair xyPair) {
+        boolean isWater = waterCells.contains(xyPair);
+        return isWater;
+    }
+
+
+    public void printReservoir() {
         for (int y = 0; y <= BottomRight.getY(); y++) { // start at y=0 so we print the water source.
             String output = "";
             for (int x = TopLeft.getX(); x <= BottomRight.getX(); x++) {
@@ -110,7 +133,8 @@ public class Reservoir {
                     output += "#";
                 } else if ((x == waterSource.getX() && y == waterSource.getY())) {
                     output += "+";
-
+                } else if (waterCells.contains(new XYPair(x,y))){
+                    output += "W";
                 } else {
                     output += ".";
                 }
