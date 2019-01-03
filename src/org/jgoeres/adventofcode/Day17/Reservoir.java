@@ -126,14 +126,15 @@ public class Reservoir {
 
 
     public void printReservoir() {
-        for (int y = 0; y <= BottomRight.getY(); y++) { // start at y=0 so we print the water source.
+//        for (int y = 0; y <= BottomRight.getY(); y++) { // start at y=0 so we print the water source.
+        for (int y = 0; y <= 25; y++) { // start at y=0 so we print the water source.
             String output = "";
             for (int x = TopLeft.getX(); x <= BottomRight.getX(); x++) {
                 if (wallCells.contains(new XYPair(x, y))) {
                     output += "#";
                 } else if ((x == waterSource.getX() && y == waterSource.getY())) {
                     output += "+";
-                } else if (waterCells.contains(new XYPair(x,y))){
+                } else if (waterCells.contains(new XYPair(x, y))) {
                     output += "W";
                 } else {
                     output += ".";
@@ -141,5 +142,6 @@ public class Reservoir {
             }
             System.out.println(output);
         }
+        System.out.println(); //blank line after
     }
 }
