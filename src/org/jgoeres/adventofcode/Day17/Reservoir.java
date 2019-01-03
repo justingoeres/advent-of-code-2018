@@ -2,8 +2,10 @@ package org.jgoeres.adventofcode.Day17;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Scanner;
+import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,6 +15,8 @@ public class Reservoir {
     XYPair TopLeft = new XYPair(Integer.MAX_VALUE, Integer.MAX_VALUE);
     XYPair BottomRight = new XYPair(Integer.MIN_VALUE, Integer.MIN_VALUE);
     WaterCell waterSource = new WaterCell(500, 0, null); // per problem statement
+
+    Stack<WaterCell> waterCellStack = new Stack<>();
 
 //    XYPair one = new XYPair(1, 1);
 //    XYPair two = new XYPair(1, 1);
@@ -26,12 +30,17 @@ public class Reservoir {
 //        wallCells.add(one);
 //        System.out.println(wallCells.contains(two));
 
-//        waterCells.add(waterSource);
+        waterCells.add(waterSource);
+        waterCellStack.push(waterSource);
         loadReservoir(pathToFile);
     }
 
     public WaterCell getWaterSource() {
         return waterSource;
+    }
+
+    public Stack<WaterCell> getWaterCellStack() {
+        return waterCellStack;
     }
 
     private void loadReservoir(String pathToFile) {
@@ -108,6 +117,20 @@ public class Reservoir {
             BottomRight.setY(y);
         }
 
+    }
+
+    public void processWaterStack() {
+        WaterCell waterCell = waterCellStack.pop();
+        waterCells.add(waterCell);
+
+        if (DEBUG_PRINT_ONLY_WATER) {
+            printReservoir();
+        }
+
+        ArrayList<WaterCell> nextFlowCells = waterCell.nextFlowCells(this);
+        for(WaterCell nextFlowCell:nextFlowCells) {
+            waterCellStack.push(nextFlowCell);
+        }
     }
 
 

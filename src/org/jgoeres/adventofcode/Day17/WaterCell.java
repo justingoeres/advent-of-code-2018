@@ -1,5 +1,7 @@
 package org.jgoeres.adventofcode.Day17;
 
+import java.util.ArrayList;
+
 public class WaterCell extends XYPair {
     private WaterCell sourceWater;
 
@@ -8,6 +10,33 @@ public class WaterCell extends XYPair {
         this.sourceWater = sourceWater;
     }
 
+    public ArrayList<WaterCell> nextFlowCells(Reservoir reservoir) {
+        ArrayList<WaterCell> nextFlowCells = new ArrayList<>();
+        // Identify which cells this cell can flow into, and return them as a list.
+        // List must be ordered in REVERSE priority since we'll push them onto a stack.
+
+        // If the cell below is empty, flow down but also push the CURRENT cell
+        // onto the stack to process later.
+        if (reservoir.isEmpty(cellBelow())) {
+            nextFlowCells.add(this);
+            nextFlowCells.add(cellBelow()); // this one will be first off the stack.
+
+            if (reservoir.isWater(cellRight())) {
+                // If we arrived here by spilling over to the left, scan back to the right
+                // and see if we need to flow there first.
+                //TODO: WORKING HERE.
+            }
+            return nextFlowCells;
+        }
+
+        // If we're here, we can't flow down. So flow to the sides.
+        if (reservoir.isEmpty(cellRight())) nextFlowCells.add(cellRight());
+
+        // If we're here, we can't flow down. So flow to the sides.
+        if (reservoir.isEmpty(cellLeft())) nextFlowCells.add(cellLeft()); // Left will come off the stack before right.
+
+        return nextFlowCells;
+    }
 
     public void doNextFlow(Reservoir reservoir) {
         // Add this cell to the reservoir's list of cells we've flowed through.

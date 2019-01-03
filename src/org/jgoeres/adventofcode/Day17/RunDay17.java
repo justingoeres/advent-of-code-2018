@@ -13,9 +13,13 @@ public class RunDay17 {
         */
         System.out.println("=== DAY 17A ===");
 
-        Reservoir reservoir =  new Reservoir(pathToInputs);
+        Reservoir reservoir = new Reservoir(pathToInputs);
 
-        reservoir.getWaterSource().doNextFlow(reservoir);
+//        reservoir.getWaterSource().doNextFlow(reservoir);
+        while (!reservoir.getWaterCellStack().isEmpty()) {
+            // As long as there's still cells to process.
+            reservoir.processWaterStack();
+        }
         reservoir.printReservoir();
         return 0;
     }
