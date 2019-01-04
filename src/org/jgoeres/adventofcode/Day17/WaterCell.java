@@ -21,9 +21,7 @@ public class WaterCell extends XYPair {
 
             System.out.println(this.toString());
 
-//            if (reservoir.isWater(cellAbove())) { // If this cell isn't supplied from above, there's no need to process it later.
-                nextFlowCells.add(this);
-//            }
+            nextFlowCells.add(this);
             nextFlowCells.add(cellBelow()); // this one will be first off the stack.
 
             WaterCell nextCellRight = cellRight();
@@ -42,39 +40,7 @@ public class WaterCell extends XYPair {
             return nextFlowCells;
         }
 
-        // If we're here, we can't flow down.
-
-        // If there's already water underneath us, we need a special check to see if we should flow to the sides.
-        if (reservoir.isWater(cellBelow()) && reservoir.isWater(cellAbove())) { // if we're in a column of water.
-            // Scan to the left and right of the row below. If it's bracketed by walls on both sides,
-            // then we can flow to the side, too.
-            // If it ends in empty space (or out of bounds), then DON'T flow to the sides.
-            WaterCell rowCell = cellBelow();
-            WaterCell nextCellLeft = rowCell.cellLeft();
-            WaterCell nextCellRight = rowCell.cellRight();
-
-            // Scan left.
-            while (reservoir.isWater(nextCellLeft)) {
-                nextCellLeft = nextCellLeft.cellLeft(); // Keep scanning left as long as there's water.
-            }
-            // When we get here, there's no more water. Either a wall, empty space, or out of bounds.
-            boolean emptyOnLeft = (reservoir.isEmpty(nextCellLeft) || !reservoir.isInBounds(nextCellLeft));
-
-            // Scan right.
-            while (reservoir.isWater(nextCellRight)) {
-                nextCellRight = nextCellRight.cellRight(); // Keep scanning left as long as there's water.
-            }
-            // When we get here, there's no more water. Either a wall, empty space, or out of bounds.
-            boolean emptyOnRight = (reservoir.isEmpty(nextCellRight) || !reservoir.isInBounds(nextCellRight));
-
-            if (emptyOnLeft || emptyOnRight) {
-                // If at least one side is already open (i.e. spilling over)
-                return nextFlowCells; // return now; DON'T flow to the sides.
-            }
-        }
-
-
-        // Flow to the sides.
+        // If we're here, we can't flow down. So flow to the sides.
         if (reservoir.isEmpty(cellRight())) nextFlowCells.add(cellRight());
 
         // If we're here, we can't flow down. So flow to the sides.

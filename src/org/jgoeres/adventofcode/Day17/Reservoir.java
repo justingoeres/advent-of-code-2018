@@ -138,7 +138,6 @@ public class Reservoir {
             }
             // Then continue on and process it.
             waterCell = previousWaterCell;
-            waterCellStack.pop(); // but also pop the immediate previous cell so we don't reprocess where the water turns the corner.
         }
 
         waterCells.add(waterCell);
@@ -151,7 +150,6 @@ public class Reservoir {
         for (WaterCell nextFlowCell : nextFlowCells) {
             waterCellStack.push(nextFlowCell);
         }
-
     }
 
 
