@@ -22,7 +22,7 @@ public class Reservoir {
 //    XYPair two = new XYPair(1, 1);
 
     private static final boolean DEBUG_PRINT_RESERVOIR = false;
-    private static final boolean DEBUG_PRINT_ONLY_WATER = true;
+    private static boolean DEBUG_PRINT_ONLY_WATER = false;
 
 
     public Reservoir(String pathToFile) {
@@ -121,6 +121,26 @@ public class Reservoir {
 
     public void processWaterStack() {
         WaterCell waterCell = waterCellStack.pop();
+
+        if (waterCell.getY() >= BottomRight.getY()) {
+            // If we've run off the bottom of the scan...
+            // Go back up the stack to see if there are any
+            // "down" flows that haven't been processed.
+            printReservoir();
+            WaterCell previousWaterCell = waterCell.cellAbove();
+            while (!waterCellStack.isEmpty() && !isEmpty(previousWaterCell)) {
+                // find the first empty WaterCell on the stack, going backward.
+                if (waterCellStack.isEmpty()) {
+                    return; // If we run out of stack items, we're done!
+                } else {
+                    previousWaterCell = waterCellStack.pop(); // otherwise keep going up the stack until we find an empty cell.
+                }
+            }
+            // Then continue on and process it.
+            waterCell = previousWaterCell;
+            waterCellStack.pop(); // but also pop the immediate previous cell so we don't reprocess where the water turns the corner.
+        }
+
         waterCells.add(waterCell);
 
         if (DEBUG_PRINT_ONLY_WATER) {
@@ -128,15 +148,16 @@ public class Reservoir {
         }
 
         ArrayList<WaterCell> nextFlowCells = waterCell.nextFlowCells(this);
-        for(WaterCell nextFlowCell:nextFlowCells) {
+        for (WaterCell nextFlowCell : nextFlowCells) {
             waterCellStack.push(nextFlowCell);
         }
+
     }
 
 
     public boolean isEmpty(XYPair xyPair) {
         boolean isEmpty = ((!isWall(xyPair)) && (!isWater(xyPair)));
-        return isEmpty;
+        return isEmpty && isInBounds(xyPair); // Cell must be empty AND be in bounds, otherwise it's not a valid place to go.
     }
 
     public boolean isWall(XYPair xyPair) {
@@ -149,6 +170,11 @@ public class Reservoir {
         return isWater;
     }
 
+    public boolean isInBounds(XYPair xyPair) {
+        boolean isInBounds = ((xyPair.getX() >= TopLeft.getX()) && (xyPair.getX() <= BottomRight.getX())
+                && (xyPair.getY() >= 0) && (xyPair.getY() <= BottomRight.getY())); // y starts at 0 even though the walls don't.
+        return isInBounds;
+    }
 
     public void printReservoir() {
         int yMax = Integer.MIN_VALUE;
@@ -165,14 +191,14 @@ public class Reservoir {
 
 //        for (int y = 0; y <= BottomRight.getY(); y++) { // start at y=0 so we print the water source.
         for (int y = 0; y <= yMax; y++) { // start at y=0 so we print the water source.
-            String output = "";
+            String output = y + ": ";
             for (int x = TopLeft.getX(); x <= BottomRight.getX(); x++) {
                 if (wallCells.contains(new XYPair(x, y))) {
                     output += "#";
                 } else if ((x == waterSource.getX() && y == waterSource.getY())) {
                     output += "+";
                 } else if (waterCells.contains(new XYPair(x, y))) {
-                    output += "W";
+                    output += "|";
                 } else {
                     output += ".";
                 }
