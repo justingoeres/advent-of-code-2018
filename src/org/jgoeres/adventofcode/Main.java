@@ -20,7 +20,7 @@ import org.jgoeres.adventofcode.Day17.RunDay17;
 
 public class Main {
 
-    static final boolean RUN_ALL = false;
+    static final boolean RUN_ALL = true;
 
     static final boolean RUN_DAY_1 = false;
     static final boolean RUN_DAY_2 = false;
