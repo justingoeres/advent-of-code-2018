@@ -6,6 +6,8 @@ public class XYPair {
     private Integer x;
     private Integer y;
 
+    private final boolean DEBUG_PRINT_CELL_COORDS = false;
+
     public XYPair(Integer x, Integer y) {
         this.x = x;
         this.y = y;
@@ -15,74 +17,59 @@ public class XYPair {
         ArrayList<XYPair> nextFlowCells = new ArrayList<>();
         // Identify which cells this cell can flow into, and return them as a list.
         // List must be ordered in REVERSE priority since we'll push them onto a stack.
-        int yToPrint = 1;
+
+        // Uncomment the block below to print around a particular row.
+/*
+          int yToPrint = 1;
+          if (this.getY() == yToPrint) {
+              reservoir.printReservoir(this.getY(), 10, this);
+        }
+*/
         // If the cell below is empty, flow down but also push the CURRENT cell
         // onto the stack to process later.
-//        if (this.getY() == yToPrint) {
-//            reservoir.printReservoir(this.getY(), 10, this);
-//        }
-
         if (reservoir.isEmpty(cellBelow())) {
 
-//            System.out.println(this.toString());
+            if (DEBUG_PRINT_CELL_COORDS) {
+                System.out.println(this.toString()); // print the coordinates of the cell we're processing.
+            }
 
-            nextFlowCells.add(this);  // Maybe don't add to the stack when we're spilling over, i.e. cellRight or cellLeft is water
+            nextFlowCells.add(this);
             nextFlowCells.add(cellBelow()); // this one will be first off the stack.
 
-            XYPair testCell = this;
-            XYPair nextCellRight = cellRight();
             // If we arrived here by spilling over to the left, scan back to the right
             // and see if we need to flow there first.
+            XYPair nextCellRight = cellRight();
             if (reservoir.isWater(nextCellRight)) {
                 while (reservoir.isWater(nextCellRight) // If the next cell on the right is water.
                         && (reservoir.isWall(nextCellRight.cellBelow()) || reservoir.isSolidWater(nextCellRight.cellBelow()))) {    // And is sitting on something solid (wall or solid water)
-                    testCell = nextCellRight;
                     nextCellRight = nextCellRight.cellRight(); // Keep stepping to the right.
                 }
-                // When we get here, either nextCellRight is EMPTY or is FLOWING water.
 
-                if (reservoir.isEmpty(nextCellRight) && reservoir.isInBounds(nextCellRight)) {
+                // When we get here, either nextCellRight is EMPTY or is FLOWING water.
+                if (reservoir.isEmpty(nextCellRight)) {
                     // If it's empty (and exists), flow there.
                     nextFlowCells.add(nextCellRight); // this one will be first off the stack, even before cellBelow.
                 }
                 // Otherwise, it's flowing water, so do nothing.
-
-//                if (reservoir.isEmpty(testCell.cellBelow())) {
-//                    nextFlowCells.add(testCell.cellBelow());
-//                } else if (reservoir.isEmpty(nextCellRight) && reservoir.isInBounds(nextCellRight)) {
-//                    // If it's empty (and exists), flow there.
-//                    nextFlowCells.add(nextCellRight); // this one will be first off the stack, even before cellBelow.
-//                }
             }
             return nextFlowCells;
         }
 
         // If we're here, we can't simply flow down. Check the cell below to see if we should flow to the sides.
 
-        if (reservoir.isWall(cellBelow())) {
-            // If the below cell is a wall, definitely try to flow out the sides.
-            if ((reservoir.isEmpty(cellRight())) && reservoir.isInBounds(cellRight()))
+        if (reservoir.isWall(cellBelow())    // If the below cell is a wall,
+                || reservoir.isSolidWater(cellBelow())) {   // or is solid water.
+            // definitely try to flow out the sides.
+            if (reservoir.isEmpty(cellRight()))
                 nextFlowCells.add(cellRight());
 
-            if ((reservoir.isEmpty(cellLeft())) && reservoir.isInBounds(cellLeft()))
+            if (reservoir.isEmpty(cellLeft()))
                 nextFlowCells.add(cellLeft()); // Left will come off the stack before right.
         }
+        // Else the cell below is not "solid" water or a wall, so flow into it; not out the sides.
+        // Flowing into it means "do nothing", but then we need to go back up the stack again and
+        // find the next down-flowing empty space.
 
-        if (reservoir.isWater(cellBelow())) {
-            if (reservoir.isSolidWater(cellBelow())) {
-                // If the cell below is "solid" water (i.e. it's contained on both edges.
-                // Then flow out the sides.
-                if (reservoir.isEmpty(cellRight()) && reservoir.isInBounds(cellRight()))
-                    nextFlowCells.add(cellRight());
-
-                if (reservoir.isEmpty(cellLeft()) && reservoir.isInBounds(cellRight()))
-                    nextFlowCells.add(cellLeft()); // Left will come off the stack before right.
-            } else {
-                // The cell below is not "solid" water, so flow into it; not out the sides.
-                // Flowing into it means "do nothing", but then we need to go back up the stack again and
-                // find the next down-flowing empty space.
-            }
-        }
         return nextFlowCells;
     }
 

@@ -2,6 +2,7 @@ package org.jgoeres.adventofcode.Day17;
 
 public class RunDay17 {
     static final String DEFAULT_PATH_TO_INPUTS = "day17/input.txt";
+    static final boolean PRINT_RESERVOIR_WHEN_DONE = false;
 
     public static void problem17A() {
         problem17A(DEFAULT_PATH_TO_INPUTS);
@@ -15,19 +16,25 @@ public class RunDay17 {
 
         Reservoir reservoir = new Reservoir(pathToInputs);
 
-//        reservoir.getWaterSource().doNextFlow(reservoir);
         while (!reservoir.getWaterCellStack().isEmpty()) {
             // As long as there's still cells to process.
             reservoir.processWaterStack();
         }
-        reservoir.printReservoir();
 
-        int numWaterTiles = reservoir.waterCells.size();
+        if (PRINT_RESERVOIR_WHEN_DONE) {
+            reservoir.printReservoir();
+        }
+
+        int numWaterTiles = 0;
+
+        for (XYPair cell : reservoir.waterCells) { // Count up the tiles that are within our scan area.
+            numWaterTiles += (reservoir.isInBounds(cell) ? 1 : 0);
+        }
+
         System.out.println("Number of water tiles:\t" + numWaterTiles);
         return numWaterTiles;
-
         // Answer:
-        // 34541
+        // Number of water tiles:	34541
     }
 
     public static void problem17B() {
