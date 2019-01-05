@@ -21,7 +21,13 @@ public class RunDay17 {
             reservoir.processWaterStack();
         }
         reservoir.printReservoir();
-        return 0;
+
+        int numWaterTiles = reservoir.waterCells.size();
+        System.out.println("Number of water tiles:\t" + numWaterTiles);
+        return numWaterTiles;
+
+        // Answer:
+        // 34541
     }
 
     public static void problem17B() {

@@ -1,7 +1,5 @@
 package org.jgoeres.adventofcode.Day17;
 
-import java.util.ArrayList;
-
 public class WaterCell extends XYPair {
     private WaterCell sourceWater;
 
@@ -10,45 +8,7 @@ public class WaterCell extends XYPair {
         this.sourceWater = sourceWater;
     }
 
-    public ArrayList<WaterCell> nextFlowCells(Reservoir reservoir) {
-        ArrayList<WaterCell> nextFlowCells = new ArrayList<>();
-        // Identify which cells this cell can flow into, and return them as a list.
-        // List must be ordered in REVERSE priority since we'll push them onto a stack.
-
-        // If the cell below is empty, flow down but also push the CURRENT cell
-        // onto the stack to process later.
-        if (reservoir.isEmpty(cellBelow())) {
-
-            System.out.println(this.toString());
-
-            nextFlowCells.add(this);
-            nextFlowCells.add(cellBelow()); // this one will be first off the stack.
-
-            WaterCell nextCellRight = cellRight();
-            // If we arrived here by spilling over to the left, scan back to the right
-            // and see if we need to flow there first.
-            while (reservoir.isWater(nextCellRight)) {  // If the next cell on the right is water.
-                nextCellRight = nextCellRight.cellRight(); // Keep stepping to the right.
-
-                if (reservoir.isEmpty(nextCellRight)) {
-                    // When we get here, nextCellRight is NOT water.
-                    // If it's empty (and exists), flow there.
-                    nextFlowCells.add(nextCellRight); // this one will be first off the stack, even before cellBelow.
-                }
-            }
-
-            return nextFlowCells;
-        }
-
-        // If we're here, we can't flow down. So flow to the sides.
-        if (reservoir.isEmpty(cellRight())) nextFlowCells.add(cellRight());
-
-        // If we're here, we can't flow down. So flow to the sides.
-        if (reservoir.isEmpty(cellLeft())) nextFlowCells.add(cellLeft()); // Left will come off the stack before right.
-
-        return nextFlowCells;
-    }
-
+   /*
     public void doNextFlow(Reservoir reservoir) {
         // Add this cell to the reservoir's list of cells we've flowed through.
         reservoir.waterCells.add(this);
@@ -149,7 +109,7 @@ public class WaterCell extends XYPair {
         return;
 
     }
-
+*/
     public WaterCell getSourceWater() {
         return sourceWater;
     }
@@ -158,21 +118,7 @@ public class WaterCell extends XYPair {
         this.sourceWater = sourceWater;
     }
 
-    public WaterCell cellAbove() {
-        return new WaterCell(getX(), getY() - 1, this);
-    }
 
-    public WaterCell cellBelow() {
-        return new WaterCell(getX(), getY() + 1, this);
-    }
-
-    public WaterCell cellLeft() {
-        return new WaterCell(getX() - 1, getY(), this);
-    }
-
-    public WaterCell cellRight() {
-        return new WaterCell(getX() + 1, getY(), this);
-    }
 
     public boolean canFlowDown() {
         //
