@@ -3,6 +3,7 @@ package org.jgoeres.adventofcode.Day18;
 public class RunDay18 {
 
     static final String DEFAULT_PATH_TO_INPUTS = "day18/input.txt";
+    static final boolean DEBUG_PRINT_FOREST = false;
 
     public static void problem18A() {
         problem18A(DEFAULT_PATH_TO_INPUTS);
@@ -15,9 +16,26 @@ public class RunDay18 {
         */
         System.out.println("=== DAY 18A ===");
 
-        return 0;
+        final int GENERATIONS_TO_RUN = 10;
+
+        Forest forest = new Forest(pathToInputs);
+        if (DEBUG_PRINT_FOREST) {
+            forest.printForest();   // print initial state
+        }
+
+        for (int i = 0; i < GENERATIONS_TO_RUN; i++) {
+            forest.doTimerTick();
+            if (DEBUG_PRINT_FOREST) {
+                System.out.println("Generation #" + i);
+                forest.printForest();
+            }
+        }
+
+        int finalValue = forest.calculateResourceValue();
+        System.out.println("Final resource value:\t" + finalValue);
+        return finalValue;
         // Answer:
-        // 
+        // Final resource value:	360720
     }
 
     public static void problem18B() {
