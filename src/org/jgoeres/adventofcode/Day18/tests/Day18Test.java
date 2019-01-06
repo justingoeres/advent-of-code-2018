@@ -11,7 +11,7 @@ public class Day18Test {
         String pathToInputs = "day18/example.txt";
         int expectedResult = 1147;   // 37 * 31 = 1147
         int result = RunDay18.problem18A(pathToInputs);
-        assertEquals("Outcome is "+result,expectedResult,result);
+        assertEquals("Outcome is " + result, expectedResult, result);
     }
 
     @Test
@@ -19,7 +19,14 @@ public class Day18Test {
         String pathToInputs = "day18/input.txt";
         int expectedResult = 360720;   // 835 * 432 = 360720
         int result = RunDay18.problem18A(pathToInputs);
-        assertEquals("Outcome is "+result,expectedResult,result);
+        assertEquals("Outcome is " + result, expectedResult, result);
     }
 
+    @Test
+    public void testJustin18B() {
+        String pathToInputs = "day18/input.txt";
+        int expectedResult = 197276;   // 835 * 432 = 360720
+        int result = RunDay18.problem18B(pathToInputs);
+        assertEquals("Outcome is " + result, expectedResult, result);
+    }
 }

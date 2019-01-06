@@ -2,6 +2,7 @@ package org.jgoeres.adventofcode.Day18;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -10,7 +11,6 @@ import static org.jgoeres.adventofcode.Day18.Acre.OPEN;
 import static org.jgoeres.adventofcode.Day18.Acre.TREES;
 
 public class Forest {
-    //    Acre[][] currentAcres, nextAcres;
     int forestSize;
     AcresWrapper currentAcresWrapper;
     AcresWrapper nextAcresWrapper;
@@ -216,6 +216,37 @@ public class Forest {
         return resourceValue;
     }
 
+    public String getCurrentAcresFingerprint() {
+        //  Create a unique fingerprint of the forest by MD5'ing the byte array of its current status.
+        return md5Java(acresToString(currentAcresWrapper.c));
+    }
+
+    public String acresToString(Acre[][] acres) {
+        String asString = "";
+        for (int i = 0; i < acres.length; i++) {    // rows
+            for (int j = 0; j < acres[0].length; j++) { // columns
+                asString += acres[i][j].asChar();
+            }
+        }
+        return asString;
+    }
+
+    public static String md5Java(String message) {
+        String digest = null;
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] hash = md.digest(message.getBytes("UTF-8")); //converting byte array to Hexadecimal String
+            StringBuilder sb = new StringBuilder(2 * hash.length);
+            for (byte b : hash) {
+                sb.append(String.format("%02x", b & 0xff));
+            }
+            digest = sb.toString();
+        } catch (Exception ex) {
+            System.out.println("Exception: " + ex.getMessage());
+        }
+        return digest;
+    }
+
     public void printForest() {
         for (int i = 0; i < forestSize; i++) {  // down the rows
             String output = "";
@@ -234,7 +265,6 @@ public class Forest {
         aw1.c = aw2.c;
         aw2.c = temp;
     }
-
 
     // A Wrapper over class that is used for swapping
     class AcresWrapper {
