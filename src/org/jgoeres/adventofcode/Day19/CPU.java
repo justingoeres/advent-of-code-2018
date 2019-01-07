@@ -1,12 +1,66 @@
 package org.jgoeres.adventofcode.Day19;
 
 public class CPU {
+    int ip = 0; // instruction pointer starts at zero.
+    int ipBoundRegister;
     Memory memory = new Memory();
+
+    private IOpCode[] opCodes = opCodeFunctor(this);
+
+    public CPU(int ipBoundRegister) {
+        this.ipBoundRegister = ipBoundRegister;
+    }
 
     public void copyToMemory(Memory sourceMemory) {
         for (int i = 0; i < memory.getRegisters().length; i++) {
             memory.setRegisterValue(i,sourceMemory.getRegisterValue(i));
         }
+    }
+
+    public void execute(CodeOperation op){
+        /*
+        When the instruction pointer is bound to a register,
+            1) its value is written to that register just before each instruction is executed,
+            2) and the value of that register is written back to the instruction
+                pointer immediately after each instruction finishes execution.
+            3) Afterward, move to the next instruction by adding one to the
+               instruction pointer, even if the value in the instruction pointer
+               was just updated by an instruction.
+        (Because of this, instructions
+        must effectively set the instruction pointer to the instruction
+        before the one they want executed next.)
+         */
+
+        // Write ip value to bound register.
+        memory.setRegisterValue(ipBoundRegister,ip);
+
+        // Execute the next instruction.
+        opCodes[op.getOpCode().ordinal()].execute(op.getInputA(),    // execute the operation
+                op.getInputB(),
+                op.getOutputC());
+
+        // Write bound register back to ip.
+        setIp(memory.getRegisterValue(ipBoundRegister));
+
+        // Finally, increment the ip
+        incrementIp();
+    }
+
+    public boolean ipIsValid(Program program){
+        // Does the ip point to something inside the program?
+        return (ip < program.getProgramCode().size());
+    }
+
+    public void setIp(int ip) {
+        this.ip = ip;
+    }
+
+    public void incrementIp(int amount){
+        ip+=amount;
+    }
+
+    public void incrementIp(){
+        incrementIp(1);
     }
 
     public Memory getMemory() {
@@ -139,6 +193,113 @@ public class CPU {
         memory.setRegisterValue(C, result);
     }
 
+
+    private static IOpCode[] opCodeFunctor(CPU cpu) {
+        return new IOpCode[]{
+                new IOpCode() {
+                    @Override
+                    public void execute(int A, int B, int C) {
+                        cpu.addr(A, B, C);
+                    }
+                },
+                new IOpCode() {
+                    @Override
+                    public void execute(int A, int B, int C) {
+                        cpu.addi(A, B, C);
+                    }
+                },
+                new IOpCode() {
+                    @Override
+                    public void execute(int A, int B, int C) {
+                        cpu.mulr(A, B, C);
+                    }
+                },
+                new IOpCode() {
+                    @Override
+                    public void execute(int A, int B, int C) {
+                        cpu.muli(A, B, C);
+                    }
+                },
+
+
+                new IOpCode() {
+                    @Override
+                    public void execute(int A, int B, int C) {
+                        cpu.banr(A, B, C);
+                    }
+                },
+                new IOpCode() {
+                    @Override
+                    public void execute(int A, int B, int C) {
+                        cpu.bani(A, B, C);
+                    }
+                },
+                new IOpCode() {
+                    @Override
+                    public void execute(int A, int B, int C) {
+                        cpu.borr(A, B, C);
+                    }
+                },
+                new IOpCode() {
+                    @Override
+                    public void execute(int A, int B, int C) {
+                        cpu.bori(A, B, C);
+                    }
+                },
+
+
+                new IOpCode() {
+                    @Override
+                    public void execute(int A, int B, int C) {
+                        cpu.setr(A, B, C);
+                    }
+                },
+                new IOpCode() {
+                    @Override
+                    public void execute(int A, int B, int C) {
+                        cpu.seti(A, B, C);
+                    }
+                },
+                new IOpCode() {
+                    @Override
+                    public void execute(int A, int B, int C) {
+                        cpu.gtir(A, B, C);
+                    }
+                },
+                new IOpCode() {
+                    @Override
+                    public void execute(int A, int B, int C) {
+                        cpu.gtri(A, B, C);
+                    }
+                },
+                new IOpCode() {
+                    @Override
+                    public void execute(int A, int B, int C) {
+                        cpu.gtrr(A, B, C);
+                    }
+                },
+
+
+                new IOpCode() {
+                    @Override
+                    public void execute(int A, int B, int C) {
+                        cpu.eqir(A, B, C);
+                    }
+                },
+                new IOpCode() {
+                    @Override
+                    public void execute(int A, int B, int C) {
+                        cpu.eqri(A, B, C);
+                    }
+                },
+                new IOpCode() {
+                    @Override
+                    public void execute(int A, int B, int C) {
+                        cpu.eqrr(A, B, C);
+                    }
+                },
+        };
+    }
 
 
 }

@@ -12,7 +12,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Program {
-    Integer ip = null; // instruction pointer
+    Integer ip = null; // instruction pointer mapping.
     private ArrayList<CodeOperation> programCode = new ArrayList<>();
 
     public Program(String pathToFile) {
