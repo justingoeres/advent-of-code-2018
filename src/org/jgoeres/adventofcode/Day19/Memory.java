@@ -37,9 +37,9 @@ public class Memory {
     public String toString() {
         String registerValues = "";
         for (int registerValue : registers) {
-            registerValues += registerValue + " ";
+            registerValues += registerValue + "\t";
         }
-        return "Memory{" + registerValues + '}';
+        return "[ " + registerValues + " ]";
     }
 
     @Override

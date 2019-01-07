@@ -11,6 +11,10 @@ public class CPU {
         this.ipBoundRegister = ipBoundRegister;
     }
 
+    public void reset(){
+        memory.clear(); // clear the memory
+        ip = 0; // reset the instruction pointer.
+    }
     public void copyToMemory(Memory sourceMemory) {
         for (int i = 0; i < memory.getRegisters().length; i++) {
             memory.setRegisterValue(i,sourceMemory.getRegisterValue(i));

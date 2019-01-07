@@ -28,4 +28,13 @@ public class CodeOperation {
     public int getOutputC() {
         return outputC;
     }
+
+    @Override
+    public String toString() {
+//        return "opCode=" + opCode +
+//                ", A=" + inputA +
+//                ", B=" + inputB +
+//                ", C=" + outputC;
+        return opCode + "\t" + inputA + "\t" + inputB + "\t" + outputC;
+    }
 }
