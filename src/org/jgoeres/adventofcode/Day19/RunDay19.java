@@ -7,6 +7,9 @@ public class RunDay19 {
     static Program program;
     static CPU cpu;
 
+    static final boolean DEBUG_PART_A_PRINT_PROGRESS = false;
+    static final boolean DEBUG_PART_B_PRINT_PROGRESS = true;
+
     public static void problem19A() {
         problem19A(DEFAULT_PATH_TO_INPUTS);
     }
@@ -26,13 +29,21 @@ public class RunDay19 {
         while (cpu.ipIsValid(program)) {
             //for (CodeOperation op : program.getProgramCode()) {     // Run the whole program
             CodeOperation op = program.getProgramCode().get(cpu.ip);
-            String output = i + ":\t" + cpu.ip + "\t" + cpu.getMemory().toString() + "\t";
+            String output = null;
+
+            boolean print = false;
+            if (DEBUG_PART_A_PRINT_PROGRESS || cpu.ip == 7) {
+                output = i + ":\t" + cpu.ip + "\t" + cpu.getMemory().toString() + "\t";
+                print = true;
+            }
 
             cpu.execute(op);
-            output += op.toString() + "\t" + cpu.getMemory().toString();
 
-            System.out.println(output);
+            if (DEBUG_PART_A_PRINT_PROGRESS || print) {
+                output += op.toString() + "\t" + cpu.getMemory().toString();
+                System.out.println(output);
 //            System.out.println(i+":\t"+cpu.getMemory().toString());
+            }
             i++;
 
         }
@@ -69,12 +80,19 @@ public class RunDay19 {
         while (cpu.ipIsValid(program)) {
             //for (CodeOperation op : program.getProgramCode()) {     // Run the whole program
             CodeOperation op = program.getProgramCode().get(cpu.ip);
-            String output = i + ":\t" + cpu.ip + "\t" + cpu.getMemory().toString() + "\t";
+            String output = null;
+
+            if (DEBUG_PART_B_PRINT_PROGRESS) {
+                output = i + ":\t" + cpu.ip + "\t" + cpu.getMemory().toString() + "\t";
+            }
 
             cpu.execute(op);
-            output += op.toString() + "\t" + cpu.getMemory().toString();
 
-            System.out.println(output);
+            if (DEBUG_PART_B_PRINT_PROGRESS) {
+                output += op.toString() + "\t" + cpu.getMemory().toString();
+                System.out.println(output);
+            }
+
             i++;
 
         }
@@ -83,5 +101,40 @@ public class RunDay19 {
         System.out.println("Value in register 0 at HALT:\t" + haltValue);
 
         return haltValue;
+        // Answer:
+        // 10,982,400
+
+        /* EXPLANATION:
+
+           The input code, reinterpreted to pseudocode, looks like this:
+
+                // After setup finishes
+                b = 983 (part a)
+                b = 10551383 (part b)
+
+                // Then
+                for (c = 1 ; c < b ; c++) {
+                    for (e = 1 ; e < b ; e++) {
+                        if (c * e == b) {
+                            a += c
+                        }
+                    }
+                }
+
+            The output of this code is to produce the SUM OF ALL THE PRIME FACTORS OF B (including 1).
+
+            For Part A:
+                983 = 983 * 1
+            So 983 + 1 = 984
+
+            For Part B:
+                10551383 = 43 * 59 * 4159
+            Which gives 10551383    = 1 * 10,551,383
+                                    = 43 * 245,381
+                                    = 59 * 178,837
+                                    = 4,159 * 2,537
+            So 1 + 43 + 59 + 4159 + 2537 + 178837 + 245381 + 10551383 = 10,982,400
+
+         */
     }
 }
