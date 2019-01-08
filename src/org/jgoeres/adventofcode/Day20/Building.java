@@ -32,33 +32,24 @@ public class Building {
                 switch (nextDirection) {
                     case '^':   // starting room
                         // Don't need to do anything, the default newX & newY will give us a room at 0,0.
-//                        newRoom = new Room(0, 0);  // Start at 0,0 for lack of anything better.
-//                        startingRoom = newRoom;
-//                        rooms.put(startingRoom.toString(), startingRoom);
                         break;
 
                     case 'N':   // connect to the north.
                         newX = currentRoom.getX();
                         newY = currentRoom.getY() + 1; // y is positive to the north.
-                        //            currentRoom.connectToNorth(roomNorth);
                         break;
 
                     case 'E':   // connect to the east.
                         newX = currentRoom.getX() + 1; // x is positive to the east.
                         newY = currentRoom.getY();
-//                        currentRoom.connectToEast(roomEast);
                         break;
 
                     case 'S':   // connect to the south.
                         newX = currentRoom.getX();
                         newY = currentRoom.getY() - 1; // y is negative to the south.
-
-//                        currentRoom.connectToSouth(roomSouth);
                         break;
 
                     case 'W':   // connect to the west.
-//                        newRoom.setY(currentRoom.getY());
-//                        newRoom.setX(currentRoom.getX() - 1); // x is negative to the west.
                         newX = currentRoom.getX() - 1; // x is negative to the west.
                         newY = currentRoom.getY();
                         break;
@@ -75,7 +66,6 @@ public class Building {
                     // We've seen this room before!
                     newRoom = rooms.get(newRoom.toString());
                 }
-
 
                 // Connect up to the new room.
                 switch (nextDirection) {
