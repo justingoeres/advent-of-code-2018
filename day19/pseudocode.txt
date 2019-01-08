@@ -1,0 +1,12 @@
+
+// After setup finishes
+b = 983 (part a)
+b = 10551383 (part b)
+
+for (c = 1 ; c < b ; c++) {
+	for (e = 1 ; e < b ; e++) {
+		if (c * e == b) {
+			a += c
+		}
+	}
+}
