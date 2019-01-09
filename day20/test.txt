@@ -1,0 +1,1 @@
+^NN(EE(SS|WW)|NN)EE(SS|WW)$
