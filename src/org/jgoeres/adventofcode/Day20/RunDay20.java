@@ -1,7 +1,7 @@
 package org.jgoeres.adventofcode.Day20;
 
 public class RunDay20 {
-    static final String DEFAULT_PATH_TO_INPUTS = "day20/example.txt";
+    static final String DEFAULT_PATH_TO_INPUTS = "day20/test.txt";
 
     static final boolean DEBUG_PART_A_PRINT_PROGRESS = false;
     static final boolean DEBUG_PART_B_PRINT_PROGRESS = true;

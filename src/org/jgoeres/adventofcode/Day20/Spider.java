@@ -3,13 +3,17 @@ package org.jgoeres.adventofcode.Day20;
 import java.util.Stack;
 
 public class Spider {
+    Room createdAtRoom;
+    int createdAtIndex;
     Room room;
     int index;
     Stack<Jump> jumpStack = new Stack<>();
 
     public Spider(Room room, int index) {
         this.room = room;
+        createdAtRoom = room;
         this.index = index;
+        createdAtIndex = index;
     }
 
     public void stepForward() {
@@ -23,7 +27,7 @@ public class Spider {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof Room
+        if (o instanceof Spider
                 && (((Spider) o).room.getX().equals(room.getX()))
                 && (((Spider) o).room.getY().equals(room.getY()))
                 && (((Spider) o).index == index)

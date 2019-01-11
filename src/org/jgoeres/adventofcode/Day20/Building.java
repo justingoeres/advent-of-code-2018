@@ -53,38 +53,46 @@ public class Building {
             Character thisChar = line.charAt(i);
             HashSet<Spider> spidersHere = spiderMap.get(i);
 
+            System.out.println(i + ":\t" + thisChar + "\t# spiders here:\t" + spidersHere.size());
+
             int newX = 0;
             int newY = 0;
 
-            nextSpider:
+            Room newRoom;
+
             for (Spider spider : spidersHere) {
                 // Check every spider here
                 Room currentRoom = spider.room;
-                switch (thisChar) {
-                    // Beginning & End
-                    case '^':   // starting room
-                        // Don't need to do anything, the first spider is born at (0,0).
-                        break;
-                    case '$':   // End of the route.
-                        return; // We're done. Just return.
 
-                    // Moves
-                    case 'N':   // connect to the north.
-                        newX = currentRoom.getX();
-                        newY = currentRoom.getY() + 1; // y is positive to the north.
-                        break;
-                    case 'E':   // connect to the east.
-                        newX = currentRoom.getX() + 1; // x is positive to the east.
-                        newY = currentRoom.getY();
-                        break;
-                    case 'S':   // connect to the south.
-                        newX = currentRoom.getX();
-                        newY = currentRoom.getY() - 1; // y is negative to the south.
-                        break;
-                    case 'W':   // connect to the west.
-                        newX = currentRoom.getX() - 1; // x is negative to the west.
-                        newY = currentRoom.getY();
-                        break;
+                // Create & connect the current room to the next room.
+                newRoom = doRoomConnection(currentRoom, thisChar);
+
+                // Process the branches
+                switch (thisChar) {
+//                    // Beginning & End
+//                    case '^':   // starting room
+//                        // Don't need to do anything, the first spider is born at (0,0).
+//                        break;
+//                    case '$':   // End of the route.
+//                        return; // We're done. Just return.
+//
+//                    // Moves
+//                    case 'N':   // connect to the north.
+//                        newX = currentRoom.getX();
+//                        newY = currentRoom.getY() + 1; // y is positive to the north.
+//                        break;
+//                    case 'E':   // connect to the east.
+//                        newX = currentRoom.getX() + 1; // x is positive to the east.
+//                        newY = currentRoom.getY();
+//                        break;
+//                    case 'S':   // connect to the south.
+//                        newX = currentRoom.getX();
+//                        newY = currentRoom.getY() - 1; // y is negative to the south.
+//                        break;
+//                    case 'W':   // connect to the west.
+//                        newX = currentRoom.getX() - 1; // x is negative to the west.
+//                        newY = currentRoom.getY();
+//                        break;
 
                     // Branches
                     case '(':   // New jump
@@ -92,8 +100,8 @@ public class Building {
                         Jump jump = jumps.get(i);   // The jumps are keyed by the string position of the '('
 
                         // Create a new spider at this location.
-                        // Fast-forward it to the pipe.
-                        Spider spider2 = new Spider(currentRoom, jump.pipeIndex);
+                        // Fast-forward it to ONE PAST the pipe.
+                        Spider spider2 = new Spider(currentRoom, jump.pipeIndex + 1);
                         // Duplicate spider's jump stack onto the new one.
                         spider2.jumpStack = (Stack<Jump>) spider.jumpStack.clone();
                         addSpiderAtSpiderIndex(spider2); // Add the spider to the set for the index it's now at.
@@ -105,8 +113,7 @@ public class Building {
                         spider.stepForward();
                         addSpiderAtSpiderIndex(spider); // Add the spider to the set for the index it's now at.
 
-//                        return;     // No need to create rooms on an open paren, so just return.
-                        break nextSpider;
+                        break;
                     case '|':   // The pipe of a jump.
                         if (!spider.jumpStack.isEmpty()) {
                             // If we have a jump on the stack, this pipe means jump.
@@ -122,55 +129,60 @@ public class Building {
                             spider.stepForward();
                             addSpiderAtSpiderIndex(spider);
                         }
-//                        return;     // No need to create rooms on a pipe, so just return.
-                        break nextSpider;
+                        break;
                     case ')':   // The close paren of a jump
                         // Nothing happens on a close paren, just step forward.
                         removeSpiderAtSpiderIndex(spider); // Move the spider out of this index's set
                         spider.stepForward();
                         addSpiderAtSpiderIndex(spider); // Add the spider to the set for the index it's now at.
-//                        return;     // No need to create rooms on a close paren, so just return.
-                        break nextSpider;
+                        break;
+                    case '$':    // end of the line
+                        break; // No need to move when we're done, so just return
                     default:
-                        System.out.println("unhandled character: " + thisChar);
+                        // Just a regular direction character, and we created the room earlier, so move the spider to it.
+                        spider.room = newRoom;  // Move the spider into the new room we just made.
+                        removeSpiderAtSpiderIndex(spider); // Move the spider out of this index's set
+                        spider.stepForward();    // Move the spider to the next character.
+                        addSpiderAtSpiderIndex(spider); // Add the spider to the set for the index it's now at.
+                        break;
                 }
 
-                // Look up the new room, or create it.
-                Room newRoom = new Room(newX, newY);
-                if (!rooms.containsKey(XYtoKey(newX, newY))) {
-                    // if this is a room we haven't seen before.
-                    rooms.put(newRoom.toString(), newRoom); // add it to our map.
-                } else {
-                    // We've seen this room before!
-                    newRoom = rooms.get(newRoom.toString());
-                }
+//                // Look up the new room, or create it.
+//                Room newRoom = new Room(newX, newY);
+//                if (!rooms.containsKey(XYtoKey(newX, newY))) {
+//                    // if this is a room we haven't seen before.
+//                    rooms.put(newRoom.toString(), newRoom); // add it to our map.
+//                } else {
+//                    // We've seen this room before!
+//                    newRoom = rooms.get(newRoom.toString());
+//                }
+//
+//                // Connect up to the new room.
+//                switch (thisChar) {
+//                    case 'N':   // connect to the north.
+//                        currentRoom.connectToNorth(newRoom);
+//                        break;
+//
+//                    case 'E':   // connect to the east.
+//                        currentRoom.connectToEast(newRoom);
+//                        break;
+//
+//                    case 'S':   // connect to the south.
+//                        currentRoom.connectToSouth(newRoom);
+//                        break;
+//
+//                    case 'W':   // connect to the west.
+//                        currentRoom.connectToWest(newRoom);
+//                        break;
+//                    default:
+//                        // Skip unhandled characters (like ^ and $)
+//                        //System.out.println("unhandled character: " + nextDirection);
+//                }
 
-                // Connect up to the new room.
-                switch (thisChar) {
-                    case 'N':   // connect to the north.
-                        currentRoom.connectToNorth(newRoom);
-                        break;
-
-                    case 'E':   // connect to the east.
-                        currentRoom.connectToEast(newRoom);
-                        break;
-
-                    case 'S':   // connect to the south.
-                        currentRoom.connectToSouth(newRoom);
-                        break;
-
-                    case 'W':   // connect to the west.
-                        currentRoom.connectToWest(newRoom);
-                        break;
-                    default:
-                        // Skip unhandled characters (like ^ and $)
-                        //System.out.println("unhandled character: " + nextDirection);
-                }
-
-                spider.room = newRoom;  // Move the spider into the new room we just made.
-                removeSpiderAtSpiderIndex(spider); // Move the spider out of this index's set
-                spider.stepForward();    // Move the spider to the next character.
-                addSpiderAtSpiderIndex(spider); // Add the spider to the set for the index it's now at.
+//                spider.room = newRoom;  // Move the spider into the new room we just made.
+//                removeSpiderAtSpiderIndex(spider); // Move the spider out of this index's set
+//                spider.stepForward();    // Move the spider to the next character.
+//                addSpiderAtSpiderIndex(spider); // Add the spider to the set for the index it's now at.
             }
 
         }
@@ -241,6 +253,78 @@ public class Building {
 
     }
 
+    private Room doRoomConnection(Room currentRoom, Character thisChar) {
+        // Create and connect up a room in the specified direction.
+        int newX = 0;
+        int newY = 0;
+
+        switch (thisChar) {
+            // Beginning & End
+            case '^':   // starting room
+                // Don't need to do anything, the first spider is born at (0,0).
+                break;
+            case '$':   // End of the route.
+            case '(':   // open paren
+            case '|':   // pipe
+            case ')':   // close
+                return null; // No rooms to create. Just return.
+
+            // Moves
+            case 'N':   // connect to the north.
+                newX = currentRoom.getX();
+                newY = currentRoom.getY() + 1; // y is positive to the north.
+                break;
+            case 'E':   // connect to the east.
+                newX = currentRoom.getX() + 1; // x is positive to the east.
+                newY = currentRoom.getY();
+                break;
+            case 'S':   // connect to the south.
+                newX = currentRoom.getX();
+                newY = currentRoom.getY() - 1; // y is negative to the south.
+                break;
+            case 'W':   // connect to the west.
+                newX = currentRoom.getX() - 1; // x is negative to the west.
+                newY = currentRoom.getY();
+                break;
+            default:
+                System.out.println("unhandled character: " + thisChar);
+                return null;
+        }
+
+        // Look up the new room, or create it.
+        Room newRoom = new Room(newX, newY);
+        if (!rooms.containsKey(XYtoKey(newX, newY))) {
+            // if this is a room we haven't seen before.
+            rooms.put(newRoom.toString(), newRoom); // add it to our map.
+        } else {
+            // We've seen this room before!
+            newRoom = rooms.get(newRoom.toString());
+        }
+
+        // Connect up to the new room.
+        switch (thisChar) {
+            case 'N':   // connect to the north.
+                currentRoom.connectToNorth(newRoom);
+                break;
+
+            case 'E':   // connect to the east.
+                currentRoom.connectToEast(newRoom);
+                break;
+
+            case 'S':   // connect to the south.
+                currentRoom.connectToSouth(newRoom);
+                break;
+
+            case 'W':   // connect to the west.
+                currentRoom.connectToWest(newRoom);
+                break;
+            default:
+                // Skip unhandled characters (like ^ and $)
+                //System.out.println("unhandled character: " + nextDirection);
+        }
+        return newRoom;
+    }
+
     private ArrayList<Jump> findAllJumps(String string) {
         ArrayList<Jump> allJumps = new ArrayList<>();
 
@@ -297,7 +381,7 @@ public class Building {
     }
 
     private void removeSpiderAtSpiderIndex(Spider spider) {
-        int index = spider.index;
+/*        int index = spider.index;
         if (spiderMap.containsKey(index)) {
             // If a map for this index exists
             HashSet<Spider> spiderHashSet = spiderMap.get(index);
@@ -312,7 +396,7 @@ public class Building {
             //  }
 
         }
-
+*/
     }
 
     private void runRoute(String route) {
