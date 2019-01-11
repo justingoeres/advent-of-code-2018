@@ -3,6 +3,7 @@ package org.jgoeres.adventofcode.Day20;
 public class Room {
     private Integer x;
     private Integer y;
+    private Integer distance;
 
     private Room roomNorth = null;
     private Room roomEast = null;
@@ -14,9 +15,10 @@ public class Room {
     public Room() {
     }
 
-    public Room(Integer x, Integer y) {
+    public Room(Integer x, Integer y, Integer distance) {
         this.x = x;
         this.y = y;
+        this.distance = distance;
     }
 
 
@@ -34,6 +36,10 @@ public class Room {
 
     public void setY(Integer y) {
         this.y = y;
+    }
+
+    public Integer getDistance() {
+        return distance;
     }
 
     public void connectToNorth(Room roomNorth) {

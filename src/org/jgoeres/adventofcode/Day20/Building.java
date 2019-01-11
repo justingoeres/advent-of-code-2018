@@ -17,7 +17,6 @@ public class Building {
         loadBuilding(pathToFile);
     }
 
-
     private void loadBuilding(String pathToFile) {
         /*
         File looks like:
@@ -43,8 +42,9 @@ public class Building {
 
         // Work through the string, spawning spiders as we go.
         // First spider starts at 0,0 and the front of the string.
-        Room startingRoom = new Room(0, 0);
+        Room startingRoom = new Room(0, 0, 0);
         Spider firstSpider = new Spider(startingRoom, 0);
+        rooms.put(startingRoom.toString(), startingRoom); // add it to our map.
 
         addSpiderAtSpiderIndex(firstSpider);
 
@@ -67,31 +67,6 @@ public class Building {
 
                 // Process the branches
                 switch (thisChar) {
-//                    // Beginning & End
-//                    case '^':   // starting room
-//                        // Don't need to do anything, the first spider is born at (0,0).
-//                        break;
-//                    case '$':   // End of the route.
-//                        return; // We're done. Just return.
-//
-//                    // Moves
-//                    case 'N':   // connect to the north.
-//                        newX = currentRoom.getX();
-//                        newY = currentRoom.getY() + 1; // y is positive to the north.
-//                        break;
-//                    case 'E':   // connect to the east.
-//                        newX = currentRoom.getX() + 1; // x is positive to the east.
-//                        newY = currentRoom.getY();
-//                        break;
-//                    case 'S':   // connect to the south.
-//                        newX = currentRoom.getX();
-//                        newY = currentRoom.getY() - 1; // y is negative to the south.
-//                        break;
-//                    case 'W':   // connect to the west.
-//                        newX = currentRoom.getX() - 1; // x is negative to the west.
-//                        newY = currentRoom.getY();
-//                        break;
-
                     // Branches
                     case '(':   // New jump
                         // Look up this jump.
@@ -106,8 +81,8 @@ public class Building {
                         removeSpiderAtSpiderIndex(spider); // Move the spider out of this index's set
                         spider.stepForward();
                         addSpiderAtSpiderIndex(spider); // Add the spider to the set for the index it's now at.
-
                         break;
+
                     case '|':   // The pipe of a jump.
                         if (!spider.jumpStack.isEmpty()) {
                             // If we have a jump on the stack, this pipe means jump.
@@ -124,14 +99,17 @@ public class Building {
                             addSpiderAtSpiderIndex(spider);
                         }
                         break;
+
                     case ')':   // The close paren of a jump
                         // Nothing happens on a close paren, just step forward.
                         removeSpiderAtSpiderIndex(spider); // Move the spider out of this index's set
                         spider.stepForward();
                         addSpiderAtSpiderIndex(spider); // Add the spider to the set for the index it's now at.
                         break;
+
                     case '$':    // end of the line
                         break; // No need to move when we're done, so just return
+
                     default:
                         // Just a regular direction character, and we created the room earlier, so move the spider to it.
                         spider.room = newRoom;  // Move the spider into the new room we just made.
@@ -140,43 +118,6 @@ public class Building {
                         addSpiderAtSpiderIndex(spider); // Add the spider to the set for the index it's now at.
                         break;
                 }
-
-//                // Look up the new room, or create it.
-//                Room newRoom = new Room(newX, newY);
-//                if (!rooms.containsKey(XYtoKey(newX, newY))) {
-//                    // if this is a room we haven't seen before.
-//                    rooms.put(newRoom.toString(), newRoom); // add it to our map.
-//                } else {
-//                    // We've seen this room before!
-//                    newRoom = rooms.get(newRoom.toString());
-//                }
-//
-//                // Connect up to the new room.
-//                switch (thisChar) {
-//                    case 'N':   // connect to the north.
-//                        currentRoom.connectToNorth(newRoom);
-//                        break;
-//
-//                    case 'E':   // connect to the east.
-//                        currentRoom.connectToEast(newRoom);
-//                        break;
-//
-//                    case 'S':   // connect to the south.
-//                        currentRoom.connectToSouth(newRoom);
-//                        break;
-//
-//                    case 'W':   // connect to the west.
-//                        currentRoom.connectToWest(newRoom);
-//                        break;
-//                    default:
-//                        // Skip unhandled characters (like ^ and $)
-//                        //System.out.println("unhandled character: " + nextDirection);
-//                }
-
-//                spider.room = newRoom;  // Move the spider into the new room we just made.
-//                removeSpiderAtSpiderIndex(spider); // Move the spider out of this index's set
-//                spider.stepForward();    // Move the spider to the next character.
-//                addSpiderAtSpiderIndex(spider); // Add the spider to the set for the index it's now at.
             }
         }
 
@@ -200,71 +141,6 @@ public class Building {
             System.out.println("Building width:\t(" + minX + ", " + maxX + ") = " + (maxX + 1 - minX));
             System.out.println("Building height:\t(" + minY + ", " + maxY + ") = " + (maxY + 1 - minY));
         }
-
-//        ArrayList<String> currentList = new ArrayList<>();
-//        ArrayList<String> nextList = new ArrayList<>();
-//
-//        MapWrapper cW = new MapWrapper(currentList);
-//        MapWrapper nW = new MapWrapper(nextList);
-//
-//
-//        String root = null;    // Match the root
-//        String remainder = null;
-//        int routesProcessed = 0;
-//
-//        currentList.add(line);
-//        while (true) {
-//            for (String map : cW.c) {
-//                root = "";
-//                remainder = "";
-//                Pattern p = Pattern.compile("([^(]*)(.*)"); // Match up to first parenthesis
-//                Matcher m = p.matcher(map);
-//                if (m.find()) {
-//                    root = m.group(1);
-//                    remainder = m.group(2);
-//                }
-//
-//                BranchStringInfo branchStringInfo = new BranchStringInfo();
-//                // boolean found = findMatchingParen(remainder, branchStringInfo);  // Find the next matching closing paren
-//                boolean found = false;
-//                if (found) {
-//                    String branch1 = remainder.substring(branchStringInfo.openParenIndex + 1, branchStringInfo.pipeIndex1);
-//                    String branch2 = remainder.substring(branchStringInfo.pipeIndex1 + 1, branchStringInfo.closeParenIndex);
-//                    remainder = remainder.substring(branchStringInfo.closeParenIndex + 1);
-//
-//                    branch1 = root + branch1 + remainder;
-//                    branch2 = root + branch2 + remainder;
-//
-//                    nW.c.add(branch1);
-//                    nW.c.add(branch2);
-//                } else {
-////                    nW.c.add(map);
-//                    // When we get a map route with NO parens, that one is done and we can run it!
-////                    System.out.println(map);
-//                    runRoute(map);
-//                    routesProcessed++;
-//                }
-//            }
-//            // After we've got the new maps, swap the pointers.
-//            if (nW.c.isEmpty()) { // If we have no more branched routes remaining to process
-//                // We're done!
-//                swap(cW, nW);
-//                break;
-//            } else {
-//                System.out.println("Rooms:\t" + rooms.size() + "\tRoutes Finalized:\t" + routesProcessed + "\tTo Process:\t" + nW.c.size());
-//                // continue
-//                swap(cW, nW);
-//                nW.c.clear(); // Empty nextList after we swap.
-//            }
-//        }
-//        System.out.println("here we are.");
-
-//        System.out.println(root);
-//        System.out.println(parenString);
-//        System.out.println(remainder);
-//
-//
-
     }
 
     private Room doRoomConnection(Room currentRoom, Character thisChar) {
@@ -305,14 +181,17 @@ public class Building {
                 return null;
         }
 
-        // Look up the new room, or create it.
-        Room newRoom = new Room(newX, newY);
-        if (!rooms.containsKey(XYtoKey(newX, newY))) {
+        // Look up the new room, or create it
+        Room newRoom;
+        String key = XYtoKey(newX, newY);
+        if (!rooms.containsKey(key)) {
             // if this is a room we haven't seen before.
+            // create it, one step further from the origin.
+            newRoom = new Room(newX, newY, currentRoom.getDistance() + 1);
             rooms.put(newRoom.toString(), newRoom); // add it to our map.
         } else {
             // We've seen this room before!
-            newRoom = rooms.get(newRoom.toString());
+            newRoom = rooms.get(key);
         }
 
         // Connect up to the new room.
@@ -356,7 +235,6 @@ public class Building {
             spider2.jumpStack = (Stack<Jump>) parent.jumpStack.clone();
             addSpiderAtSpiderIndex(spider2); // Add the spider to the set for the index it's now at.
         }
-
     }
 
     private ArrayList<Jump> findAllJumps(String string) {
@@ -421,6 +299,7 @@ public class Building {
     }
 
     private void removeSpiderAtSpiderIndex(Spider spider) {
+        // This function is disabled because I couldn't get the removal to work, and the code is fast enough anyway.
 /*        int index = spider.index;
         if (spiderMap.containsKey(index)) {
             // If a map for this index exists
@@ -439,138 +318,18 @@ public class Building {
 */
     }
 
-    private void runRoute(String route) {
-        try (Scanner sc = new Scanner(route)) {
-            sc.useDelimiter("");    // Scan the line character by character.
-            Room currentRoom = null;
-            while (sc.hasNext()) {
-                Character nextDirection = sc.next().charAt(0);  // Get the next character.
-
-                Room newRoom = null;   // create a new room
-                int newX = 0;
-                int newY = 0;
-
-                switch (nextDirection) {
-                    case '^':   // starting room
-                        // Don't need to do anything, the default newX & newY will give us a room at 0,0.
-                        break;
-
-                    case 'N':   // connect to the north.
-                        newX = currentRoom.getX();
-                        newY = currentRoom.getY() + 1; // y is positive to the north.
-                        break;
-
-                    case 'E':   // connect to the east.
-                        newX = currentRoom.getX() + 1; // x is positive to the east.
-                        newY = currentRoom.getY();
-                        break;
-
-                    case 'S':   // connect to the south.
-                        newX = currentRoom.getX();
-                        newY = currentRoom.getY() - 1; // y is negative to the south.
-                        break;
-
-                    case 'W':   // connect to the west.
-                        newX = currentRoom.getX() - 1; // x is negative to the west.
-                        newY = currentRoom.getY();
-                        break;
-
-                    case '$':   // End of the route.
-                        return; // We're done. Just return.
-
-                    default:
-                        System.out.println("unhandled character: " + nextDirection);
-                }
-
-                // Look up the new room, or create it.
-                newRoom = new Room(newX, newY);
-                if (!rooms.containsKey(XYtoKey(newX, newY))) {
-                    // if this is a room we haven't seen before.
-                    rooms.put(newRoom.toString(), newRoom); // add it to our map.
-                } else {
-                    // We've seen this room before!
-                    newRoom = rooms.get(newRoom.toString());
-                }
-
-                // Connect up to the new room.
-                switch (nextDirection) {
-                    case 'N':   // connect to the north.
-                        currentRoom.connectToNorth(newRoom);
-                        break;
-
-                    case 'E':   // connect to the east.
-                        currentRoom.connectToEast(newRoom);
-                        break;
-
-                    case 'S':   // connect to the south.
-                        currentRoom.connectToSouth(newRoom);
-                        break;
-
-                    case 'W':   // connect to the west.
-                        currentRoom.connectToWest(newRoom);
-                        break;
-                    default:
-                        // Skip unhandled characters (like ^ and $)
-                        //System.out.println("unhandled character: " + nextDirection);
-                }
-
-                currentRoom = newRoom;  // Move into the new room we just made.
-
+    public Room findMostDistant() {
+        // Find the most distant room.
+        Room mostDistant = null;
+        int maxDistance = Integer.MIN_VALUE;
+        for (Map.Entry<String, Room> roomEntry : rooms.entrySet()) {
+            Room room = roomEntry.getValue();
+            if (room.getDistance() > maxDistance) {
+                maxDistance = room.getDistance();
+                mostDistant = room;
             }
-
-        } catch (Exception e) {
-            System.out.println("Exception occurred: " + e.getMessage());
         }
-    }
-
-//    private boolean findMatchingParen(String string, BranchStringInfo branchStringInfo) {
-//
-//        int counter = 0;
-//        boolean foundOne = false;
-//        for (int i = 0; i < string.length(); i++) {
-//            Character thisChar = string.charAt(i);
-//            switch (thisChar) {
-//                case '(':
-//                    if (!foundOne) {
-//                        // if this is the first one we've seen
-//                        branchStringInfo.openParenIndex = i;
-//                        foundOne = true;
-//                    }
-//                    counter++;
-//                    break;
-//                case '|':
-//                    if (counter == 1) { // Find the parent that's at the root level
-//                        branchStringInfo.pipeIndex1 = i;
-//                    }
-//                    break;
-//                case ')':
-//                    counter--;
-//                    break;
-//            }
-//            if (foundOne && counter == 0) {
-//                // We found the matching paren!
-//                branchStringInfo.closeParenIndex = i;
-//                break;
-//            }
-//        }
-//
-//        return foundOne;
-//    }
-
-    private ArrayList<String> expandMaps(String root, String paren, String remainder) {
-        ArrayList<String> output = new ArrayList<>();
-
-        // Search backward through paren until we find the pipe.
-        int pipeIndex = paren.lastIndexOf("|");
-        String[] branches = {
-                paren.substring(1, pipeIndex),
-                paren.substring(pipeIndex + 1, paren.length() - 1)    // and this is the rest.
-        };
-
-        for (String branch : branches) {
-            output.add(root + branch + remainder);
-        }
-        return output;
+        return mostDistant;
     }
 
     private String XYtoKey(int x, int y) {
@@ -595,10 +354,10 @@ public class Building {
 
         String WALL = "#";
         String OPEN = " ";
-//        String DOOR_NS = "-";
-        String DOOR_NS = " ";
-//        String DOOR_EW = "|";
-        String DOOR_EW = " ";
+        String DOOR_NS = "-";
+//        String DOOR_NS = " ";     // for cleaner output
+        String DOOR_EW = "|";
+//        String DOOR_EW = " ";     // for cleaner output
         String SPACE = ".";
         String START = "X";
 
@@ -623,8 +382,8 @@ public class Building {
                     String key = XYtoKey(col, row);
                     if (k == 0) { // center
                         if (rooms.containsKey(key)) {  // this should always be TRUE because our map is full?
-                           Room room = rooms.get(key);
-                            output += ((key.equals("(0,0)") ? START : OPEN)  // Identiy the starting room as 'X' otherwise open.
+                            Room room = rooms.get(key);
+                            output += ((key.equals("(0,0)") ? START : OPEN)  // Identify the starting room as 'X' otherwise open.
                                     + ((room.getRoomEast() != null) ? DOOR_EW : WALL)); // e.g. .# or .|
                         } else {
                             output += SPACE + WALL;
@@ -641,12 +400,10 @@ public class Building {
                     }
                 }   // end of all rooms in this row
                 System.out.println(output);
-
             }
         }
 
     }
-
 
     public static void swap(MapWrapper al1,
                             MapWrapper al2) {
@@ -664,5 +421,4 @@ public class Building {
             this.c = c;
         }
     }
-
 }

@@ -3,7 +3,7 @@ package org.jgoeres.adventofcode.Day20;
 public class RunDay20 {
     static final String DEFAULT_PATH_TO_INPUTS = "day20/input.txt";
 
-    static final boolean DEBUG_PART_A_PRINT_PROGRESS = false;
+    static final boolean DEBUG_PART_A_PRINT_BUILDING = false;
     static final boolean DEBUG_PART_B_PRINT_PROGRESS = true;
 
     static Building building = new Building(DEFAULT_PATH_TO_INPUTS);
@@ -21,8 +21,18 @@ public class RunDay20 {
         what is the fewest doors you can pass through to reach it?
         */
         System.out.println("=== DAY 20A ===");
-        building.printBuilding();
-        return 0;
+        if (DEBUG_PART_A_PRINT_BUILDING) {
+            building.printBuilding();
+        }
+
+        // Find the most distant room.
+        Room furthestRoom = building.findMostDistant();
+        int answer = furthestRoom.getDistance();
+        System.out.println("Most distant room is at " + furthestRoom.toString() + ":\t" + answer + " steps");
+
+        return answer;
+        // Answer:
+        // Most distant room is at (-39,22):	3971 steps
     }
 
     public static void problem20B() {
