@@ -12,6 +12,7 @@ public class Building {
 
     private final boolean DEBUG_PRINT_SPIDERS = false;
     private final boolean DEBUG_PRINT_BUILDING_SUMMARY = false;
+    private final boolean DEBUG_PRINT_DISTANT_ROOMS = false;
 
     public Building(String pathToFile) {
         loadBuilding(pathToFile);
@@ -313,7 +314,6 @@ public class Building {
                 spiderMap.remove(index);
             }
             //  }
-
         }
 */
     }
@@ -330,6 +330,21 @@ public class Building {
             }
         }
         return mostDistant;
+    }
+
+    public int countDistantRooms(int threshold) {
+        // Count up all the rooms at least 'threshold' away from the origin.
+        int count = 0;
+        for (Map.Entry<String, Room> roomEntry : rooms.entrySet()) {
+            Room room = roomEntry.getValue();
+            if (room.getDistance() >= threshold) {
+                if (DEBUG_PRINT_DISTANT_ROOMS) {
+                    System.out.println("Room " + room.toString() + ":\t" + room.getDistance());
+                }
+                count++;
+            }
+        }
+        return count;
     }
 
     private String XYtoKey(int x, int y) {
@@ -401,24 +416,6 @@ public class Building {
                 }   // end of all rooms in this row
                 System.out.println(output);
             }
-        }
-
-    }
-
-    public static void swap(MapWrapper al1,
-                            MapWrapper al2) {
-        ArrayList<String> temp = al1.c;
-        al1.c = al2.c;
-        al2.c = temp;
-    }
-
-    // A Wrapper over class that is used for swapping
-    class MapWrapper {
-        ArrayList<String> c;
-
-        // Constructor
-        MapWrapper(ArrayList<String> c) {
-            this.c = c;
         }
     }
 }

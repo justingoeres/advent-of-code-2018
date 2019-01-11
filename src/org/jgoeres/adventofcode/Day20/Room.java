@@ -10,8 +10,6 @@ public class Room {
     private Room roomSouth = null;
     private Room roomWest = null;
 
-    private final boolean DEBUG_PRINT_CELL_COORDS = false;
-
     public Room() {
     }
 

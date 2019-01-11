@@ -41,10 +41,17 @@ public class RunDay20 {
 
     public static int problem20B(String pathToInputs) {
         /*
-        Problem description
+        How many rooms have a shortest path from your current location
+        that pass through at least 1000 doors?
         */
         System.out.println("=== DAY 20B ===");
+        final int THRESHOLD = 1000;   // per problem description
+        int count = building.countDistantRooms(THRESHOLD);
+        System.out.println(count + " rooms are at least " + THRESHOLD + " steps from the origin.");
 
-        return 0;
+        return count;
+        // Answer:
+        // 8578 rooms are at least 1000 steps from the origin.
+
     }
 }
