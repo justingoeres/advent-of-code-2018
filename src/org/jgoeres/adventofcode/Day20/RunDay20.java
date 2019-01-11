@@ -4,7 +4,6 @@ public class RunDay20 {
     static final String DEFAULT_PATH_TO_INPUTS = "day20/input.txt";
 
     static final boolean DEBUG_PART_A_PRINT_BUILDING = false;
-    static final boolean DEBUG_PART_B_PRINT_PROGRESS = true;
 
     static Building building = new Building(DEFAULT_PATH_TO_INPUTS);
 
