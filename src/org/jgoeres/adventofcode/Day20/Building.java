@@ -46,6 +46,9 @@ public class Building {
         addSpiderAtSpiderIndex(firstSpider);
 
         for (int i = 0; i < line.length(); i++) {
+            if (i == 3364) {
+                System.out.println("here we are!");
+            }
             Character thisChar = line.charAt(i);
             HashSet<Spider> spidersHere = spiderMap.get(i);
 
@@ -92,12 +95,8 @@ public class Building {
                         // Look up this jump.
                         Jump jump = jumps.get(i);   // The jumps are keyed by the string position of the '('
 
-                        // Create a new spider at this location.
-                        // Fast-forward it to ONE PAST the pipe.
-                        Spider spider2 = new Spider(currentRoom, jump.pipeIndex + 1);
-                        // Duplicate spider's jump stack onto the new one.
-                        spider2.jumpStack = (Stack<Jump>) spider.jumpStack.clone();
-                        addSpiderAtSpiderIndex(spider2); // Add the spider to the set for the index it's now at.
+                        // Create new spider(s) in this room.
+                        spawnNewSpiders(spider, jump);
 
                         // Put the pipe-to-close jump on this spider's stack
                         spider.jumpStack.push(jump);
@@ -177,8 +176,28 @@ public class Building {
 //                spider.stepForward();    // Move the spider to the next character.
 //                addSpiderAtSpiderIndex(spider); // Add the spider to the set for the index it's now at.
             }
-
         }
+
+        // Find extents of the building.
+        int minX = Integer.MAX_VALUE;
+        int minY = Integer.MAX_VALUE;
+
+        int maxX = Integer.MIN_VALUE;
+        int maxY = Integer.MIN_VALUE;
+
+        for (Map.Entry<String, Room> roomEntry : rooms.entrySet()) {
+            Room room = roomEntry.getValue();
+            int x = room.getX();
+            int y = room.getY();
+            if (x < minX) minX = x;
+            if (y < minY) minY = y;
+            if (x > maxX) maxX = x;
+            if (y > maxY) maxY = x;
+        }
+
+        System.out.println("Number of rooms:\t" + rooms.size());
+        System.out.println("Building width:\t(" + minX + ", " + maxX + ") = " + (maxX + 1 - minX));
+        System.out.println("Building height:\t(" + minY + ", " + maxY + ") = " + (maxY + 1 - minY));
 
 //        ArrayList<String> currentList = new ArrayList<>();
 //        ArrayList<String> nextList = new ArrayList<>();
@@ -207,8 +226,8 @@ public class Building {
 //                // boolean found = findMatchingParen(remainder, branchStringInfo);  // Find the next matching closing paren
 //                boolean found = false;
 //                if (found) {
-//                    String branch1 = remainder.substring(branchStringInfo.openParenIndex + 1, branchStringInfo.pipeIndex);
-//                    String branch2 = remainder.substring(branchStringInfo.pipeIndex + 1, branchStringInfo.closeParenIndex);
+//                    String branch1 = remainder.substring(branchStringInfo.openParenIndex + 1, branchStringInfo.pipeIndex1);
+//                    String branch2 = remainder.substring(branchStringInfo.pipeIndex1 + 1, branchStringInfo.closeParenIndex);
 //                    remainder = remainder.substring(branchStringInfo.closeParenIndex + 1);
 //
 //                    branch1 = root + branch1 + remainder;
@@ -318,6 +337,26 @@ public class Building {
         return newRoom;
     }
 
+    private void spawnNewSpiders(Spider parent, Jump jump) {
+        // Create one or two new spiders, depending on how this jump works.
+
+        // Create a new spider at this location.
+        // Fast-forward it to ONE PAST the pipe.
+        Spider spider1 = new Spider(parent.room, jump.pipeIndex1 + 1);
+        // Duplicate parent's jump stack onto the new one.
+        spider1.jumpStack = (Stack<Jump>) parent.jumpStack.clone();
+        addSpiderAtSpiderIndex(spider1); // Add the spider to the set for the index it's now at.
+
+        if (jump.pipeIndex2 != null) {
+            // If there's a second pipe in this jump, spawn a second spider
+            Spider spider2 = new Spider(parent.room, jump.pipeIndex2 + 1);
+            // Duplicate parent's jump stack onto the new one.
+            spider2.jumpStack = (Stack<Jump>) parent.jumpStack.clone();
+            addSpiderAtSpiderIndex(spider2); // Add the spider to the set for the index it's now at.
+        }
+
+    }
+
     private ArrayList<Jump> findAllJumps(String string) {
         ArrayList<Jump> allJumps = new ArrayList<>();
 
@@ -339,7 +378,13 @@ public class Building {
                 case '|':
                     // Found the middle of a jump.
                     // There must be a jump in the HashMap with this depth, or we wouldn't be at this level.
-                    jumps.get(depth).pipeIndex = i;   // Set the pipeIndex of this jump to the current string position.
+                    if (jumps.get(depth).pipeIndex1 == null) {
+                        // First pipe
+                        jumps.get(depth).pipeIndex1 = i;   // Set the pipeIndex1 of this jump to the current string position.
+                    } else {
+                        // second pipe
+                        jumps.get(depth).pipeIndex2 = i;
+                    }
                     break;
                 case ')':
                     // Found the end of a jump.
@@ -493,7 +538,7 @@ public class Building {
 //                    break;
 //                case '|':
 //                    if (counter == 1) { // Find the parent that's at the root level
-//                        branchStringInfo.pipeIndex = i;
+//                        branchStringInfo.pipeIndex1 = i;
 //                    }
 //                    break;
 //                case ')':
