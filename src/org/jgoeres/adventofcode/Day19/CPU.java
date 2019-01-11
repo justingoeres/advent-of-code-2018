@@ -55,6 +55,10 @@ public class CPU {
         return (ip < program.getProgramCode().size());
     }
 
+    public int getIp() {
+        return ip;
+    }
+
     public void setIp(int ip) {
         this.ip = ip;
     }

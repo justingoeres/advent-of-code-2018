@@ -76,6 +76,10 @@ public class Program {
         return codeOperation;
     }
 
+    public Integer getIp() {
+        return ip;
+    }
+
     public ArrayList<CodeOperation> getProgramCode() {
         return programCode;
     }
