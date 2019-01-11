@@ -21,7 +21,7 @@ public class RunDay20 {
         what is the fewest doors you can pass through to reach it?
         */
         System.out.println("=== DAY 20A ===");
-        System.out.println(building);
+        building.printBuilding();
         return 0;
     }
 

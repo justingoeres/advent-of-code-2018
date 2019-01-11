@@ -189,10 +189,10 @@ public class Building {
             for (Map.Entry<String, Room> roomEntry : rooms.entrySet()) {
                 Room room = roomEntry.getValue();
                 int x = room.getX();
-                int y = room.getY();
                 if (x < minX) minX = x;
-                if (y < minY) minY = y;
                 if (x > maxX) maxX = x;
+                int y = room.getY();
+                if (y < minY) minY = y;
                 if (y > maxY) maxY = x;
             }
 
@@ -576,6 +576,77 @@ public class Building {
     private String XYtoKey(int x, int y) {
         return "(" + x + "," + y + ")";
     }
+
+    public void printBuilding() {
+        // Find the extents of the building.
+        int minX = Integer.MAX_VALUE;
+        int minY = Integer.MAX_VALUE;
+        int maxX = Integer.MIN_VALUE;
+        int maxY = Integer.MIN_VALUE;
+        for (Map.Entry<String, Room> roomEntry : rooms.entrySet()) {
+            Room room = roomEntry.getValue();
+            int x = room.getX();
+            if (x < minX) minX = x;
+            if (x > maxX) maxX = x;
+            int y = room.getY();
+            if (y < minY) minY = y;
+            if (y > maxY) maxY = y;
+        }
+
+        String WALL = "#";
+        String OPEN = " ";
+//        String DOOR_NS = "-";
+        String DOOR_NS = " ";
+//        String DOOR_EW = "|";
+        String DOOR_EW = " ";
+        String SPACE = ".";
+        String START = "X";
+
+
+        // Draw the top wall first
+        String output = "" + WALL;  // upper left corner is a wall piece
+        for (int col = minX; col <= maxX; col++) { // columns of rooms
+            output += WALL + WALL;
+        }
+        System.out.println(output); // top wall.
+
+        for (int row = maxY; row >= minY; row--) {    // rows of rooms, counting DOWN from the north.
+            for (int k = 0; k < 2; k++) {   // center & bottom strings of each room.
+                output = "";
+                for (int col = minX; col <= maxX; col++) { // columns of rooms
+                    if (col == minX) { // If we're in the leftmost column of rooms
+                        // Draw the left edge.
+                        output += WALL;
+                    }
+
+                    // Draw the center (EW) or bottom (S) strings of this row of rooms.
+                    String key = XYtoKey(col, row);
+                    if (k == 0) { // center
+                        if (rooms.containsKey(key)) {  // this should always be TRUE because our map is full?
+                           Room room = rooms.get(key);
+                            output += ((key.equals("(0,0)") ? START : OPEN)  // Identiy the starting room as 'X' otherwise open.
+                                    + ((room.getRoomEast() != null) ? DOOR_EW : WALL)); // e.g. .# or .|
+                        } else {
+                            output += SPACE + WALL;
+                        }
+                    } else {
+                        // k == 1
+                        if (rooms.containsKey(key)) {  // this should always be TRUE because our map is full?
+                            Room room = rooms.get(key);
+                            output += ((room.getRoomSouth() != null) ? DOOR_NS : WALL) + WALL;    // e.g. -# or ##
+                        } else {
+                            output += WALL + WALL;
+                        }
+
+                    }
+                }   // end of all rooms in this row
+                System.out.println(output);
+
+            }
+        }
+
+    }
+
 
     public static void swap(MapWrapper al1,
                             MapWrapper al2) {
