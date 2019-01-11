@@ -10,6 +10,9 @@ public class Building {
     // A map for all the spiders everywhere. Key is the string index, and the HashSet is all the spiders at that index.
     private HashMap<Integer, HashSet<Spider>> spiderMap = new HashMap<>();
 
+    private final boolean DEBUG_PRINT_SPIDERS = false;
+    private final boolean DEBUG_PRINT_BUILDING_SUMMARY = false;
+
     public Building(String pathToFile) {
         loadBuilding(pathToFile);
     }
@@ -46,13 +49,12 @@ public class Building {
         addSpiderAtSpiderIndex(firstSpider);
 
         for (int i = 0; i < line.length(); i++) {
-            if (i == 3364) {
-                System.out.println("here we are!");
-            }
             Character thisChar = line.charAt(i);
             HashSet<Spider> spidersHere = spiderMap.get(i);
 
-            System.out.println(i + ":\t" + thisChar + "\t# spiders here:\t" + spidersHere.size());
+            if (DEBUG_PRINT_SPIDERS) {
+                System.out.println(i + ":\t" + thisChar + "\t# spiders here:\t" + spidersHere.size());
+            }
 
             Room newRoom;
 
@@ -178,26 +180,26 @@ public class Building {
             }
         }
 
-        // Find extents of the building.
-        int minX = Integer.MAX_VALUE;
-        int minY = Integer.MAX_VALUE;
+        if (DEBUG_PRINT_BUILDING_SUMMARY) {
+            // Find extents of the building.
+            int minX = Integer.MAX_VALUE;
+            int minY = Integer.MAX_VALUE;
+            int maxX = Integer.MIN_VALUE;
+            int maxY = Integer.MIN_VALUE;
+            for (Map.Entry<String, Room> roomEntry : rooms.entrySet()) {
+                Room room = roomEntry.getValue();
+                int x = room.getX();
+                int y = room.getY();
+                if (x < minX) minX = x;
+                if (y < minY) minY = y;
+                if (x > maxX) maxX = x;
+                if (y > maxY) maxY = x;
+            }
 
-        int maxX = Integer.MIN_VALUE;
-        int maxY = Integer.MIN_VALUE;
-
-        for (Map.Entry<String, Room> roomEntry : rooms.entrySet()) {
-            Room room = roomEntry.getValue();
-            int x = room.getX();
-            int y = room.getY();
-            if (x < minX) minX = x;
-            if (y < minY) minY = y;
-            if (x > maxX) maxX = x;
-            if (y > maxY) maxY = x;
+            System.out.println("Number of rooms:\t" + rooms.size());
+            System.out.println("Building width:\t(" + minX + ", " + maxX + ") = " + (maxX + 1 - minX));
+            System.out.println("Building height:\t(" + minY + ", " + maxY + ") = " + (maxY + 1 - minY));
         }
-
-        System.out.println("Number of rooms:\t" + rooms.size());
-        System.out.println("Building width:\t(" + minX + ", " + maxX + ") = " + (maxX + 1 - minX));
-        System.out.println("Building height:\t(" + minY + ", " + maxY + ") = " + (maxY + 1 - minY));
 
 //        ArrayList<String> currentList = new ArrayList<>();
 //        ArrayList<String> nextList = new ArrayList<>();
