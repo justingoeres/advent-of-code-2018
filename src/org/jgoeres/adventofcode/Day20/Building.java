@@ -2,14 +2,10 @@ package org.jgoeres.adventofcode.Day20;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.lang.reflect.Array;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Building {
     private HashMap<String, Room> rooms = new HashMap<>();
-    private Room startingRoom;
     private HashMap<Integer, Jump> jumps = new HashMap<>();
     // A map for all the spiders everywhere. Key is the string index, and the HashSet is all the spiders at that index.
     private HashMap<Integer, HashSet<Spider>> spiderMap = new HashMap<>();
@@ -54,9 +50,6 @@ public class Building {
             HashSet<Spider> spidersHere = spiderMap.get(i);
 
             System.out.println(i + ":\t" + thisChar + "\t# spiders here:\t" + spidersHere.size());
-
-            int newX = 0;
-            int newY = 0;
 
             Room newRoom;
 
