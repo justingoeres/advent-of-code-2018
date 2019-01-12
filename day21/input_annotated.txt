@@ -52,17 +52,30 @@ if (c <= 256) {					// lines 13-16
 		exit
 	}
 } else {	
-	for (b = 0 ; e < c ; b++) {	// lines 17-25
-		e = (b+1) * 256				|
-	}								+
-	(26) c = b
+	c = c/256 			// lines 17-26
 }
 
 
 
 
-	for (b = 0 ; e < c ; b++) {	// lines 17-25
+	for (b = 0 ; e < c ; b++) {	// lines 17-25	// e counts up by 256 until it's greater than c (sort of like e = c + 256??)
 		e = (b+1) * 256				|
 	}								+
-	(26) c = b
+	(26) c = b					// Is 17-26 like doing c = c/256?
 	d = ((d + c^0xFF) ^ 0xFFFFFF) * 65899) ^ 0xFFFFFF	// lines 8-12
+
+
+if (c > 256) {		// lines 13-16?
+	c = c/256; 		// lines 17-26
+} else {
+// c is 1 when we get here?
+	if (a==d) exit;				// lines 28-
+}
+
+
+9275157:	28	[ 0	1	215	11009772	1	27	 ]	eqrr	3	0	1	[ 0	0	215	11009772	1	28	 ]
+9577413:	28	[ 0	1	167	13782989	1	27	 ]	eqrr	3	0	1	[ 0	0	167	13782989	1	28	 ]
+9957600:	28	[ 0	1	211	12452781	1	27	 ]	eqrr	3	0	1	[ 0	0	211	12452781	1	28	 ]
+10301275:	28	[ 0	1	191	15568389	1	27	 ]	eqrr	3	0	1	[ 0	0	191	15568389	1	28	 ]
+10728677:	28	[ 0	1	237	3453754	1	27	 ]	eqrr	3	0	1	[ 0	0	237	3453754	1	28	 ]
+Done
