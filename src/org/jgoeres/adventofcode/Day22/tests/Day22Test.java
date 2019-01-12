@@ -19,4 +19,12 @@ public class Day22Test {
         int result = RunDay22.problem22A(); // run using puzzle values in the class.
         assertEquals("Outcome is " + result, expectedResult, result);
     }
+
+    @Test
+    public void testExample22B() {
+        int expectedResult = 45 ;   // minutes to reach the target.
+        int result = RunDay22.problem22B(10,10,510); // run using puzzle values in the class.
+        assertEquals("Outcome is " + result, expectedResult, result);
+    }
+
 }
