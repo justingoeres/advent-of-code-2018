@@ -1,8 +1,5 @@
 package org.jgoeres.adventofcode.Day22;
 
-import static org.jgoeres.adventofcode.Day22.RunDay22.TARGET_X;
-import static org.jgoeres.adventofcode.Day22.RunDay22.TARGET_Y;
-
 public class CaveSystem {
     int targetX;
     int targetY;
@@ -14,10 +11,10 @@ public class CaveSystem {
         this.targetY = targetY;
         this.depth = depth;
 
-        regions = new Region[targetX][targetY];
+        regions = new Region[targetX + 1][targetY + 1];
 
-        for (int y = 0; y < targetY; y++) { // rows
-            for (int x = 0; x < targetX; x++) {
+        for (int y = 0; y <= targetY; y++) { // rows
+            for (int x = 0; x <= targetX; x++) { // columns
                 regions[x][y] = createNewRegion(x, y);
             }
         }
@@ -43,7 +40,7 @@ public class CaveSystem {
         // Calculate this region's geologic index from its x & y coordinates, and the puzzle input.
 
         // The region at the coordinates of the target has a geologic index of 0
-        if (x == TARGET_X && y == TARGET_Y) {
+        if (x == targetX && y == targetY) {
             return 0;
         }
 
@@ -81,5 +78,32 @@ public class CaveSystem {
         return regionType;
     }
 
+    public int calculateAreaRiskLevel(int minX, int maxX, int minY, int maxY) {
+        int totalRiskLevel = 0;
+        for (int y = 0; y <= targetY; y++) { // rows
+            for (int x = 0; x <= targetX; x++) { // columns
+                int riskLevel = regions[x][y].type.ordinal();
+                totalRiskLevel += riskLevel;
+            }
+        }
+        return totalRiskLevel;
+    }
 
+    public void printCaveSystem() {
+        for (int y = 0; y <= targetY; y++) { // rows
+            String output = "";
+            for (int x = 0; x <= targetX; x++) { // columns
+                if (x == 0 && y == 0) {
+                    // mouth
+                    output += "M";
+                } else if (x == targetX && y == targetY) {
+                    // target
+                    output += "T";
+                } else {
+                    output += regions[x][y].type.asChar();
+                }
+            }
+            System.out.println(y + ":\t" + output);
+        }
+    }
 }

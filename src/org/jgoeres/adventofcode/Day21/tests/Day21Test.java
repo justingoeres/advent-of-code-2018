@@ -8,7 +8,7 @@ import static org.junit.Assert.assertEquals;
 public class Day21Test {
 
     @Test
-    public void testJustin19A() {
+    public void testJustin21A() {
         String pathToInputs = "day21/input.txt";
         int expectedResult = 6132825;   // value in register 0 at HALT.
         int result = RunDay21.problem21A(pathToInputs);
@@ -16,7 +16,7 @@ public class Day21Test {
     }
 
     @Test
-    public void testJustin19B() {
+    public void testJustin21B() {
         String pathToInputs = "day21/input.txt";
         int expectedResult = 8307757;   // value in register 0 at HALT.
         int result = RunDay21.problem21B(pathToInputs);
