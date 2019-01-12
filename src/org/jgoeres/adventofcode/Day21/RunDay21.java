@@ -4,7 +4,11 @@ import org.jgoeres.adventofcode.Day19.CPU;
 import org.jgoeres.adventofcode.Day19.CodeOperation;
 import org.jgoeres.adventofcode.Day19.Program;
 
+import java.util.HashSet;
+import java.util.TreeSet;
+
 import static org.jgoeres.adventofcode.Day19.Register.REGISTER_0;
+import static org.jgoeres.adventofcode.Day19.Register.REGISTER_3;
 
 public class RunDay21 {
     static final String DEFAULT_PATH_TO_INPUTS = "day21/input.txt";
@@ -12,6 +16,7 @@ public class RunDay21 {
     static CPU cpu;
 
     static final boolean DEBUG_PART_A_PRINT_PROGRESS = false;
+    static final boolean DEBUG_PART_B_PRINT_PROGRESS = false;
 
     public static void problem21A() {
         problem21A(DEFAULT_PATH_TO_INPUTS);
@@ -89,6 +94,48 @@ public class RunDay21 {
         (The program must actually halt; running forever does not count as halting.)
         */
         System.out.println("=== DAY 21B ===");
-        return 0;
+        cpu.reset();
+
+//        final int HALT_VALUE = 3453754;
+//        cpu.getMemory().setRegisterValue(REGISTER_0, HALT_VALUE);
+
+        TreeSet<Integer> haltValues = new TreeSet<>();
+//        haltValues.add(HALT_VALUE);
+        int i = 0;
+        int prevHaltValue = 0;
+        while (cpu.ipIsValid(program)) {
+            CodeOperation op = program.getProgramCode().get(cpu.getIp());
+            String output = null;
+
+            boolean print = false;
+            if (DEBUG_PART_B_PRINT_PROGRESS && cpu.getIp() == 29) {
+                output = i + ":\t" + cpu.getIp() + "\t" + cpu.getMemory().toString() + "\t";
+                print = true;
+            }
+
+            cpu.execute(op);
+
+            if (DEBUG_PART_B_PRINT_PROGRESS && print) {
+                output += op.toString() + "\t" + cpu.getMemory().toString();
+                System.out.println(output);
+                print = false;
+            }
+
+            if (cpu.getIp() == 29) { // If we're at the halt check instruction (which is #28)
+                int haltValue = cpu.getMemory().getRegisterValue(REGISTER_3);
+                if (haltValues.contains(haltValue)) {
+                    System.out.println(i + "\t" + haltValue + " << REPEAT");
+                    break;
+                } else {
+                    haltValues.add(haltValue);
+                    prevHaltValue = haltValue;
+                }
+            }
+            i++;
+        }
+        System.out.println("Halt value immediately before the repeated value:\t"+ prevHaltValue);
+        return prevHaltValue;
+        // Answer:
+        // Halt value immediately before the repeated value: 8307757
     }
 }
