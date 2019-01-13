@@ -23,22 +23,25 @@ public class CaveSystem {
     int maxDistance = Integer.MIN_VALUE;
     int unreachedCaveSteps = 0;
 
-
     public CaveSystem(int targetX, int targetY, int depth) {
+        this(targetX, targetY, depth, targetX + 1, targetY + 1);
+    }
+
+    public CaveSystem(int targetX, int targetY, int depth, int sizeX, int sizeY) {
         this.targetX = targetX;
         this.targetY = targetY;
         this.depth = depth;
 
-        regions = new Region[targetX + 1][targetY + 1];
-        rockyMap = new boolean[targetX + 1][targetY + 1];
-        wetMap = new boolean[targetX + 1][targetY + 1];
-        narrowMap = new boolean[targetX + 1][targetY + 1];
-        nothingMap = new boolean[targetX + 1][targetY + 1];
-        climbingGearMap = new boolean[targetX + 1][targetY + 1];
-        torchMap = new boolean[targetX + 1][targetY + 1];
+        regions = new Region[sizeX][sizeY];
+        rockyMap = new boolean[sizeX][sizeY];
+        wetMap = new boolean[sizeX][sizeY];
+        narrowMap = new boolean[sizeX][sizeY];
+        nothingMap = new boolean[sizeX][sizeY];
+        climbingGearMap = new boolean[sizeX][sizeY];
+        torchMap = new boolean[sizeX][sizeY];
 
-        for (int y = 0; y <= targetY; y++) { // rows
-            for (int x = 0; x <= targetX; x++) { // columns
+        for (int y = 0; y < regions[0].length; y++) { // rows
+            for (int x = 0; x < regions.length; x++) { // columns
                 Region newRegion = createNewRegion(x, y);
                 regions[x][y] = newRegion;
 
@@ -362,8 +365,8 @@ public class CaveSystem {
 
     public int calculateAreaRiskLevel(int minX, int maxX, int minY, int maxY) {
         int totalRiskLevel = 0;
-        for (int y = 0; y <= targetY; y++) { // rows
-            for (int x = 0; x <= targetX; x++) { // columns
+        for (int y = minY; y <= maxY; y++) { // rows
+            for (int x = minX; x <= maxX; x++) { // columns
                 int riskLevel = regions[x][y].type.ordinal();
                 totalRiskLevel += riskLevel;
             }
@@ -384,9 +387,9 @@ public class CaveSystem {
     }
 
     public void printCaveSystem() {
-        for (int y = 0; y <= targetY; y++) { // rows
+        for (int y = 0; y < regions[0].length; y++) { // rows
             String output = "";
-            for (int x = 0; x <= targetX; x++) { // columns
+            for (int x = 0; x < regions.length; x++) { // columns
                 if (x == 0 && y == 0) {
                     // mouth
                     output += "M";
@@ -414,9 +417,9 @@ public class CaveSystem {
                 toolMap = climbingGearMap;
                 break;
         }
-        for (int y = 0; y <= targetY; y++) { // rows
+        for (int y = 0; y < toolMap[0].length; y++) { // rows
             String output = "";
-            for (int x = 0; x <= targetX; x++) { // columns
+            for (int x = 0; x < toolMap.length; x++) { // columns
                 output += (toolMap[x][y] ? "X" : " ");
             }
             System.out.println(y + ":\t" + output);

@@ -7,13 +7,13 @@ public class RunDay22 {
     static final boolean DEBUG_PART_B_PRINT_PROGRESS = false;
 
     /* Justin's Puzzle Inputs */
-//    public static final int DEPTH = 7863;
-//    public static final int TARGET_X = 14;
-//    public static final int TARGET_Y = 760;
+    public static final int DEPTH = 7863;
+    public static final int TARGET_X = 14;
+    public static final int TARGET_Y = 760;
 
-    public static final int DEPTH = 510;
-    public static final int TARGET_X = 10;
-    public static final int TARGET_Y = 10;
+//    public static final int DEPTH = 510;
+//    public static final int TARGET_X = 10;
+//    public static final int TARGET_Y = 10;
 
     public static CaveSystem caveSystem;
 
@@ -41,10 +41,10 @@ public class RunDay22 {
     }
 
     public static void problem22B() {
-        problem22B(TARGET_X, TARGET_Y, DEPTH);
+        problem22B(TARGET_X, TARGET_Y, DEPTH, TARGET_X, TARGET_Y);
     }
 
-    public static int problem22B(int targetX, int targetY, int depth) {
+    public static int problem22B(int targetX, int targetY, int depth, int sizeX, int sizeY) {
         /*
         - In rocky regions, you can use the climbing gear or the torch. You cannot use neither (you'll likely slip and fall).
         - In wet regions, you can use the climbing gear or neither tool. You cannot use the torch
@@ -58,17 +58,18 @@ public class RunDay22 {
         System.out.println("=== DAY 22B ===");
 
         // Create and wire up the cave system.
-        // TODO: Make the system larger – we probably need to go outside it.
-        caveSystem = new CaveSystem(targetX + 4, targetY + 4, depth);
-        caveSystem.targetX = targetX;
-        caveSystem.targetY = targetY;
+        caveSystem = new CaveSystem(targetX, targetY, depth, sizeX, sizeY);
 
-        System.out.println("Nothing:");
-        caveSystem.printToolMap(Tool.NOTHING);
-        System.out.println("\nTorch:");
-        caveSystem.printToolMap(Tool.TORCH);
-        System.out.println("\nClimbing Gear");
-        caveSystem.printToolMap(Tool.CLIMBING_GEAR);
+//        caveSystem.printCaveSystem();
+//        System.out.println();
+//
+//        System.out.println("Nothing:");
+//        caveSystem.printToolMap(Tool.NOTHING);
+//        System.out.println("\nTorch:");
+//        caveSystem.printToolMap(Tool.TORCH);
+//        System.out.println("\nClimbing Gear");
+//        caveSystem.printToolMap(Tool.CLIMBING_GEAR);
+
 
         boolean done = false;
         int i = 0;
@@ -77,7 +78,7 @@ public class RunDay22 {
             done = caveSystem.doTick();
             System.out.println(i + ":\tUnreached: " + caveSystem.unreachedCaveSteps + "/" + caveSystem.caveSteps.size() + "\tMax distance: " + caveSystem.maxDistance);
             CaveStep target = caveSystem.getTargetCaveStep();
-            System.out.println("Distance to target:\t"+target.distance);
+//            System.out.println("Distance to target:\t"+target.distance);
             i++;
         }
 
@@ -87,6 +88,6 @@ public class RunDay22 {
 
         System.out.println("Minimum distance to " + target.toString() + ":\t" + result);
 
-        return 0;
+        return result;
     }
 }
