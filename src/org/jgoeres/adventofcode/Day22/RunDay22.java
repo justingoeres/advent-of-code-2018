@@ -41,7 +41,7 @@ public class RunDay22 {
     }
 
     public static void problem22B() {
-        problem22B(TARGET_X, TARGET_Y, DEPTH, TARGET_X, TARGET_Y);
+        problem22B(TARGET_X, TARGET_Y, DEPTH, TARGET_X + 24, TARGET_Y + 1);
     }
 
     public static int problem22B(int targetX, int targetY, int depth, int sizeX, int sizeY) {
@@ -58,27 +58,18 @@ public class RunDay22 {
         System.out.println("=== DAY 22B ===");
 
         // Create and wire up the cave system.
-        caveSystem = new CaveSystem(targetX, targetY, depth, sizeX, sizeY);
-
-//        caveSystem.printCaveSystem();
-//        System.out.println();
-//
-//        System.out.println("Nothing:");
-//        caveSystem.printToolMap(Tool.NOTHING);
-//        System.out.println("\nTorch:");
-//        caveSystem.printToolMap(Tool.TORCH);
-//        System.out.println("\nClimbing Gear");
-//        caveSystem.printToolMap(Tool.CLIMBING_GEAR);
-
+        caveSystem = new CaveSystem(targetX, targetY, depth, sizeX, sizeY); // Add extra space around the target to let the paths go there.
 
         boolean done = false;
         int i = 0;
         caveSystem.initializeMapping();
         while (!done) {
             done = caveSystem.doTick();
-            System.out.println(i + ":\tUnreached: " + caveSystem.unreachedCaveSteps + "/" + caveSystem.caveSteps.size() + "\tMax distance: " + caveSystem.maxDistance);
-            CaveStep target = caveSystem.getTargetCaveStep();
-//            System.out.println("Distance to target:\t"+target.distance);
+            if (DEBUG_PART_B_PRINT_PROGRESS) {
+                System.out.println(i + ":\tUnreached: " + caveSystem.unreachedCaveSteps + "/" + caveSystem.caveSteps.size() + "\tMax distance: " + caveSystem.maxDistance);
+                CaveStep target = caveSystem.getTargetCaveStep();
+                System.out.println("Distance to target:\t" + (target.distance == Integer.MAX_VALUE ? "n/a" : target.distance));
+            }
             i++;
         }
 
@@ -89,5 +80,8 @@ public class RunDay22 {
         System.out.println("Minimum distance to " + target.toString() + ":\t" + result);
 
         return result;
+        // Answer:
+        // Minimum distance to (14,760,TORCH):	1054
+        // (Calculated with cave size of x=37 (14+23), y=760 (760+0)
     }
 }
