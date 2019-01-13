@@ -7,9 +7,13 @@ public class RunDay22 {
     static final boolean DEBUG_PART_B_PRINT_PROGRESS = false;
 
     /* Justin's Puzzle Inputs */
-    public static final int DEPTH = 7863;
-    public static final int TARGET_X = 14;
-    public static final int TARGET_Y = 760;
+//    public static final int DEPTH = 7863;
+//    public static final int TARGET_X = 14;
+//    public static final int TARGET_Y = 760;
+
+    public static final int DEPTH = 510;
+    public static final int TARGET_X = 10;
+    public static final int TARGET_Y = 10;
 
     public static CaveSystem caveSystem;
 
@@ -52,6 +56,23 @@ public class RunDay22 {
         What is the fewest number of minutes you can take to reach the target?
         */
         System.out.println("=== DAY 22B ===");
+
+        // Create and wire up the cave system.
+        // TODO: Make the system larger – we probably need to go outside it.
+        caveSystem = new CaveSystem(targetX, targetY, depth);
+
+        System.out.println("Nothing:");
+        caveSystem.printToolMap(Tool.NOTHING);
+        System.out.println("\nTorch:");
+        caveSystem.printToolMap(Tool.TORCH);
+        System.out.println("\nClimbing Gear");
+        caveSystem.printToolMap(Tool.CLIMBING_GEAR);
+
+        boolean done = false;
+        while (!done) {
+            caveSystem.doTick();
+        }
+
         return 0;
     }
 }
