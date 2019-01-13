@@ -6,15 +6,18 @@ public class RunDay23 {
     static final boolean DEBUG_PART_A_PRINT_PROGRESS = false;
     static final boolean DEBUG_PART_B_PRINT_PROGRESS = false;
 
+    static Formation formation;
+
     public static void problem23A() {
         problem23A(DEFAULT_PATH_TO_INPUTS);
     }
 
     public static int problem23A(String pathToInputs) {
         /*
-        Problem Description
+        Find the nanobot with the largest signal radius. How many nanobots are in range of its signals?
         */
         System.out.println("=== DAY 23A ===");
+        formation = new Formation(pathToInputs);
         return 0;
 
     }
