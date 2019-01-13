@@ -13,4 +13,12 @@ public class Day23Test {
         int result = RunDay23.problem23A(pathToInputs);
         assertEquals("Outcome is " + result, expectedResult, result);
     }
+
+    @Test
+    public void testJustin23A() {
+        String pathToInputs = "day23/input.txt";
+        int expectedResult = 588;   // value in register 0 at HALT.
+        int result = RunDay23.problem23A(pathToInputs);
+        assertEquals("Outcome is " + result, expectedResult, result);
+    }
 }
