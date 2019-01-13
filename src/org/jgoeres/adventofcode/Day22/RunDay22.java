@@ -59,7 +59,9 @@ public class RunDay22 {
 
         // Create and wire up the cave system.
         // TODO: Make the system larger – we probably need to go outside it.
-        caveSystem = new CaveSystem(targetX, targetY, depth);
+        caveSystem = new CaveSystem(targetX + 4, targetY + 4, depth);
+        caveSystem.targetX = targetX;
+        caveSystem.targetY = targetY;
 
         System.out.println("Nothing:");
         caveSystem.printToolMap(Tool.NOTHING);
@@ -69,9 +71,21 @@ public class RunDay22 {
         caveSystem.printToolMap(Tool.CLIMBING_GEAR);
 
         boolean done = false;
+        int i = 0;
+        caveSystem.initializeMapping();
         while (!done) {
-            caveSystem.doTick();
+            done = caveSystem.doTick();
+            System.out.println(i + ":\tUnreached: " + caveSystem.unreachedCaveSteps + "/" + caveSystem.caveSteps.size() + "\tMax distance: " + caveSystem.maxDistance);
+            CaveStep target = caveSystem.getTargetCaveStep();
+            System.out.println("Distance to target:\t"+target.distance);
+            i++;
         }
+
+        // When we're done, find the distance to the target cave.
+        CaveStep target = caveSystem.getTargetCaveStep();
+        int result = target.distance;
+
+        System.out.println("Minimum distance to " + target.toString() + ":\t" + result);
 
         return 0;
     }

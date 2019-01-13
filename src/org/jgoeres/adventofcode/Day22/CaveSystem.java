@@ -1,5 +1,6 @@
 package org.jgoeres.adventofcode.Day22;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,6 +17,12 @@ public class CaveSystem {
     boolean[][] rockyMap, wetMap, narrowMap;
     boolean[][] nothingMap, climbingGearMap, torchMap;
     HashMap<String, CaveStep> caveSteps = new HashMap<>();
+
+    ArrayList<CaveStep> currentEdges = new ArrayList<>();
+    ArrayList<CaveStep> newEdges = new ArrayList<>();
+    int maxDistance = Integer.MIN_VALUE;
+    int unreachedCaveSteps = 0;
+
 
     public CaveSystem(int targetX, int targetY, int depth) {
         this.targetX = targetX;
@@ -69,75 +76,194 @@ public class CaveSystem {
             CaveStep caveStep = caveStepEntry.getValue();
 
             // above
-            if ((caveStep.getCaveAbove() == null) && caveSteps.containsKey(relativeKey(caveStep,ABOVE))){
+            if ((caveStep.getCaveAbove() == null) && caveSteps.containsKey(relativeKey(caveStep, ABOVE))) {
                 // If there's not already a cave assigned above us, but one exists.
                 // Wire it up.
-                CaveStep caveAbove = caveSteps.get(relativeKey(caveStep,ABOVE));
+                CaveStep caveAbove = caveSteps.get(relativeKey(caveStep, ABOVE));
                 caveStep.connectToAbove(caveAbove);
             }
             // right
-            if ((caveStep.getCaveRight() == null) && caveSteps.containsKey(relativeKey(caveStep,RIGHT))){
+            if ((caveStep.getCaveRight() == null) && caveSteps.containsKey(relativeKey(caveStep, RIGHT))) {
                 // If there's not already a cave assigned right us, but one exists.
                 // Wire it up.
-                CaveStep caveRight = caveSteps.get(relativeKey(caveStep,RIGHT));
+                CaveStep caveRight = caveSteps.get(relativeKey(caveStep, RIGHT));
                 caveStep.connectToRight(caveRight);
             }
             // left
-            if ((caveStep.getCaveLeft() == null) && caveSteps.containsKey(relativeKey(caveStep,LEFT))){
+            if ((caveStep.getCaveLeft() == null) && caveSteps.containsKey(relativeKey(caveStep, LEFT))) {
                 // If there's not already a cave assigned left us, but one exists.
                 // Wire it up.
-                CaveStep caveLeft = caveSteps.get(relativeKey(caveStep,LEFT));
+                CaveStep caveLeft = caveSteps.get(relativeKey(caveStep, LEFT));
                 caveStep.connectToLeft(caveLeft);
             }
             // below
-            if ((caveStep.getCaveBelow() == null) && caveSteps.containsKey(relativeKey(caveStep,BELOW))){
+            if ((caveStep.getCaveBelow() == null) && caveSteps.containsKey(relativeKey(caveStep, BELOW))) {
                 // If there's not already a cave assigned below us, but one exists.
                 // Wire it up.
-                CaveStep caveBelow = caveSteps.get(relativeKey(caveStep,BELOW));
+                CaveStep caveBelow = caveSteps.get(relativeKey(caveStep, BELOW));
                 caveStep.connectToBelow(caveBelow);
             }
 
             // nothing
-            if (!(caveStep.getTool().equals(NOTHING)) 
-                    &&(caveStep.getToNothing() == null) 
-                    && caveSteps.containsKey(relativeKey(caveStep,TO_NOTHING))){
+            if (!(caveStep.getTool().equals(NOTHING))
+                    && (caveStep.getToNothing() == null)
+                    && caveSteps.containsKey(relativeKey(caveStep, TO_NOTHING))) {
                 // If this is NOT a nothing cave, and
                 // If there's not already a nothing cave assigned to us, but one exists.
                 // Wire it up.
-                CaveStep caveNothing = caveSteps.get(relativeKey(caveStep,TO_NOTHING));
+                CaveStep caveNothing = caveSteps.get(relativeKey(caveStep, TO_NOTHING));
                 caveStep.connectToNothing(caveNothing);
             }
 
             // torch
             if (!(caveStep.getTool().equals(TORCH))
-                    &&(caveStep.getToTorch() == null)
-                    && caveSteps.containsKey(relativeKey(caveStep,TO_TORCH))){
+                    && (caveStep.getToTorch() == null)
+                    && caveSteps.containsKey(relativeKey(caveStep, TO_TORCH))) {
                 // If this is NOT a torch cave, and
                 // If there's not already a torch cave assigned to us, but one exists.
                 // Wire it up.
-                CaveStep caveTorch = caveSteps.get(relativeKey(caveStep,TO_TORCH));
+                CaveStep caveTorch = caveSteps.get(relativeKey(caveStep, TO_TORCH));
                 caveStep.connectToTorch(caveTorch);
             }
 
             // climbing gear
             if (!(caveStep.getTool().equals(CLIMBING_GEAR))
-                    &&(caveStep.getToClimbingGear() == null)
-                    && caveSteps.containsKey(relativeKey(caveStep,TO_CLIMBING_GEAR))){
+                    && (caveStep.getToClimbingGear() == null)
+                    && caveSteps.containsKey(relativeKey(caveStep, TO_CLIMBING_GEAR))) {
                 // If this is NOT a climbingGear cave, and
                 // If there's not already a climbingGear cave assigned to us, but one exists.
                 // Wire it up.
-                CaveStep caveClimbingGear = caveSteps.get(relativeKey(caveStep,TO_CLIMBING_GEAR));
+                CaveStep caveClimbingGear = caveSteps.get(relativeKey(caveStep, TO_CLIMBING_GEAR));
                 caveStep.connectToClimbingGear(caveClimbingGear);
             }
 
         }
     }
 
-    public boolean doTick(){
+    public boolean doTick() {
         boolean done = false;
-        
+        int sameToolCost = 1;
+        int differentToolCost = 7;
+
+        newEdges.clear();   // Reset the list of new edges.
+        // Iterate through all the "edge" cavesteps.
+        for (CaveStep caveStep : currentEdges) {
+            int sameToolDistance = caveStep.distance + sameToolCost;
+            int diffToolDistance = caveStep.distance + differentToolCost;
+
+            CaveStep edgeCave = null;
+            // For each one:
+            //      - Get all the adjacent cavesteps.
+            //      - Calculate the "distance" value of moving to them (+1 for same tool, +7 for different tool)
+            //      - If the "distance" value of moving to them is < their current distance value,
+            //          set their distance to that value,
+            //          and add them to the "new edges"
+
+            // above
+            if ((caveStep.hasCave(ABOVE)) // if there's a cave above
+                    && ((sameToolDistance) < caveStep.getCaveAbove().distance)) { // And the new distance there would be less than its current
+                // Set its distance
+                edgeCave = caveStep.getCaveAbove();
+                edgeCave.distance = sameToolDistance;
+                // Add it to the "new edges"
+                newEdges.add(edgeCave);
+            }
+
+            // below
+            if ((caveStep.hasCave(BELOW)) // if there's a cave below
+                    && ((sameToolDistance) < caveStep.getCaveBelow().distance)) { // And the new distance there would be less than its current
+                // Set its distance
+                edgeCave = caveStep.getCaveBelow();
+                edgeCave.distance = sameToolDistance;
+                // Add it to the "new edges"
+                newEdges.add(edgeCave);
+            }
+
+            // right
+            if ((caveStep.hasCave(RIGHT)) // if there's a cave right
+                    && ((sameToolDistance) < caveStep.getCaveRight().distance)) { // And the new distance there would be less than its current
+                // Set its distance
+                edgeCave = caveStep.getCaveRight();
+                edgeCave.distance = sameToolDistance;
+                // Add it to the "new edges"
+                newEdges.add(edgeCave);
+            }
+
+            // left
+            if ((caveStep.hasCave(LEFT)) // if there's a cave left
+                    && ((sameToolDistance) < caveStep.getCaveLeft().distance)) { // And the new distance there would be less than its current
+                // Set its distance
+                edgeCave = caveStep.getCaveLeft();
+                edgeCave.distance = sameToolDistance;
+                // Add it to the "new edges"
+                newEdges.add(edgeCave);
+            }
+
+            // to_torch
+            if ((caveStep.hasCave(TO_TORCH)) // if there's a cave to_torch
+                    && ((diffToolDistance) < caveStep.getToTorch().distance)) { // And the new distance there would be less than its current
+                // Set its distance
+                edgeCave = caveStep.getToTorch();
+                edgeCave.distance = diffToolDistance;
+                // Add it to the "new edges"
+                newEdges.add(edgeCave);
+            }
+
+            // to_nothing
+            if ((caveStep.hasCave(TO_NOTHING)) // if there's a cave to_nothing
+                    && ((diffToolDistance) < caveStep.getToNothing().distance)) { // And the new distance there would be less than its current
+                // Set its distance
+                edgeCave = caveStep.getToNothing();
+                edgeCave.distance = diffToolDistance;
+                // Add it to the "new edges"
+                newEdges.add(edgeCave);
+            }
+
+            // to_climbingGear
+            if ((caveStep.hasCave(TO_CLIMBING_GEAR)) // if there's a cave to_climbingGear
+                    && ((diffToolDistance) < caveStep.getToClimbingGear().distance)) { // And the new distance there would be less than its current
+                // Set its distance
+                edgeCave = caveStep.getToClimbingGear();
+                edgeCave.distance = diffToolDistance;
+                // Add it to the "new edges"
+                newEdges.add(edgeCave);
+            }
+
+        }
+
+        for (CaveStep caveStep : newEdges) {
+            if (caveStep.distance > maxDistance) maxDistance = caveStep.distance;
+        }
+
+        unreachedCaveSteps = 0;
+        for (Map.Entry<String, CaveStep> caveStepEntry : caveSteps.entrySet()) {
+            CaveStep caveStep = caveStepEntry.getValue();
+            if (caveStep.distance.equals(Integer.MAX_VALUE)) unreachedCaveSteps++;
+        }
+
+        // We're done when nothing has been added to newEdges!
+        done = newEdges.isEmpty();
+
+        // Swap the edge lists
+        ArrayList<CaveStep> temp = null;
+        temp = currentEdges;
+        currentEdges = newEdges;
+        newEdges = temp;
 
         return done;
+    }
+
+    public void initializeMapping() {
+        CaveStep originCaveStep = caveSteps.get(XYToolToKey(0, 0, TORCH));
+        // Set the "distance" for the 0,0 cavestep(torch) to 0.
+        originCaveStep.distance = 0;
+        // Add it to the current edges.
+        currentEdges.add(originCaveStep);
+    }
+
+    public CaveStep getTargetCaveStep() {
+        CaveStep target = caveSteps.get(XYToolToKey(targetX, targetY, TORCH));
+        return target;
     }
 
     private String XYToolToKey(int x, int y, Tool tool) {

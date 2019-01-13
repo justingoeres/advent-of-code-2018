@@ -4,7 +4,7 @@ public class CaveStep {
     private Integer x;
     private Integer y;
     private Tool tool;
-    Integer distance;
+    Integer distance = Integer.MAX_VALUE;
 
     private CaveStep caveAbove = null;
     private CaveStep caveRight = null;
@@ -105,6 +105,25 @@ public class CaveStep {
         }
     }
 
+    public boolean hasCave(Direction direction){
+        switch (direction) {
+            case ABOVE:
+                return (getCaveAbove() != null);
+            case BELOW:
+                return (getCaveBelow() != null);
+            case LEFT:
+                return (getCaveLeft() != null);
+            case RIGHT:
+                return (getCaveRight() != null);
+            case TO_TORCH:
+                return (getToTorch() != null);
+            case TO_NOTHING:
+                return (getToNothing() != null);
+            case TO_CLIMBING_GEAR:
+                return (getToClimbingGear() != null);
+        }
+        return false;   // This will never happen.
+    }
     public CaveStep getCaveAbove() {
         return caveAbove;
     }
