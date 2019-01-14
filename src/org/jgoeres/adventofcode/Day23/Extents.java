@@ -1,6 +1,8 @@
 package org.jgoeres.adventofcode.Day23;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.TreeSet;
 
 public class Extents {
     int xMin, xMax;
@@ -17,7 +19,7 @@ public class Extents {
         zMax = Integer.MIN_VALUE;
     }
 
-    public void findExtents(ArrayList<Nanobot> nanobots) {
+    public void findExtents(TreeSet<Nanobot> nanobots) {
         for (Nanobot nanobot : nanobots) {
             xMin = Math.min(xMin, nanobot.x - nanobot.radius);
             yMin = Math.min(yMin, nanobot.y - nanobot.radius);
