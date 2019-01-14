@@ -1,10 +1,13 @@
 package org.jgoeres.adventofcode.Day23;
 
+import java.util.ArrayList;
+
 public class Nanobot {
     int x;
     int y;
     int z;
     int radius;
+    ArrayList<Nanobot> overlapBots = new ArrayList<>();
 
     public Nanobot(int x, int y, int z, int radius) {
         this.x = x;
@@ -22,8 +25,34 @@ public class Nanobot {
         return (xDist + yDist + zDist);
     }
 
+    public boolean pointInRange(int x, int y, int z){
+        // calculate the 3D Manhattan distance to the specified point.
+        int xDist = Math.abs(this.x - x);
+        int yDist = Math.abs(this.y - y);
+        int zDist = Math.abs(this.z - z);
+
+        boolean inRange = ((xDist+yDist+zDist) < radius);
+        return inRange;
+    }
+
+    public void overlapWith(Nanobot other) {
+        this.overlapBots.add(other);
+        if (this != other) {
+            // Don't connect a bot to itself twice (but once is fine)
+            other.overlapBots.add(this);
+        }
+    }
+
+    public Nanobot newBotDividedByMillion() {
+        final int MILLION = 1000000;
+        Nanobot dividedByMillion = new Nanobot(x / MILLION, y / MILLION, z / MILLION, radius / MILLION);
+        // We are NOT setting the overlap list here, that's not necessary at this point.
+        return dividedByMillion;
+    }
+
+
     @Override
     public String toString() {
-        return "(" + x + ", " + y + ", " + z + ")";
+        return "(" + x + ", " + y + ", " + z + ") r = " + radius;
     }
 }
