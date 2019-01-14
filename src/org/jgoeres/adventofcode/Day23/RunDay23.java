@@ -157,6 +157,8 @@ public class RunDay23 {
                         // (2) closest to the origin.
                         // (there may be more than one).
                         // ... and then multiply those and scan them.
+
+                        // NO NO NO this is wrong. Our "extents" have to include the RADIUS, not just the centers!
                     }
                 }
 
