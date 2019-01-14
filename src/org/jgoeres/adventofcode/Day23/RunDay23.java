@@ -142,14 +142,18 @@ public class RunDay23 {
         searchArea.findExtents(dividedBots);
 
         // Let's search the whole area
+        int inRangeCellCount = 0;
+        boolean inRange = false;
         for (int z = searchArea.zMin; z <= searchArea.zMax; z++) {
             for (int y = searchArea.yMin; y <= searchArea.yMax; y++) {
                 for (int x = searchArea.xMin; x <= searchArea.xMax; x++) {
                     for (Nanobot nanobot : dividedBots) {
-                        boolean inRange = nanobot.pointInRange(x, y, z);
-                        System.out.println("(" + x + ", " + y + ", " + z + ") is " + (inRange ? "" : "NOT ") + "in range of " + nanobot.toString());
-                        if (!inRange) {
-                            System.out.println("hi");
+                        inRange = nanobot.pointInRange(x, y, z);
+//                        System.out.println("(" + x + ", " + y + ", " + z + ") is " + (inRange ? "" : "NOT ") + "in range of " + nanobot.toString());
+                        if (inRange) {
+//                            System.out.println("(" + x + ", " + y + ", " + z + ") is " + (inRange ? "" : "NOT ") + "in range of " + nanobot.toString());
+                        } else {
+                            break; // Stop scanning this point if it's out of range of anything.
                         }
                         // Everything seems to be in range? Is that OK? Will it be different when we multiply everything?
                         // The next step I think is to find the point we just scanned which is
@@ -159,12 +163,18 @@ public class RunDay23 {
                         // ... and then multiply those and scan them.
 
                         // NO NO NO this is wrong. Our "extents" have to include the RADIUS, not just the centers!
+
+                        // OK having fixed that, now I think we're ready to find the closest cell(s), multiply, and iterate!
+                    }
+                    if (inRange) {
+                        inRangeCellCount++;
                     }
                 }
-
             }
 
+
         }
+        System.out.println(inRangeCellCount);
         return 0;
     }
 }

@@ -3,9 +3,9 @@ package org.jgoeres.adventofcode.Day23;
 import java.util.ArrayList;
 
 public class Extents {
-    int xMin,xMax;
-    int yMin,yMax;
-    int zMin,zMax;
+    int xMin, xMax;
+    int yMin, yMax;
+    int zMin, zMax;
 
     public Extents() {
         xMin = Integer.MAX_VALUE;
@@ -16,16 +16,16 @@ public class Extents {
         yMax = Integer.MIN_VALUE;
         zMax = Integer.MIN_VALUE;
     }
-    
-    public void findExtents(ArrayList<Nanobot> nanobots){
-        for (Nanobot nanobot:nanobots){
-            xMin = Math.min(xMin,nanobot.x);
-            yMin = Math.min(yMin,nanobot.y);
-            zMin = Math.min(zMin,nanobot.z);
 
-            xMax = Math.max(xMax,nanobot.x);
-            yMax = Math.max(yMax,nanobot.y);
-            zMax = Math.max(zMax,nanobot.z);
+    public void findExtents(ArrayList<Nanobot> nanobots) {
+        for (Nanobot nanobot : nanobots) {
+            xMin = Math.min(xMin, nanobot.x - nanobot.radius);
+            yMin = Math.min(yMin, nanobot.y - nanobot.radius);
+            zMin = Math.min(zMin, nanobot.z - nanobot.radius);
+
+            xMax = Math.max(xMax, nanobot.x + nanobot.radius);
+            yMax = Math.max(yMax, nanobot.y + nanobot.radius);
+            zMax = Math.max(zMax, nanobot.z + nanobot.radius);
         }
     }
 }
