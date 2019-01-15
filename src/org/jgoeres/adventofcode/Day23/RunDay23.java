@@ -133,63 +133,91 @@ public class RunDay23 {
         // multiply everything by 10, and search again but ONLY IN THOSE AREAS.
         // Keep repeating that until we're back to the original resolution.
 
-        TreeSet<Nanobot> dividedBots = new TreeSet<>(new NanobotComparator());
-        for (Nanobot toDivide : maxOverlapBots) {
-            // Create a set of new nanobots, divided by a million.
-            dividedBots.add(toDivide.newBotDividedByPowerOfTen(6));
-        }
-        // The point of max overlap has to be inside all the centers somewhere (I think?)
-        // Find the extents we have to search
-        Extents searchArea = new Extents();
-        searchArea.findExtents(dividedBots);
-
-        // Let's search the whole area
         int inRangeCellCount = 0;
-        int minDistanceToOrigin = Integer.MAX_VALUE;
-        boolean inRange = false;
+        boolean firstLoop = true;
+        ArrayList<Extents> searchAreaExtents = new ArrayList<>();
+        TreeSet<Nanobot> searchAreaAdjacents = new TreeSet<>(new NanobotComparator());
         TreeSet<Nanobot> searchAreaInRange = new TreeSet<>(new NanobotComparator());    // Reuse the Nanobot to represent the search area, since it has X, Y, and Z components.
-        for (int z = searchArea.zMin; z <= searchArea.zMax; z++) {
-            for (int y = searchArea.yMin; y <= searchArea.yMax; y++) {
-                for (int x = searchArea.xMin; x <= searchArea.xMax; x++) {
-                    for (Nanobot nanobot : dividedBots) {
-                        inRange = nanobot.pointInRange(x, y, z);
-//                        System.out.println("(" + x + ", " + y + ", " + z + ") is " + (inRange ? "" : "NOT ") + "in range of " + nanobot.toString());
-                        if (inRange) {
-                            Nanobot searchAreaBot = new Nanobot(x,y,z,0);
-                            int distanceToOrigin = searchAreaBot.distanceTo(ORIGIN);
-                            if (distanceToOrigin < minDistanceToOrigin) {   // If this is the closest search area point we've seen so far.
-                                minDistanceToOrigin = distanceToOrigin;
-                                searchAreaInRange.clear();  // Clear the previous list of "closest search areas"
-                                searchAreaBot.radius = searchAreaBot.distanceTo(ORIGIN);
-                                searchAreaInRange.add(searchAreaBot);
-                            } else if (distanceToOrigin == minDistanceToOrigin) { // else if this area is just as close as the previous closest
-                                searchAreaBot.radius = searchAreaBot.distanceTo(ORIGIN);
-                                searchAreaInRange.add(searchAreaBot);
-                            }   // else do nothing; this area is in range there's already at least one closer.
-
-//                            System.out.println("(" + x + ", " + y + ", " + z + ") is " + (inRange ? "" : "NOT ") + "in range of " + nanobot.toString());
-                        } else {
-                            break; // Stop scanning this point if it's out of range of anything.
+        for (int powerOfTen = 6; powerOfTen >= 0; powerOfTen--) {    // Repeat at increasing scale levels
+            inRangeCellCount = 0;
+            TreeSet<Nanobot> dividedBots = new TreeSet<>(new NanobotComparator());
+            for (Nanobot toDivide : maxOverlapBots) {
+                // Create a set of new nanobots, divided by the current scale.
+                dividedBots.add(toDivide.newBotDividedByPowerOfTen(powerOfTen));
+            }
+            // The point of max overlap has to be inside all the centers somewhere (I think?)
+            // Find the extents we have to search
+            Extents newSearchArea = null;
+            if (firstLoop) {
+                // On the first time through, search one big area covered by all the bots.
+                newSearchArea = new Extents();
+                newSearchArea.findExtents(dividedBots);
+                searchAreaExtents.add(newSearchArea);
+                firstLoop = false;
+            } else {
+                // Search the area(s) found in the previous iteration
+                searchAreaExtents.clear();  // clear the previous list.
+                // Scale up the previous iteration's search areas by 10x, then add their extents to the areas to search.
+//                for(Nanobot searchAreaCell : searchAreaInRange) {
+                newSearchArea = new Extents();
+                for (Nanobot searchAreaCell : searchAreaInRange) {
+                    // For each cell, search the cell +/- one in all directions
+                    for (int z = searchAreaCell.z - 1; z <= searchAreaCell.z + 2; z++) {
+                        for (int y = searchAreaCell.y - 1; y <= searchAreaCell.y + 2; y++) {
+                            for (int x = searchAreaCell.x - 1; x <= searchAreaCell.x + 2; x++) {
+                                Nanobot searchAreaAdjacent = new Nanobot(x * 10, y * 10, z * 10, searchAreaCell.radius * 10);
+                                searchAreaAdjacents.add(searchAreaAdjacent);
+                            }
                         }
-                        // Everything seems to be in range? Is that OK? Will it be different when we multiply everything?
-                        // The next step I think is to find the point we just scanned which is
-                        // (1) most overlapping, and
-                        // (2) closest to the origin.
-                        // (there may be more than one).
-                        // ... and then multiply those and scan them.
-
-                        // NO NO NO this is wrong. Our "extents" have to include the RADIUS, not just the centers!
-
-                        // OK having fixed that, now I think we're ready to find the closest cell(s), multiply, and iterate!
                     }
-                    if (inRange) {
-                        inRangeCellCount++;
+                }
+                newSearchArea.findExtents(searchAreaAdjacents);
+                searchAreaExtents.add(newSearchArea);
+//                }
+            }
+
+            for (Extents searchArea : searchAreaExtents) {
+                // Let's search every area
+                inRangeCellCount = 0;
+                int minDistanceToOrigin = Integer.MAX_VALUE;
+                boolean inRange = false;
+                for (int z = searchArea.zMin; z <= searchArea.zMax; z++) {
+                    for (int y = searchArea.yMin; y <= searchArea.yMax; y++) {
+                        for (int x = searchArea.xMin; x <= searchArea.xMax; x++) {
+                            for (Nanobot nanobot : dividedBots) {
+                                inRange = nanobot.pointInRange(x, y, z);
+                                //                        System.out.println("(" + x + ", " + y + ", " + z + ") is " + (inRange ? "" : "NOT ") + "in range of " + nanobot.toString());
+                                if (inRange) {
+                                    Nanobot searchAreaBot = new Nanobot(x, y, z, 0);
+                                    int distanceToOrigin = searchAreaBot.distanceTo(ORIGIN);
+                                    if (distanceToOrigin < minDistanceToOrigin) {   // If this is the closest search area point we've seen so far.
+                                        minDistanceToOrigin = distanceToOrigin;
+                                        searchAreaInRange.clear();  // Clear the previous list of "closest search areas"
+                                        searchAreaBot.radius = searchAreaBot.distanceTo(ORIGIN);
+                                        searchAreaInRange.add(searchAreaBot);
+                                    } else if (distanceToOrigin == minDistanceToOrigin) { // else if this area is just as close as the previous closest
+                                        searchAreaBot.radius = searchAreaBot.distanceTo(ORIGIN);
+                                        searchAreaInRange.add(searchAreaBot);
+                                    }   // else do nothing; this area is in range there's already at least one closer.
+
+                                    //                            System.out.println("(" + x + ", " + y + ", " + z + ") is " + (inRange ? "" : "NOT ") + "in range of " + nanobot.toString());
+                                } else {
+                                    break; // Stop scanning this point if it's out of range of anything.
+                                }
+                            }
+                            if (inRange) {
+                                inRangeCellCount++;
+                            }
+                        }
                     }
                 }
             }
-
-
+            // When we get here we've found all the cells at this detail level that are in range and closest to the origin.
+            // So now we need to scale those up, turn them collectively into a set of Extents, then repeat
+            // the evaluation process with dividedBots that are also scaled up.
         }
+
+
         System.out.println(inRangeCellCount);
         return 0;
     }

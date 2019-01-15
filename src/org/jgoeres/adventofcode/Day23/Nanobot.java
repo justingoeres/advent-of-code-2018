@@ -50,6 +50,16 @@ public class Nanobot {
         return dividedByPowerOfTen;
     }
 
+    public void multiplyByPowerOfTen(int powerOfTen) {
+        final int factor = (int) Math.pow(10, powerOfTen);
+        x = this.x*factor;
+        y = this.y*factor;
+        z = this.z*factor;
+        radius = this.radius*factor;
+//        Nanobot multipliedByPowerOfTen = new Nanobot(x * factor, y * factor, z * factor, radius * factor);
+        // We are NOT setting the overlap list here, that's not necessary at this point.
+//        return multipliedByPowerOfTen;
+    }
 
     @Override
     public String toString() {
