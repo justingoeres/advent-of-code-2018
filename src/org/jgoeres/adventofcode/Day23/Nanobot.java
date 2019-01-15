@@ -25,13 +25,13 @@ public class Nanobot {
         return (xDist + yDist + zDist);
     }
 
-    public boolean pointInRange(int x, int y, int z){
+    public boolean pointInRange(int x, int y, int z) {
         // calculate the 3D Manhattan distance to the specified point.
         int xDist = Math.abs(this.x - x);
         int yDist = Math.abs(this.y - y);
         int zDist = Math.abs(this.z - z);
 
-        boolean inRange = ((xDist+yDist+zDist) < radius);
+        boolean inRange = ((xDist + yDist + zDist) < radius);
         return inRange;
     }
 
@@ -43,11 +43,11 @@ public class Nanobot {
         }
     }
 
-    public Nanobot newBotDividedByMillion() {
-        final int MILLION = 1000000;
-        Nanobot dividedByMillion = new Nanobot(x / MILLION, y / MILLION, z / MILLION, radius / MILLION);
+    public Nanobot newBotDividedByPowerOfTen(int powerOfTen) {
+        final int divisor = (int) Math.pow(10, powerOfTen);
+        Nanobot dividedByPowerOfTen = new Nanobot(x / divisor, y / divisor, z / divisor, radius / divisor);
         // We are NOT setting the overlap list here, that's not necessary at this point.
-        return dividedByMillion;
+        return dividedByPowerOfTen;
     }
 
 

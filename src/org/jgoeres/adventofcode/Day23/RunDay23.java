@@ -136,7 +136,7 @@ public class RunDay23 {
         TreeSet<Nanobot> dividedBots = new TreeSet<>(new NanobotComparator());
         for (Nanobot toDivide : maxOverlapBots) {
             // Create a set of new nanobots, divided by a million.
-            dividedBots.add(toDivide.newBotDividedByMillion());
+            dividedBots.add(toDivide.newBotDividedByPowerOfTen(6));
         }
         // The point of max overlap has to be inside all the centers somewhere (I think?)
         // Find the extents we have to search
@@ -158,14 +158,14 @@ public class RunDay23 {
                             Nanobot searchAreaBot = new Nanobot(x,y,z,0);
                             int distanceToOrigin = searchAreaBot.distanceTo(ORIGIN);
                             if (distanceToOrigin < minDistanceToOrigin) {   // If this is the closest search area point we've seen so far.
+                                minDistanceToOrigin = distanceToOrigin;
                                 searchAreaInRange.clear();  // Clear the previous list of "closest search areas"
                                 searchAreaBot.radius = searchAreaBot.distanceTo(ORIGIN);
                                 searchAreaInRange.add(searchAreaBot);
                             } else if (distanceToOrigin == minDistanceToOrigin) { // else if this area is just as close as the previous closest
-                                searchAreaInRange.add(searchAreaBot);   // add it to the list
                                 searchAreaBot.radius = searchAreaBot.distanceTo(ORIGIN);
                                 searchAreaInRange.add(searchAreaBot);
-                            }   // else do nothing; this area is in range but further away than we can tolerate.
+                            }   // else do nothing; this area is in range there's already at least one closer.
 
 //                            System.out.println("(" + x + ", " + y + ", " + z + ") is " + (inRange ? "" : "NOT ") + "in range of " + nanobot.toString());
                         } else {
