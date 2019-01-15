@@ -176,6 +176,8 @@ public class RunDay23 {
 //                }
             }
 
+            // https://www.reddit.com/r/adventofcode/comments/a8s17l/2018_day_23_solutions/ecdth63/
+
             for (Extents searchArea : searchAreaExtents) {
                 // Let's search every area
                 inRangeCellCount = 0;
