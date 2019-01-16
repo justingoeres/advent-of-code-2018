@@ -32,7 +32,6 @@ public class NanobotComparator implements Comparator<Nanobot> {
                 // They're in the same row, so
                 // compare their x coords
                 return Integer.compare(o1x, o2x);
-
             }
         } else {
             return Integer.compare(o1z, o2z);

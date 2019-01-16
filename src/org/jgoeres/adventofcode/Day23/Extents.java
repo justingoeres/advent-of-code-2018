@@ -1,7 +1,5 @@
 package org.jgoeres.adventofcode.Day23;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.TreeSet;
 
 public class Extents {

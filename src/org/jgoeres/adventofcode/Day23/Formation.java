@@ -3,12 +3,12 @@ package org.jgoeres.adventofcode.Day23;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Formation {
-    ArrayList<Nanobot> nanobots = new ArrayList<>();
+    TreeSet<Nanobot> nanobots = new TreeSet<>(new NanobotComparator());
 
     public Formation(String pathToFile) {
         /*
@@ -24,7 +24,6 @@ public class Formation {
         try (BufferedReader br = new BufferedReader(new FileReader(pathToFile))) {
             String line;
             while ((line = br.readLine()) != null) {    // Keep reading until the end of the file.
-//                Pattern p = Pattern.compile("\\D+(\\d+),(\\d+),(\\d)\\D+(\\d+).*");
                 Pattern p = Pattern.compile(".+<(-?\\d+),(-?\\d+),(-?\\d+)\\D+(-?\\d+).*");
                 Matcher m = p.matcher(line);
                 m.matches();
