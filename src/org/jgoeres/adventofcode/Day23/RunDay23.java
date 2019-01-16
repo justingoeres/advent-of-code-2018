@@ -1,6 +1,7 @@
 package org.jgoeres.adventofcode.Day23;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.TreeSet;
 
 public class RunDay23 {
@@ -123,15 +124,80 @@ public class RunDay23 {
         // OK so these all overlap each other. So the overall max-overlap point is somewhere
         // in the UNION of all of these (NOT the intersection!).
 
-        // What if we subdivide the problem by dividing everything by 1,000,000?
-        // That will give us things like:
-        // (109, 26, 31) r = 93
-        // (110, 30, 38) r = 91
-        // (115, 26, 45) r = 86
-        // Which we can just iterate over to find the point(s) with the most overlaps (which hopefully will be all 20??)
-        // Then we take the closest of those points to the origin (there may be more than one :( ),
-        // multiply everything by 10, and search again but ONLY IN THOSE AREAS.
-        // Keep repeating that until we're back to the original resolution.
+        // Let's use the "box and subdivide" method.
+        // Start with a box large enough to contain all the maxOverlap nanobots.
+        // Divide it into 9 equal sub-boxes.
+        // Count the nanobots "in range of" each sub-box
+        // Order the subboxes by count, then by distance to the origin.
+        // Process the first (most/nearest) of those:
+        //  Divide it into 9 sub-boxes.
+        //  Count the nanobots "in range of" each sub-box.
+        //  Add those sub-boxes (with counts) to the TreeSet of boxes to process.
+        //  Loop.
+
+
+        // Create the first (very large) box.
+        TreeSet<Box> boxesToCheck = new TreeSet<>(new BoxComparator());
+
+        Extents initialExtents = new Extents();
+        initialExtents.findExtents(maxOverlapBots);
+
+        int initialX = initialExtents.xMin + (initialExtents.xMax - initialExtents.xMin) / 2;
+        int initialY = initialExtents.yMin + (initialExtents.yMax - initialExtents.yMin) / 2;
+        int initialZ = initialExtents.zMin + (initialExtents.zMax - initialExtents.zMin) / 2;
+
+        // initial box size is the distance to the furthest nanobot
+        int maxDistance = Integer.MIN_VALUE;
+        for (Nanobot nanobot : maxOverlapBots) {
+            int distance = nanobot.distanceTo(initialX, initialY, initialZ);
+            if (distance > maxDistance) {
+                maxDistance = distance;
+            }
+        }
+        int initialRadius = maxDistance;
+
+        Box initialBox = new Box(initialX, initialY, initialZ, initialRadius);
+        initialBox.reachableCountUpperBound = maxOverlapBots.size();
+        boxesToCheck.add(initialBox);
+
+        boolean done = false;
+        // There may be multiple boxes at the front of the set with equal distances from the origin. We need to process them all.
+        while (!done) { // run forever, for now.
+            int botCountToCheck = -1;
+            Iterator botCheckIterator = boxesToCheck.iterator();
+            TreeSet<Box> boxesToAdd = new TreeSet<>(new BoxComparator());
+            //while (botCheckIterator.hasNext()) {
+//                Box box = (Box) botCheckIterator.next();
+            Box box = boxesToCheck.first(); // Check just the FIRST (i.e. most -> closest -> smallest) box
+            boxesToCheck.remove(box);
+                // If this is the first element, initialize the bot count we're checking.
+                if (botCountToCheck == -1) botCountToCheck = box.reachableCountUpperBound;
+
+                if (box.reachableCountUpperBound >= botCountToCheck) { // If this box can have max # of bots we're interested in.
+                    // subdivide it and keep checking.
+                    ArrayList<Box> subBoxes = box.subdivide();
+                    // Calculate how many bots are in range of each new subBox.
+                    for (Box subBox : subBoxes) {
+                        int reachableCount = 0;
+                        for (Nanobot nanobot : maxOverlapBots) {
+//                        for (Nanobot nanobot : formation.nanobots) {
+                            if (subBox.distanceTo(nanobot) <= (subBox.radius + nanobot.radius)) {
+                                // If this nanobot is reachable by this subBox.
+                                reachableCount++;
+                            }
+                        }
+                        // Store the final count as the upper bound of reachable bots for this subBox.
+                        subBox.reachableCountUpperBound = reachableCount;
+                    }
+                    // When we get here, we've subdivided this box and checked all the subBoxes.
+                    // Time to add them to our list of boxes to keep checking.
+                    boxesToAdd.addAll(subBoxes);
+                }
+            //}
+            // When we're done iterating, add everything to the boxesToCheck, then loop.
+            boxesToCheck.addAll(boxesToAdd);
+        }
+
 
         int inRangeCellCount = 0;
         boolean firstLoop = true;
@@ -222,6 +288,13 @@ public class RunDay23 {
 
         System.out.println(inRangeCellCount);
         return 0;
+
+        // Answer:
+        // 111227627 (too low)
+        // 111227628 (wrong)
+        // 111227629 (wrong)
+        // 111227644 (too high) << from Scala example
+        // 147305996 (too high)
     }
 }
     
