@@ -16,7 +16,7 @@ public class RunDay24 {
 
     public static int problem24A(String pathToInputs) {
         /*
-        Problem description
+        How many units would the winning army have?
         */
         System.out.println("=== DAY 24A ===");
 
@@ -43,9 +43,12 @@ public class RunDay24 {
 
     public static int problem24B(String pathToInputs) {
         /*
-        Problem description
+        How many units does the immune system have left after getting the smallest boost it needs to win?
         */
         System.out.println("=== DAY 24B ===");
+
+        // Reload the battle to revive all the units.
+        battle = new Battle(pathToInputs);
 
         return 0;
     }
