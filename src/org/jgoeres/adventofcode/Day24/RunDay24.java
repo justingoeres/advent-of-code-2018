@@ -2,6 +2,8 @@ package org.jgoeres.adventofcode.Day24;
 
 import java.util.TreeSet;
 
+import static org.jgoeres.adventofcode.Day24.GroupType.IMMUNE;
+
 public class RunDay24 {
     static final String DEFAULT_PATH_TO_INPUTS = "day24/input.txt";
 
@@ -50,7 +52,29 @@ public class RunDay24 {
         // Reload the battle to revive all the units.
         battle = new Battle(pathToInputs);
 
-        return 0;
+        int boost = 1;  //  boost per cycle
+        while (true) { // Run forever, break below.
+            // Reload the battle to revive all the units.
+            battle = new Battle(pathToInputs);
+
+            battle.boostImmune(boost);
+
+            TreeSet<Group> winner = null;
+            while (winner == null) {
+                winner = battle.doTimerTick();
+            }
+
+            int result = battle.totalUnitCount(winner);
+            String winnerName = winner.first().type.toString();
+
+            System.out.println("Boost " + boost + ":\t" + winnerName + " wins with a total of " + result + " units remaining.");
+            if (winner.first().type == IMMUNE) {
+                break;  // Stop if IMMUNE wins
+            } else {
+                boost++;    // Increment boost and continue
+            }
+        }
+        return boost;
     }
 
 }

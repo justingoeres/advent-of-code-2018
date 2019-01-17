@@ -78,6 +78,10 @@ public class Group {
         return (unitCount <= 0);
     }
 
+    public void boost(int boost) {
+        this.attackPower += boost;
+    }
+
     private int calculateEffectivePower() {
         // Each group also has an effective power:
         // the number of units in that group multiplied by their attack damage.

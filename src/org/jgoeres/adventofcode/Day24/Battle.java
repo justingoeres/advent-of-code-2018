@@ -279,6 +279,13 @@ public class Battle {
         return totalUnitCount;
     }
 
+    public void boostImmune(int boost) {
+        // Boost the attack power of all the immuneSystem groups.
+        for (Group immuneGroup : immuneSystem) {
+            immuneGroup.boost(boost);
+        }
+    }
+
     private static String attackTypeMatchString() {
         String matchString = "(";
         boolean first = true;
