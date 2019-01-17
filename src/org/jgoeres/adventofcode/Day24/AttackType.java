@@ -7,13 +7,22 @@ public enum AttackType {
     RADIATION("radiation"),
     SLASHING("slashing");
 
-    public String asString() {
-        return asString();
-    }
-
     private final String asString;
 
     AttackType(String asString) {
         this.asString = asString;
+    }
+
+    public String asString() {
+        return this.asString;
+    }
+
+    public static AttackType fromString(String text) {
+        for (AttackType b : AttackType.values()) {
+            if (b.asString.equalsIgnoreCase(text)) {
+                return b;
+            }
+        }
+        return null;
     }
 }

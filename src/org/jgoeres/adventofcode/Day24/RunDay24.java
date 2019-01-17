@@ -6,6 +6,7 @@ public class RunDay24 {
     static final boolean DEBUG_PART_A_PRINT_PROGRESS = false;
     static final boolean DEBUG_PART_B_PRINT_PROGRESS = false;
 
+    static Battle battle;
 
     public static void problem24A() {
         problem24A(DEFAULT_PATH_TO_INPUTS);
@@ -16,6 +17,8 @@ public class RunDay24 {
         Problem description
         */
         System.out.println("=== DAY 24A ===");
+
+        battle = new Battle(pathToInputs);
 
         return 0;
     }
@@ -32,5 +35,5 @@ public class RunDay24 {
 
         return 0;
     }
-        
+
 }
