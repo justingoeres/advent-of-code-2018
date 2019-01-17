@@ -80,6 +80,7 @@ public class Group {
 
     public void boost(int boost) {
         this.attackPower += boost;
+        this.effectivePower = calculateEffectivePower();    // Update the group's effective power after a boost.
     }
 
     private int calculateEffectivePower() {

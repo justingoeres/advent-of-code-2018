@@ -52,29 +52,58 @@ public class RunDay24 {
         // Reload the battle to revive all the units.
         battle = new Battle(pathToInputs);
 
-        int boost = 1;  //  boost per cycle
+        int boost = 39;  //  boost per cycle
         while (true) { // Run forever, break below.
             // Reload the battle to revive all the units.
             battle = new Battle(pathToInputs);
 
             battle.boostImmune(boost);
 
+            int prevTotalArmies = battle.totalAllArmies();
+            int totalArmies = 0;
             TreeSet<Group> winner = null;
+            int round = 1;
+            System.out.println("\n=========== BOOST " + boost + "===========");
             while (winner == null) {
                 winner = battle.doTimerTick();
+
+//                System.out.println("Round " + round
+//                        + ":\tImmune:\t" + battle.totalUnitCount(battle.immuneSystem)
+//                        + "\tInfection:\t" + battle.totalUnitCount(battle.infection));
+                round++;
+                // Are we in a stalemate?
+                totalArmies = battle.totalAllArmies();
+                if (totalArmies != prevTotalArmies) {
+                    // no. continue.
+                    prevTotalArmies = totalArmies;
+                } else {
+                    // yes. stop and try the next boost.
+                    break;
+                }
+
             }
 
-            int result = battle.totalUnitCount(winner);
-            String winnerName = winner.first().type.toString();
+            if (winner != null) {
+                // If there's a winner, check if it was IMMUNE.
+                int result = battle.totalUnitCount(winner);
+                String winnerName = winner.first().type.toString();
 
-            System.out.println("Boost " + boost + ":\t" + winnerName + " wins with a total of " + result + " units remaining.");
-            if (winner.first().type == IMMUNE) {
-                break;  // Stop if IMMUNE wins
+                System.out.println("Boost " + boost + ":\t" + winnerName + " wins with a total of " + result + " units remaining. (" + round + " rounds)");
+                if (winner.first().type == IMMUNE) {
+                    ;
+                    return result;  // Stop if IMMUNE wins
+                }
             } else {
-                boost++;    // Increment boost and continue
+                // Otherwise, it was a tie.
+                System.out.println("Boost " + boost + ":\t" + "Result is a stalemate with " + totalArmies + " units remaining. (" + round + " rounds)");
+                ;
             }
-        }
-        return boost;
-    }
+            boost++;    // Increment boost and continue
 
+            // Answer:
+            //  4964 (too low)
+            //  5099 (too low)
+            //  5892 (wrong; boost 40)
+        }
+    }
 }

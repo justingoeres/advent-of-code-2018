@@ -279,6 +279,10 @@ public class Battle {
         return totalUnitCount;
     }
 
+    public int totalAllArmies() {
+        return totalUnitCount(immuneSystem) + totalUnitCount(infection);
+    }
+
     public void boostImmune(int boost) {
         // Boost the attack power of all the immuneSystem groups.
         for (Group immuneGroup : immuneSystem) {
