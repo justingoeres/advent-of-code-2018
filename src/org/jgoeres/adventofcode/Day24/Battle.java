@@ -19,7 +19,7 @@ public class Battle {
 
     TreeMap<Group, Group> attackPairs = new TreeMap<>(new InitiativeComparator());
 
-    final boolean DEBUG_PRINT_PROGRESS = true;
+    final boolean DEBUG_PRINT_PROGRESS = false;
 
     public Battle(String pathToFile) {
         loadBattle(pathToFile);
@@ -158,7 +158,8 @@ public class Battle {
                 // Find who would get the most damage
                 int damage = group.calculateDamage(enemyGroup);
 
-                if (damage == 0) continue;  // If this group can't damage this enemy, there won't be any target selection anyway.
+                if (damage == 0)
+                    continue;  // If this group can't damage this enemy, there won't be any target selection anyway.
                 if (DEBUG_PRINT_PROGRESS && damage > 0) {
                     // Print details of the proposed attack.
                     System.out.println(group.type + " group " + group.number + " would deal defending group " +
@@ -236,14 +237,18 @@ public class Battle {
         }
 
         // Clean up the dead by removing them from the unit lists.
-        for (Group deadGroup : allUnits) {
-            // Find the dead guys in allUnits, but remove them from each army.
-            if (deadGroup.isDead()) {
-                switch (deadGroup.type) {
+        immuneSystem.clear();
+        infection.clear();
+        for (Group group : allUnits) {
+            // Rebuild the unit lists
+            if (!group.isDead()) {
+                switch (group.type) {
                     case IMMUNE:
-                        immuneSystem.remove(deadGroup);
+                        immuneSystem.add(group);
+                        break;
                     case INFECTION:
-                        infection.remove(deadGroup);
+                        infection.add(group);
+                        break;
                 }
             }
         }

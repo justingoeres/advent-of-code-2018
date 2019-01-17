@@ -13,4 +13,12 @@ public class Day24Test {
         int result = RunDay24.problem24A(pathToInputs);
         assertEquals("Outcome is " + result, expectedResult, result);
     }
+
+    @Test
+    public void testJustin24A() {
+        String pathToInputs = "day24/input.txt";
+        int expectedResult = 10723;   // Bots in range of strongest signal nanobot
+        int result = RunDay24.problem24A(pathToInputs);
+        assertEquals("Outcome is " + result, expectedResult, result);
+    }
 }

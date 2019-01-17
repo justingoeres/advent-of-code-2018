@@ -34,7 +34,7 @@ public class RunDay24 {
         return result;
 
         // Answer:
-        // 15186 (too high)
+        // INFECTION wins with a total of 10723 units remaining.
     }
 
     public static void problem24B() {
