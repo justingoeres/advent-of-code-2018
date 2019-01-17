@@ -19,6 +19,8 @@ public class Battle {
 
     TreeMap<Group, Group> attackPairs = new TreeMap<>(new InitiativeComparator());
 
+    final boolean DEBUG_PRINT_PROGRESS = true;
+
     public Battle(String pathToFile) {
         loadBattle(pathToFile);
     }
@@ -39,13 +41,14 @@ public class Battle {
         Group currentGroup = null;
         try (BufferedReader br = new BufferedReader(new FileReader(pathToFile))) {
             String line;
+            int groupNum = 1;
             while ((line = br.readLine()) != null) {    // Keep reading until the end of the file.
                 Matcher mGroupType = Pattern.compile("^(Immune|Infection).*").matcher(line);
 
                 // See if this is the header for "Immune" or "Infection"
                 if (mGroupType.find()) {
                     currentGroupType = (mGroupType.group(1).equals("Immune") ? IMMUNE : INFECTION);
-                    System.out.println("Found group:\t" + currentGroup);
+                    groupNum = 1;   // Reset the group number
                     continue;   // Loop immediately, there's nothing else on this line
                 }
 
@@ -56,14 +59,13 @@ public class Battle {
                             Integer.parseInt(mUnitStats.group(1)),  // unit count
                             Integer.parseInt(mUnitStats.group(2)),  // hit points
                             Integer.parseInt(mUnitStats.group(3)),  // attack power
-                            Integer.parseInt(mUnitStats.group(4))); // initiative
-                    System.out.println("Found group:\t" + currentGroup);
+                            Integer.parseInt(mUnitStats.group(4)),  // initiative
+                            groupNum); // group number
 
                     // Continue parsing the attack/immunity/weakness info
                     Matcher mImmunitiesAndWeaknesses = Pattern.compile(".*\\((.*)\\).*").matcher(line);
                     if (mImmunitiesAndWeaknesses.find()) {
                         String immunitiesAndWeaknesses = mImmunitiesAndWeaknesses.group(1);
-                        System.out.println(mImmunitiesAndWeaknesses.group(1));  // e.g. "immune to cold; weak to bludgeoning"
 
                         // Find each type of thing – immunities, and weaknesses
                         String[] parts = immunitiesAndWeaknesses.split(";");
@@ -102,6 +104,7 @@ public class Battle {
                     }
                     // Also add it to the "all units" list
                     allUnits.add(currentGroup);
+                    groupNum++; // increment the group number.
                 }
             }
         } catch (Exception e) {
@@ -117,6 +120,26 @@ public class Battle {
         // During the target selection phase, each group attempts to choose one target.
         // In decreasing order of effective power, groups choose their targets; 
         // in a tie, the group with the higher initiative chooses first.
+
+        if (DEBUG_PRINT_PROGRESS) {
+            // Print group status for each army.
+            int i = 1;
+            System.out.println("Immune System:");
+            for (Group group : immuneSystem) {
+                System.out.println("Group " + group.number + " contains " + group.unitCount + " units");
+                i++;
+            }
+            i = 1;
+            System.out.println("Infection:");
+            for (Group group : infection) {
+                System.out.println("Group " + group.number + " contains " + group.unitCount + " units");
+                i++;
+            }
+            System.out.println();   // blank line
+        }
+
+        attackPairs.clear();    // Clear the attackPairs set because we start over every turn.
+
         for (Group group : allUnits) {
             // Process every group in priority (TreeSet) order.
 
@@ -134,20 +157,49 @@ public class Battle {
             for (Group enemyGroup : enemyUnits) {
                 // Find who would get the most damage
                 int damage = group.calculateDamage(enemyGroup);
+
+                if (damage == 0) continue;  // If this group can't damage this enemy, there won't be any target selection anyway.
+                if (DEBUG_PRINT_PROGRESS && damage > 0) {
+                    // Print details of the proposed attack.
+                    System.out.println(group.type + " group " + group.number + " would deal defending group " +
+//                            candidateEnemy.number + " " + maxDamage + " damage");
+                            enemyGroup.number + " " + damage + " damage");
+
+                }
+
                 if ((damage > maxDamage) // If we'd do the most damage to this enemy
-                        && (!attackPairs.containsValue(candidateEnemy)))   // AND if no one else is already attacking this enemy.
+                        && (!attackPairs.containsValue(enemyGroup)))   // AND if no one else is already attacking this enemy.
                 {
                     // If this is the most damage we've found
                     maxDamage = damage;
-                    candidateEnemy = enemyGroup;
-                }   // Don't need to check ties on maxDamage because we sort on initiative.
+                    candidateEnemy = enemyGroup;    // Keep track of this enemy, it's the best candidate so far
+                } else if (damage == maxDamage) { // If we have a tie
+                    // If an attacking group is considering two defending groups to which it would deal equal damage,
+                    // it chooses to target the defending group with the largest effective power;
+                    // if there is still a tie, it chooses the defending group with the highest initiative.
+                    if (enemyGroup.effectivePower > candidateEnemy.effectivePower) {
+                        // Choose the enemy with the larger effective power.
+                        maxDamage = damage;
+                        candidateEnemy = enemyGroup;    // Keep track of this enemy, it's the best candidate so far
+                    } else if (enemyGroup.effectivePower == candidateEnemy.effectivePower) {
+                        // If there's still a tie
+                        if (enemyGroup.initiative > candidateEnemy.initiative) {
+                            // Take the enemy with the larger initiative
+                            maxDamage = damage;
+                            candidateEnemy = enemyGroup;    // Keep track of this enemy, it's the best candidate so far
+                        }
+                    }
+                }
             }
 
             // If we found an available candidateEnemy, claim it
             if (candidateEnemy != null) {
                 attackPairs.put(group, candidateEnemy);
+
             }
         }
+        if (DEBUG_PRINT_PROGRESS) System.out.println();   // blank line
+
         // When we arrive here, everybody has a target to attack (or they've chosen not to attack)
 
 
@@ -170,8 +222,17 @@ public class Battle {
                 // not immediately kill it is ignored. For example, if a defending group contains 10 units
                 // with 10 hit points each and receives 75 damage, it loses exactly 7 units and is left with
                 // 3 units at full health.
-                defender.takeDamage(damageDealt);
+                int numberKilled = defender.takeDamage(damageDealt);
+                if (DEBUG_PRINT_PROGRESS) {
+                    System.out.println(attacker.type + " group " + attacker.number + " attacks defending group "
+                            + defender.number + ", killing " + numberKilled + " units");
+                }
             }
+        }
+
+        if (DEBUG_PRINT_PROGRESS) {
+            System.out.println();   // A couple linefeeds when we're done.
+            System.out.println();   // A couple linefeeds when we're done.
         }
 
         // Clean up the dead by removing them from the unit lists.

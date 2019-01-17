@@ -32,6 +32,9 @@ public class RunDay24 {
 
         System.out.println(winnerName + " wins with a total of " + result + " units remaining.");
         return result;
+
+        // Answer:
+        // 15186 (too high)
     }
 
     public static void problem24B() {
