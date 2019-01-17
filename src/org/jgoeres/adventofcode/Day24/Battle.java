@@ -2,9 +2,7 @@ package org.jgoeres.adventofcode.Day24;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Scanner;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -12,8 +10,10 @@ import static org.jgoeres.adventofcode.Day24.GroupType.IMMUNE;
 import static org.jgoeres.adventofcode.Day24.GroupType.INFECTION;
 
 public class Battle {
-    ArrayList<Group> immuneSystem = new ArrayList<>();
-    ArrayList<Group> infection = new ArrayList<>();
+    TreeSet<Group> immuneSystem = new TreeSet<>(new GroupComparator());
+    TreeSet<Group> infection = new TreeSet<>(new GroupComparator());
+
+    TreeSet<Group> allUnits = new TreeSet<>(new GroupComparator());
 
     public Battle(String pathToFile) {
         loadBattle(pathToFile);
@@ -96,14 +96,50 @@ public class Battle {
                     } else {
                         infection.add(currentGroup);
                     }
+                    // Also add it to the "all units" list
+                    allUnits.add(currentGroup);
                 }
-                System.out.println("Done!");
-
             }
         } catch (Exception e) {
             System.out.println("Exception occurred: " + e.getMessage());
         }
 
+    }
+
+    public boolean doTimerTick() {
+        boolean done = false;
+
+        // Phase 1: Target selection
+
+        // During the target selection phase, each group attempts to choose one target. 
+        // In decreasing order of effective power, groups choose their targets; 
+        // in a tie, the group with the higher initiative chooses first.
+        for (Group group : allUnits) {
+            // Process every group in priority (TreeSet) order.
+
+            // The attacking group chooses to target the group in the enemy army to
+            // which it would deal the most damage (after accounting for weaknesses and immunities,
+            // but not accounting for whether the defending group has enough units
+            // to actually receive all of that damage)
+
+            // Get the enemies list based on this group's type.
+            TreeSet<Group> enemyUnits = ((group.type == IMMUNE) ? infection : immuneSystem);
+
+            // Evaluate all enemies to see who we should attack.
+            int maxDamage = Integer.MIN_VALUE;
+            Group candidateEnemy = null;
+            for (Group enemyGroup : enemyUnits) {
+                // Find who would get the most damage
+
+            }
+
+        }
+
+
+        // Phase 2: Attacking
+
+
+        return done;
     }
 
     private static String attackTypeMatchString() {
