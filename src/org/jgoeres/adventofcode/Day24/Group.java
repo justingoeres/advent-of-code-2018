@@ -55,6 +55,23 @@ public class Group {
         return damage;
     }
 
+    public void takeDamage(int damageDealt) {
+        // The defending group only loses whole units from damage; damage is always dealt in such a
+        // way that it kills the most units possible, and any remaining damage to a unit that does
+        // not immediately kill it is ignored. For example, if a defending group contains 10 units
+        // with 10 hit points each and receives 75 damage, it loses exactly 7 units and is left with
+        // 3 units at full health.
+
+        int unitsToLose = damageDealt / hitPoints;  // whole number of total units killed by this damage.
+
+        unitCount -= unitsToLose;   // Kill the units
+    }
+
+    public boolean isDead() {
+        // Group is dead if they have zero or fewer units.
+        return (unitCount <= 0);
+    }
+
     private int calculateEffectivePower() {
         // Each group also has an effective power:
         // the number of units in that group multiplied by their attack damage.

@@ -1,5 +1,7 @@
 package org.jgoeres.adventofcode.Day24;
 
+import java.util.TreeSet;
+
 public class RunDay24 {
     static final String DEFAULT_PATH_TO_INPUTS = "day24/input.txt";
 
@@ -20,7 +22,16 @@ public class RunDay24 {
 
         battle = new Battle(pathToInputs);
 
-        return 0;
+        TreeSet<Group> winner = null;
+        while (winner == null) {
+            winner = battle.doTimerTick();
+        }
+
+        int result = battle.totalUnitCount(winner);
+        String winnerName = winner.first().type.toString();
+
+        System.out.println(winnerName + " wins with a total of " + result + " units remaining.");
+        return result;
     }
 
     public static void problem24B() {

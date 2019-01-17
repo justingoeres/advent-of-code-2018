@@ -2,6 +2,8 @@ package org.jgoeres.adventofcode.Day24;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -14,6 +16,8 @@ public class Battle {
     TreeSet<Group> infection = new TreeSet<>(new GroupComparator());
 
     TreeSet<Group> allUnits = new TreeSet<>(new GroupComparator());
+
+    TreeMap<Group, Group> attackPairs = new TreeMap<>(new InitiativeComparator());
 
     public Battle(String pathToFile) {
         loadBattle(pathToFile);
@@ -106,12 +110,11 @@ public class Battle {
 
     }
 
-    public boolean doTimerTick() {
-        boolean done = false;
+    public TreeSet<Group> doTimerTick() {
 
-        // Phase 1: Target selection
+        ///////////////// Phase 1: Target selection /////////////////////////////////////////////
 
-        // During the target selection phase, each group attempts to choose one target. 
+        // During the target selection phase, each group attempts to choose one target.
         // In decreasing order of effective power, groups choose their targets; 
         // in a tie, the group with the higher initiative chooses first.
         for (Group group : allUnits) {
@@ -126,20 +129,88 @@ public class Battle {
             TreeSet<Group> enemyUnits = ((group.type == IMMUNE) ? infection : immuneSystem);
 
             // Evaluate all enemies to see who we should attack.
-            int maxDamage = Integer.MIN_VALUE;
+            int maxDamage = 0;
             Group candidateEnemy = null;
             for (Group enemyGroup : enemyUnits) {
                 // Find who would get the most damage
-
+                int damage = group.calculateDamage(enemyGroup);
+                if ((damage > maxDamage) // If we'd do the most damage to this enemy
+                        && (!attackPairs.containsValue(candidateEnemy)))   // AND if no one else is already attacking this enemy.
+                {
+                    // If this is the most damage we've found
+                    maxDamage = damage;
+                    candidateEnemy = enemyGroup;
+                }   // Don't need to check ties on maxDamage because we sort on initiative.
             }
 
+            // If we found an available candidateEnemy, claim it
+            if (candidateEnemy != null) {
+                attackPairs.put(group, candidateEnemy);
+            }
+        }
+        // When we arrive here, everybody has a target to attack (or they've chosen not to attack)
+
+
+        ///////////////// Phase 2: Attacking ////////////////////////////////////////////////////////////
+
+        // During the attacking phase, each group deals damage to the target it selected, if any.
+        // Groups attack in decreasing order of initiative, regardless of whether they are part of
+        // the infection or the immune system. (If a group contains no units, it cannot attack.)
+
+        for (Map.Entry<Group, Group> attackPair : attackPairs.entrySet()) {
+            Group attacker = attackPair.getKey();
+            Group defender = attackPair.getValue();
+
+            if (!attacker.isDead()) {   // Only living units get to attack
+                // Calculate the damage to be done.
+                int damageDealt = attacker.calculateDamage(defender);
+
+                // The defending group only loses whole units from damage; damage is always dealt in such a
+                // way that it kills the most units possible, and any remaining damage to a unit that does
+                // not immediately kill it is ignored. For example, if a defending group contains 10 units
+                // with 10 hit points each and receives 75 damage, it loses exactly 7 units and is left with
+                // 3 units at full health.
+                defender.takeDamage(damageDealt);
+            }
         }
 
+        // Clean up the dead by removing them from the unit lists.
+        for (Group deadGroup : allUnits) {
+            // Find the dead guys in allUnits, but remove them from each army.
+            if (deadGroup.isDead()) {
+                switch (deadGroup.type) {
+                    case IMMUNE:
+                        immuneSystem.remove(deadGroup);
+                    case INFECTION:
+                        infection.remove(deadGroup);
+                }
+            }
+        }
 
-        // Phase 2: Attacking
+        // Is either army completely dead?
+        if (immuneSystem.size() == 0) return infection; // Infection wins!
 
+        if (infection.size() == 0) return immuneSystem; // Infection wins!
 
-        return done;
+        // Everybody still has somebody living, so continue the fight.
+        // Now having cleaned up the individual armies, rebuild the allUnits list from the living.
+        allUnits.clear();
+        for (Group liveGroup : immuneSystem) {
+            allUnits.add(liveGroup);
+        }
+        for (Group liveGroup : infection) {
+            allUnits.add(liveGroup);
+        }
+
+        return null;    // No winner yet.
+    }
+
+    public int totalUnitCount(TreeSet<Group> groups) {
+        int totalUnitCount = 0;
+        for (Group group : groups) {
+            totalUnitCount += group.unitCount;
+        }
+        return totalUnitCount;
     }
 
     private static String attackTypeMatchString() {
