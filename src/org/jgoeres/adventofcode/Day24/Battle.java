@@ -155,39 +155,48 @@ public class Battle {
             int maxDamage = 0;
             Group candidateEnemy = null;
             for (Group enemyGroup : enemyUnits) {
-                // Find who would get the most damage
-                int damage = group.calculateDamage(enemyGroup);
 
-                if (damage == 0)
-                    continue;  // If this group can't damage this enemy, there won't be any target selection anyway.
-                if (DEBUG_PRINT_PROGRESS && damage > 0) {
-                    // Print details of the proposed attack.
-                    System.out.println(group.type + " group " + group.number + " would deal defending group " +
+                if (!attackPairs.containsValue(enemyGroup)) { // If no one else is already attacking this enemy.
+                    // Find who would get the most damage
+                    int damage = group.calculateDamage(enemyGroup);
+
+                    if (damage == 0) {
+//                    if (DEBUG_PRINT_PROGRESS) {
+//                        System.out.println(group.type + " group " + group.number + " cannot attack group " +
+//                                //                            candidateEnemy.number + " " + maxDamage + " damage");
+//                                enemyGroup.number + " due to immunity to " + group.attackType);
+//                    }
+
+                        continue;  // If this group can't damage this enemy, there won't be any target selection anyway.
+                    }
+                    if (DEBUG_PRINT_PROGRESS && damage > 0) {
+                        // Print details of the proposed attack.
+                        System.out.println(group.type + " group " + group.number + " would deal defending group " +
 //                            candidateEnemy.number + " " + maxDamage + " damage");
-                            enemyGroup.number + " " + damage + " damage");
+                                enemyGroup.number + " " + damage + " damage");
 
-                }
-
-                if ((damage > maxDamage) // If we'd do the most damage to this enemy
-                        && (!attackPairs.containsValue(enemyGroup)))   // AND if no one else is already attacking this enemy.
-                {
-                    // If this is the most damage we've found
-                    maxDamage = damage;
-                    candidateEnemy = enemyGroup;    // Keep track of this enemy, it's the best candidate so far
-                } else if (damage == maxDamage) { // If we have a tie
-                    // If an attacking group is considering two defending groups to which it would deal equal damage,
-                    // it chooses to target the defending group with the largest effective power;
-                    // if there is still a tie, it chooses the defending group with the highest initiative.
-                    if (enemyGroup.effectivePower > candidateEnemy.effectivePower) {
-                        // Choose the enemy with the larger effective power.
+                    }
+                    if (damage > maxDamage) // If we'd do the most damage to this enemy
+//                        && (!attackPairs.containsValue(enemyGroup)))   // AND if no one else is already attacking this enemy.
+                    {
+                        // If this is the most damage we've found
                         maxDamage = damage;
                         candidateEnemy = enemyGroup;    // Keep track of this enemy, it's the best candidate so far
-                    } else if (enemyGroup.effectivePower == candidateEnemy.effectivePower) {
-                        // If there's still a tie
-                        if (enemyGroup.initiative > candidateEnemy.initiative) {
-                            // Take the enemy with the larger initiative
+                    } else if (damage == maxDamage) { // If we have a tie
+                        // If an attacking group is considering two defending groups to which it would deal equal damage,
+                        // it chooses to target the defending group with the largest effective power;
+                        // if there is still a tie, it chooses the defending group with the highest initiative.
+                        if (enemyGroup.effectivePower > candidateEnemy.effectivePower) {
+                            // Choose the enemy with the larger effective power.
                             maxDamage = damage;
                             candidateEnemy = enemyGroup;    // Keep track of this enemy, it's the best candidate so far
+                        } else if (enemyGroup.effectivePower == candidateEnemy.effectivePower) {
+                            // If there's still a tie
+                            if (enemyGroup.initiative > candidateEnemy.initiative) {
+                                // Take the enemy with the larger initiative
+                                maxDamage = damage;
+                                candidateEnemy = enemyGroup;    // Keep track of this enemy, it's the best candidate so far
+                            }
                         }
                     }
                 }
@@ -210,9 +219,17 @@ public class Battle {
         // Groups attack in decreasing order of initiative, regardless of whether they are part of
         // the infection or the immune system. (If a group contains no units, it cannot attack.)
 
+        // Clean the attackPair list; remove any attacks that would not damage the defender
+
+
+        boolean hasImmuneAttacker = false;
+        boolean hasInfectionAttacker = false;
         for (Map.Entry<Group, Group> attackPair : attackPairs.entrySet()) {
             Group attacker = attackPair.getKey();
             Group defender = attackPair.getValue();
+
+            hasImmuneAttacker |= attacker.type.equals(IMMUNE);
+            hasInfectionAttacker |= attacker.type.equals(INFECTION);
 
             if (!attacker.isDead()) {   // Only living units get to attack
                 // Calculate the damage to be done.
@@ -229,6 +246,13 @@ public class Battle {
                             + defender.number + ", killing " + numberKilled + " units");
                 }
             }
+        }
+
+        if (!hasImmuneAttacker) {
+            System.out.println("NO IMMUNE ATTACKERS");
+        }
+        if (!hasInfectionAttacker) {
+            System.out.println("NO INFECTION ATTACKERS");
         }
 
         if (DEBUG_PRINT_PROGRESS) {
