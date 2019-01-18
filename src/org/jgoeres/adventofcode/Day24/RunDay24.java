@@ -52,7 +52,7 @@ public class RunDay24 {
         // Reload the battle to revive all the units.
         battle = new Battle(pathToInputs);
 
-        int boost = 39;  //  boost per cycle
+        int boost = 1;  //  boost per cycle
         while (true) { // Run forever, break below.
             // Reload the battle to revive all the units.
             battle = new Battle(pathToInputs);
@@ -60,6 +60,7 @@ public class RunDay24 {
             battle.boostImmune(boost);
 
             int prevTotalArmies = battle.totalAllArmies();
+            int stalemateCounter = 0;
             int totalArmies = 0;
             TreeSet<Group> winner = null;
             int round = 1;
@@ -67,7 +68,7 @@ public class RunDay24 {
             while (winner == null) {
                 winner = battle.doTimerTick();
 
-//                System.out.println("Round " + round
+//                System.out.println("End of Round " + round
 //                        + ":\tImmune:\t" + battle.totalUnitCount(battle.immuneSystem)
 //                        + "\tInfection:\t" + battle.totalUnitCount(battle.infection));
                 round++;
@@ -76,9 +77,15 @@ public class RunDay24 {
                 if (totalArmies != prevTotalArmies) {
                     // no. continue.
                     prevTotalArmies = totalArmies;
+                    stalemateCounter = 0;
                 } else {
                     // yes. stop and try the next boost.
-                    break;
+                    if (stalemateCounter > 0) {
+                        // But only quit if we've had 5 straight rounds of stalemate.
+                        break;
+                    } else {
+                        stalemateCounter++;
+                    }
                 }
 
             }
@@ -90,7 +97,6 @@ public class RunDay24 {
 
                 System.out.println("Boost " + boost + ":\t" + winnerName + " wins with a total of " + result + " units remaining. (" + round + " rounds)");
                 if (winner.first().type == IMMUNE) {
-                    ;
                     return result;  // Stop if IMMUNE wins
                 }
             } else {
@@ -102,8 +108,10 @@ public class RunDay24 {
 
             // Answer:
             //  4964 (too low)
-            //  5099 (too low)
+            //  5072 (wrong; boost 39 after fix)
+            //  5099 (too low; boost 39)
             //  5892 (wrong; boost 40)
+            //  8989    (boost 45)
         }
     }
 }

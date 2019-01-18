@@ -55,6 +55,13 @@ public class Group {
         }
 
         return damage;
+        // Would this be enough damage to actually kill anyone?
+//        if ((damage / defendingGroup.hitPoints) == 0) {
+//            // Not enough power to kill anybody, so return 0 (and thereby don't attack)
+//            return 0;
+//        } else {
+//            return damage;
+//        }
     }
 
     public int takeDamage(int damageDealt) {
@@ -71,6 +78,10 @@ public class Group {
         this.effectivePower = calculateEffectivePower();  // Update the group's effective power after taking damage
 
         return unitsToLose; // return number killed
+    }
+
+    public boolean canHurtEnemy(Group enemy) {
+        return ((this.effectivePower / enemy.hitPoints) > 0);   // Can only hurt the enemy if we can kill at least one unit.
     }
 
     public boolean isDead() {

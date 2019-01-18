@@ -29,4 +29,13 @@ public class Day24Test {
         int result = RunDay24.problem24B(pathToInputs);
         assertEquals("Outcome is " + result, expectedResult, result);
     }
+
+//    @Test
+//    public void testExample224B() {
+//        String pathToInputs = "day24/example2.txt";
+//        int expectedResult = 51;   // Bots in range of strongest signal nanobot
+//        int result = RunDay24.problem24B(pathToInputs);
+//        assertEquals("Outcome is " + result, expectedResult, result);
+//    }
+
 }
