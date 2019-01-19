@@ -24,6 +24,7 @@ import org.jgoeres.adventofcode.Day21.RunDay21;
 import org.jgoeres.adventofcode.Day22.RunDay22;
 import org.jgoeres.adventofcode.Day23.RunDay23;
 import org.jgoeres.adventofcode.Day24.RunDay24;
+import org.jgoeres.adventofcode.Day25.RunDay25;
 
 public class Main {
 
@@ -52,7 +53,8 @@ public class Main {
     static final boolean RUN_DAY_21 = false;
     static final boolean RUN_DAY_22 = false;
     static final boolean RUN_DAY_23 = false;
-    static final boolean RUN_DAY_24 = true;
+    static final boolean RUN_DAY_24 = false;
+    static final boolean RUN_DAY_25 = true;
 
     private static long startTime = 0L;
 
@@ -405,13 +407,27 @@ public class Main {
 
         if (RUN_DAY_24 || RUN_ALL) {
             setStartTime();
-//            RunDay24.problem24A();
+            RunDay24.problem24A();
             printElapsedTime();
 
             blankLine();
 
             setStartTime();
             RunDay24.problem24B();
+            printElapsedTime();
+
+            blankLine();
+        }
+
+        if (RUN_DAY_25 || RUN_ALL) {
+            setStartTime();
+            RunDay25.problem25A();
+            printElapsedTime();
+
+            blankLine();
+
+            setStartTime();
+            RunDay25.problem25B();
             printElapsedTime();
 
             blankLine();
