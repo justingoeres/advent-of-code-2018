@@ -121,29 +121,38 @@ public class Battle {
         // In decreasing order of effective power, groups choose their targets; 
         // in a tie, the group with the higher initiative chooses first.
 
+
         if (DEBUG_PRINT_PROGRESS) {
-            // Print group status for each army.
-            int i = 1;
-            System.out.println("Immune System:");
-            for (Group group : immuneSystem) {
-                System.out.println("Group " + group.number + " contains " + group.unitCount + " units");
-                i++;
+            System.out.println("\tImmune System:");
+            for (int i = 1; i <= 10; i++) {
+                for (Group group : immuneSystem) {
+                    if (group.number == i) {
+                        System.out.println("\t\tUnit Immune" + group.number + " contains " + group.unitCount + " units with " + group.hitPoints + " HP.");
+                        break;
+                    }
+                }
+
             }
-            i = 1;
-            System.out.println("Infection:");
-            for (Group group : infection) {
-                System.out.println("Group " + group.number + " contains " + group.unitCount + " units");
-                i++;
+            System.out.println("\tInfection:");
+            for (int i = 1; i <= 10; i++) {
+                for (Group group : infection) {
+                    if (group.number == i) {
+                        System.out.println("\t\tUnit Infection" + group.number + " contains " + group.unitCount + " units with " + group.hitPoints + " HP.");
+                        break;
+                    }
+                }
             }
-            System.out.println();   // blank line
+            System.out.println();   // A couple linefeeds when we're done.
         }
 
         attackPairs.clear();    // Clear the attackPairs set because we start over every turn.
 
-        System.out.println("\n=== TARGET SELECTION ===\nArmy\t\t#\tEffPow\tInit");
-        for (Group group : allUnits) {
-            String groupType = (group.type == IMMUNE ? IMMUNE + "\t" : INFECTION.toString());
-            System.out.println(groupType + "\t" + group.number + "\t" + group.effectivePower + "\t" + group.initiative);
+        if (DEBUG_PRINT_PROGRESS) {
+            System.out.println("\n=== TARGET SELECTION ===\nArmy\t\t#\tEffPow\tInit");
+            for (Group group : allUnits) {
+                String groupType = (group.type == IMMUNE ? IMMUNE + "\t" : INFECTION.toString());
+                System.out.println(groupType + "\t" + group.number + "\t" + group.effectivePower + "\t" + group.initiative);
+            }
         }
 
         for (Group group : allUnits) {
@@ -167,12 +176,6 @@ public class Battle {
                     int damage = group.calculateDamage(enemyGroup);
 
                     if (damage == 0) {
-//                    if (DEBUG_PRINT_PROGRESS) {
-//                        System.out.println(group.type + " group " + group.number + " cannot attack group " +
-//                                //                            candidateEnemy.number + " " + maxDamage + " damage");
-//                                enemyGroup.number + " due to immunity to " + group.attackType);
-//                    }
-
                         continue;  // If this group can't damage this enemy, there won't be any target selection anyway.
                     }
                     if (DEBUG_PRINT_PROGRESS && damage > 0) {
@@ -218,33 +221,15 @@ public class Battle {
 
         // When we arrive here, everybody has a target to attack (or they've chosen not to attack)
 
-
         ///////////////// Phase 2: Attacking ////////////////////////////////////////////////////////////
 
         // During the attacking phase, each group deals damage to the target it selected, if any.
         // Groups attack in decreasing order of initiative, regardless of whether they are part of
         // the infection or the immune system. (If a group contains no units, it cannot attack.)
 
-        // Clean the attackPair list; remove any attacks that would not damage the defender
-        System.out.println("\n=== ATTACKING ===\nAttacker\t#\tEffPow\tInit\tDefender\t#\tEffPow\tInit");
         for (Map.Entry<Group, Group> attackPair : attackPairs.entrySet()) {
             Group attacker = attackPair.getKey();
             Group defender = attackPair.getValue();
-            String attackerType = (attacker.type == IMMUNE ? IMMUNE + "\t" : INFECTION.toString());
-            String defenderType = (defender.type == IMMUNE ? IMMUNE + "\t" : INFECTION.toString());
-            System.out.println(attackerType + "\t" + attacker.number + "\t" + attacker.effectivePower + "\t" + attacker.initiative+
-                    "\t\t"+defenderType + "\t" + defender.number + "\t" + defender.effectivePower + "\t" + defender.initiative);
-        }
-
-
-        boolean hasImmuneAttacker = false;
-        boolean hasInfectionAttacker = false;
-        for (Map.Entry<Group, Group> attackPair : attackPairs.entrySet()) {
-            Group attacker = attackPair.getKey();
-            Group defender = attackPair.getValue();
-
-            hasImmuneAttacker |= attacker.type.equals(IMMUNE);
-            hasInfectionAttacker |= attacker.type.equals(INFECTION);
 
             if (!attacker.isDead()) {   // Only living units get to attack
                 // Calculate the damage to be done.
@@ -255,20 +240,14 @@ public class Battle {
                 // not immediately kill it is ignored. For example, if a defending group contains 10 units
                 // with 10 hit points each and receives 75 damage, it loses exactly 7 units and is left with
                 // 3 units at full health.
+                int beforeDefenders = defender.unitCount;
                 int numberKilled = defender.takeDamage(damageDealt);
                 if (DEBUG_PRINT_PROGRESS) {
-                    System.out.println(attacker.type + " group " + attacker.number + " attacks defending group "
-                            + defender.number + ", killing " + numberKilled + " units");
+                    System.out.println("Unit " + attacker.type + attacker.number + " attacked " + defender.type + defender.number
+                            + " for " + damageDealt + " killing " + numberKilled + " of " + beforeDefenders + " " + defender.hitPoints + "hp units.");
                 }
             }
         }
-
-//        if (!hasImmuneAttacker) {
-//            System.out.println("NO IMMUNE ATTACKERS");
-//        }
-//        if (!hasInfectionAttacker) {
-//            System.out.println("NO INFECTION ATTACKERS");
-//        }
 
         if (DEBUG_PRINT_PROGRESS) {
             System.out.println();   // A couple linefeeds when we're done.
@@ -306,9 +285,9 @@ public class Battle {
         for (Group liveGroup : infection) {
             allUnits.add(liveGroup);
         }
-
         return null;    // No winner yet.
     }
+
 
     public int totalUnitCount(TreeSet<Group> groups) {
         int totalUnitCount = 0;
@@ -323,10 +302,25 @@ public class Battle {
     }
 
     public void boostImmune(int boost) {
+
+        // RE-SORT THE IMMUNE SYSTEM ARMIES AS WE BOOST!
+        TreeSet<Group> tempImmune = new TreeSet<>(new GroupComparator());
+
         // Boost the attack power of all the immuneSystem groups.
         for (Group immuneGroup : immuneSystem) {
             immuneGroup.boost(boost);
         }
+        tempImmune.addAll(immuneSystem);
+
+        // Once we're done sorting, swap in the ref of the new sorted TreeSet.
+        this.immuneSystem = tempImmune;
+
+        // Then sort allUnits too. There MUST be a better way to do this.
+        TreeSet<Group> tempAllUnits = new TreeSet<>(new GroupComparator());
+        tempAllUnits.addAll(immuneSystem);
+        tempAllUnits.addAll(infection);
+        allUnits = tempAllUnits;
+
     }
 
     private static String attackTypeMatchString() {

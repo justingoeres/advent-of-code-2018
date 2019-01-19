@@ -49,9 +49,6 @@ public class RunDay24 {
         */
         System.out.println("=== DAY 24B ===");
 
-        // Reload the battle to revive all the units.
-        battle = new Battle(pathToInputs);
-
         int boost = 1;  //  boost per cycle
         while (true) { // Run forever, break below.
             // Reload the battle to revive all the units.
@@ -62,10 +59,13 @@ public class RunDay24 {
             int prevTotalArmies = battle.totalAllArmies();
             int stalemateCounter = 0;
             int totalArmies = 0;
-            TreeSet<Group> winner = null;
             int round = 1;
-            System.out.println("\n=========== BOOST " + boost + "===========");
+            TreeSet<Group> winner = null;
+
+//            System.out.println("\n=========== BOOST " + boost + "===========");
             while (winner == null) {
+//                System.out.println("Start Round " + round + ":");
+
                 winner = battle.doTimerTick();
 
 //                System.out.println("End of Round " + round
@@ -95,24 +95,22 @@ public class RunDay24 {
                 int result = battle.totalUnitCount(winner);
                 String winnerName = winner.first().type.toString();
 
-                System.out.println("Boost " + boost + ":\t" + winnerName + " wins with a total of " + result + " units remaining. (" + round + " rounds)");
+                if (DEBUG_PART_B_PRINT_PROGRESS) {
+                    System.out.println("Boost " + boost + ":\t" + winnerName + " wins with a total of " + result + " units remaining. (" + round + " rounds)");
+                }
                 if (winner.first().type == IMMUNE) {
+                    System.out.println("Boost " + boost + ":\t" + winner.first().type + " wins with a total of " + result + " units remaining. (" + round + " rounds)");
                     return result;  // Stop if IMMUNE wins
+                    // Answer:
+                    // Boost 39:	IMMUNE wins with a total of 5120 units remaining. (4984 rounds)
                 }
             } else {
                 // Otherwise, it was a tie.
-                System.out.println("Boost " + boost + ":\t" + "Result is a stalemate with " + totalArmies + " units remaining. (" + round + " rounds)");
-                ;
+                if (DEBUG_PART_B_PRINT_PROGRESS) {
+                    System.out.println("Boost " + boost + ":\t" + "Result is a stalemate with " + totalArmies + " units remaining. (" + round + " rounds)");
+                }
             }
             boost++;    // Increment boost and continue
-
-            // Answer:
-            //  4964 (too low)
-            //  5072 (wrong; boost 39 after fix)
-            //  5099 (too low; boost 39)
-            //  5892 (wrong; boost 40)
-            //  7125 (wrong; boost 35 after eliminating "extra" damage in targeting calculation.
-            //  8989    (boost 45)
         }
     }
 }
