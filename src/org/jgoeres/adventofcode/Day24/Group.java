@@ -54,6 +54,9 @@ public class Group {
             damage *= 2;
         }
 
+        // Modify the damage to only account for WHOLE UNITS. Any leftover damage doesn't count.
+//        damage -= (damage % defendingGroup.hitPoints);  // subtract off the remainder after killing units.
+
         return damage;
         // Would this be enough damage to actually kill anyone?
 //        if ((damage / defendingGroup.hitPoints) == 0) {

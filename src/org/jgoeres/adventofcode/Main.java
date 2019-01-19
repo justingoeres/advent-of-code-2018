@@ -405,7 +405,7 @@ public class Main {
 
         if (RUN_DAY_24 || RUN_ALL) {
             setStartTime();
-            RunDay24.problem24A();
+//            RunDay24.problem24A();
             printElapsedTime();
 
             blankLine();

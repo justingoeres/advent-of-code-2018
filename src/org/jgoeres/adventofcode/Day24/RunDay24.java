@@ -111,6 +111,7 @@ public class RunDay24 {
             //  5072 (wrong; boost 39 after fix)
             //  5099 (too low; boost 39)
             //  5892 (wrong; boost 40)
+            //  7125 (wrong; boost 35 after eliminating "extra" damage in targeting calculation.
             //  8989    (boost 45)
         }
     }
