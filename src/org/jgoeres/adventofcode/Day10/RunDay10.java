@@ -19,7 +19,6 @@ public class RunDay10 {
 
     Rather than wait, you decide to fast-forward the process and calculate
     what the points will eventually spell.
-n
     */
         System.out.println("=== DAY 10A ===");
 
@@ -51,22 +50,25 @@ n
                     break;
                 }
                 System.out.println("Time:\t" + currentTime);
-//                extents = SkyService.findExtents(skyNow);
+                extents = SkyService.findExtents(skyNow);
 //                System.out.println("Width: " + extents.width() + "\tHeight: " + extents.height());
                 SkyService.printSky(skyNow);
 
                 // Ask the user if we're done.
-                Scanner scanner = new Scanner(System.in);
-                try {
-                    System.out.print("Continue? (y/n) ");
-                    String input = scanner.nextLine();
-                    if (input.toUpperCase().startsWith("N")) {
-                        return; // We're done with the problem!
-                    }
-                } catch (IllegalStateException | NoSuchElementException e) {
-                    // System.in has been closed
-                    System.out.println("System.in was closed; exiting");
-                }
+//                Scanner scanner = new Scanner(System.in);
+//                try {
+//                    System.out.print("Continue? (y/n) ");
+//                    String input = scanner.nextLine();
+//                    if (input.toUpperCase().startsWith("N")) {
+//                        return; // We're done with the problem!
+//                    }
+//                } catch (IllegalStateException | NoSuchElementException e) {
+//                    // System.in has been closed
+//                    System.out.println("System.in was closed; exiting");
+//                }
+
+                // Empirically, we know that we're done when the sky is 61 x 9.
+                if (extents.width() == 61 && extents.height() == 9) return;
 
             }
         }
