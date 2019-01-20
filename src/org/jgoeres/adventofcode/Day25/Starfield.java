@@ -31,6 +31,5 @@ public class Starfield {
         } catch (Exception e) {
             System.out.println("Exception occurred: " + e.getMessage());
         }
-
     }
 }

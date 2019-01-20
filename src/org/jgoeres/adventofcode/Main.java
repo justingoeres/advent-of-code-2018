@@ -425,12 +425,6 @@ public class Main {
             printElapsedTime();
 
             blankLine();
-
-            setStartTime();
-            RunDay25.problem25B();
-            printElapsedTime();
-
-            blankLine();
         }
     }
 
