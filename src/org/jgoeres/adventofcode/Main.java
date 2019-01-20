@@ -28,7 +28,7 @@ import org.jgoeres.adventofcode.Day25.RunDay25;
 
 public class Main {
 
-    static final boolean RUN_ALL = false;
+    static final boolean RUN_ALL = true;
 
     static final boolean RUN_DAY_1 = false;
     static final boolean RUN_DAY_2 = false;
@@ -54,9 +54,10 @@ public class Main {
     static final boolean RUN_DAY_22 = false;
     static final boolean RUN_DAY_23 = false;
     static final boolean RUN_DAY_24 = false;
-    static final boolean RUN_DAY_25 = true;
+    static final boolean RUN_DAY_25 = false;
 
     private static long startTime = 0L;
+    private static long totalElapsed = 0L;
 
     public static void main(String[] args) {
         //https://adventofcode.com/2018/
@@ -342,11 +343,13 @@ public class Main {
 
             blankLine();
 
-            setStartTime();
-            RunDay19.problem19B();
-            printElapsedTime();
-
-            blankLine();
+            // Skip 19B because it takes a really long time to run;
+            // I solved it by hand after reverse engineering the code anyway.
+            //            setStartTime();
+            //            RunDay19.problem19B();
+            //            printElapsedTime();
+            //
+            //            blankLine();
         }
         
         if (RUN_DAY_20 || RUN_ALL) {
@@ -426,6 +429,8 @@ public class Main {
 
             blankLine();
         }
+
+        System.out.println("\n\nTOTAL ELAPSED TIME:\t"+totalElapsed+" ms");
     }
 
     private static void blankLine() {
@@ -438,8 +443,10 @@ public class Main {
 
     private static void printElapsedTime() {
         long endTime = System.currentTimeMillis();
+        long elapsedTime = endTime - startTime;
+        totalElapsed += elapsedTime;
 
-        System.out.println("Time elapsed:\t" + (endTime - startTime) + " ms");
+        System.out.println("Time elapsed:\t" + elapsedTime + " ms");
     }
 }
 
