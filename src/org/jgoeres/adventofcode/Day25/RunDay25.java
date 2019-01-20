@@ -6,15 +6,18 @@ public class RunDay25 {
     static final boolean DEBUG_PART_A_PRINT_PROGRESS = false;
     static final boolean DEBUG_PART_B_PRINT_PROGRESS = false;
 
+    static Starfield starfield;
+
     public static void problem25A() {
         problem25A(DEFAULT_PATH_TO_INPUTS);
     }
 
     public static int problem25A(String pathToInputs) {
         /*
-        Problem Description
+        How many constellations are formed by the fixed points in spacetime?
         */
         System.out.println("=== DAY 25A ===");
+        starfield = new Starfield(pathToInputs);
 
         return 0;
     }
